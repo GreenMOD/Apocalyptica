@@ -42,6 +42,8 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public bool isSeparating = false;
         public List<Zombie> _zombiesInView;
 
+        public Random _rng = new Random();
+
         public virtual void Update(GameTime gameTime)
         {
            
@@ -228,5 +230,29 @@ namespace Overhaul_Of_Apocalyptica.Entities
             ApplyForce(desiredSeparation);
 
         }
+        public virtual void Idle()
+        {
+            Vector2 desired = Vector2.Subtract(new Vector2((float)_rng.Next(0, 800), (float)_rng.Next(0, 480)),Position);
+            desired = Vector2.Multiply(desired, maxForce);
+
+            Vector2 steer = Vector2.Subtract(desired, Position);
+            steer.Normalize();
+
+            if (steer.Length() > maxForce)
+            {
+                steer = Vector2.Normalize(steer) * maxForce; //limits the steering force to maxforce
+            }
+            ApplyForce(steer);
+
+            Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce 
+            if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity
+            {
+                Speed = Vector2.Normalize(Speed) * maxVelocity;
+
+            }
+            Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
+            _acceleration = Vector2.Multiply(_acceleration, 0); // resets acceleration in order to not have exponential growth
+        }
+
     }
 }

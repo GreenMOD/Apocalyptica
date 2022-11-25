@@ -15,10 +15,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         public Vector2 Destination { get; set; }
         bool reachedDestination = true;
 
-        protected Rectangle frame1 = new Rectangle(0, 40, 59, 20);  // left
-        protected Rectangle frame2 = new Rectangle(22, 40, 59, 20);  // right
+        protected Rectangle frame1 = new Rectangle(0, 40, 20, 20);  // left
+        protected Rectangle frame2 = new Rectangle(22, 40, 20, 20);  // right
 
-       
+        
 
         public Screamer(Texture2D texture2D, Vector2 spawnLocation,EntityManager entityManager)
         {
@@ -45,17 +45,21 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         {
             
             base.Update(gameTime);
+            List<SwarmBomb> swarmBombs =_entityManager.GetEntities<SwarmBomb>().ToList<SwarmBomb>();
 
-
-            foreach (SwarmBomb s in _entityManager.GetEntities<SwarmBomb>())
+            //checks position of all swarmbombs in entitymanager. If it finds one that is destoryed it will set its desination to be there
+            foreach (SwarmBomb s in swarmBombs)
             {
                 if (s.IsDestroyed)
+                {
                     Destination = s.Position;
-                reachedDestination = false;
+                    reachedDestination = false;
+                }
+                    
             }
             if ((reachedDestination == true))
             {
-                Idle(gameTime);
+                Idle();
             }
             else 
             {
@@ -67,10 +71,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             }
             
         }
-        public void Idle(GameTime gameTime)
-        {
-
-        }
+       
 
     }
 }
