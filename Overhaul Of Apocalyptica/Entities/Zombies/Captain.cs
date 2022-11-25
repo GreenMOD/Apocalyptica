@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
@@ -47,8 +48,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             _frames.Add(frame2);
             _sprite = new Sprite(texture2D, _frames, Position);
 
-            _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
-            _ninja = (Ninja)_entityManager.GetEntities<Ninja>();
+           
             _texture2D = texture2D;
             _rocketProjectile = projectile;
 
@@ -58,6 +58,17 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             Rockets = new List<Projectile>();
             _distanceUntilEdgeX = (800 - (int)Position.X);
             _distanceUntilEdgeY = (480 - (int)Position.Y);
+
+            _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
+            List<Ninja> ninjas = _entityManager.GetEntities<Ninja>().ToList(); //creates a list of all ninjas *to be changed to players* from a IEnumerable
+            _ninja = ninjas[0];
+            foreach (Ninja n in ninjas)
+            {
+                if ((_ninja.Position - Position).Length() > (n.Position - Position).Length())
+                {
+                    _ninja = n;
+                }
+            }
 
         }
 

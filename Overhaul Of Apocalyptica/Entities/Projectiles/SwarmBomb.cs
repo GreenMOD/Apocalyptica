@@ -23,7 +23,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             _sprite = new Sprite(texture, _frames, Position);
             _ninja = target;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _frames[0].Width, _frames[0].Height);
-            _timeFire = gameTime.ElapsedGameTime.TotalSeconds;
+            _timeFire = gameTime.TotalGameTime.TotalSeconds;
         }
         public override void CheckCollision(GameTime gameTime)
         {
@@ -84,7 +84,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
             if (IsDestroyed == false)
             {
-                FlightTime = gameTime.ElapsedGameTime.TotalSeconds;
+                FlightTime = gameTime.TotalGameTime.TotalSeconds;
                 Movement(gameTime);
                 _sprite.Update(gameTime, Position);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _frames[0].Width, _frames[0].Height);

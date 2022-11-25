@@ -27,13 +27,15 @@ namespace Overhaul_Of_Apocalyptica
         List<Rectangle> frames = new List<Rectangle>() {new Rectangle(2,1,5,31), new Rectangle(8,1,14,31), new Rectangle(23, 1, 18, 32), new Rectangle(42, 1, 24, 31), new Rectangle(68, 1, 19, 31)}; //TODO THIS ONLY GOES UP TO 5
 
         EntityManager _entityManager;
+
+        public bool isRunning { get; set; }
         public WaveManager(Texture2D ZombieSheet, Ninja ninja,EntityManager entityManager,Texture2D waveCounterSprite,Texture2D projectiles)
         {
             _entityManager = entityManager;
             _sprite = new Sprite(waveCounterSprite, frames, new Vector2(400, 100));
             _zombieSpriteSheet = ZombieSheet;
             _projectilesSpriteSheet = projectiles;
-            
+            isRunning = false; 
         }
         public void NextWave()
         {
@@ -153,10 +155,12 @@ namespace Overhaul_Of_Apocalyptica
             //    //zombiesLeftToSeparate.Remove(z);  
             //}
 
-        }
+        }/// <summary>
+        /// Randomly generates number of zombies in waves using set parameters for each wave. isRunning becomes true
+        /// </summary>
         public void Intialise()
         {
-
+            isRunning = true;
             //Wave1 Load
             List<Zombie> Wave1 = new List<Zombie>();
             for (int i = 0; i < 10; i++)
@@ -199,6 +203,7 @@ namespace Overhaul_Of_Apocalyptica
             zombiesLeft = _Waves[_currentWave];
             SpawnZombie(3);
         }
+       
 
 
 

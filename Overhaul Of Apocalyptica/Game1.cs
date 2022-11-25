@@ -56,13 +56,14 @@ namespace Overhaul_Of_Apocalyptica
             
 
             waveManager = new WaveManager(ZombieSheet,player1,entityManager, WaveCounterSpriteSheet, projectileSpriteSheet);
-            foreach (IEntity E in waveManager.zombiesToAdd)
-            {
-                entityManager.AddEntity(E);
-            }
+            
 
             player1.Activate();
             
+            foreach (Zombie z in waveManager.zombiesSpawned)
+            {
+                entityManager.AddEntity(z);
+            }
            
         }
 
@@ -70,7 +71,7 @@ namespace Overhaul_Of_Apocalyptica
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-            
+           
             waveManager.Update(gameTime);
             if (waveManager.zombiesToAdd.Count != 0)
             {
@@ -82,6 +83,10 @@ namespace Overhaul_Of_Apocalyptica
             base.Update(gameTime);
 
             entityManager.Update(gameTime);
+            if (waveManager.isRunning == false) //not the most elegant of solutions however will be the best for the time being and in the long term for when game states are added
+            {
+                waveManager.Intialise();
+            }
         }
 
         protected override void Draw(GameTime gameTime)

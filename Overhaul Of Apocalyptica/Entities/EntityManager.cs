@@ -53,7 +53,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
         {
             toRemove.Add(entity);
         }
-
+        /// <summary>
+        /// Returns a list of entites of selected E
+        /// </summary>
+        /// <typeparam name="E"></typeparam>
+        /// <returns></returns>
         public IEnumerable<E> GetEntities<E>() where E : IEntity 
         {
             return entities.OfType<E>();

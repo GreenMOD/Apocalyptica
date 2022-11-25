@@ -44,7 +44,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public virtual void Update(GameTime gameTime)
         {
-            //Pursuit(_ninja);
+           
             CheckCollision(gameTime);
           
             if (isSeparating == true)
@@ -203,15 +203,15 @@ namespace Overhaul_Of_Apocalyptica.Entities
                 }
                 
             }
-            foreach (Zombie z in _zombiesInView)
-            {
-                float distance = Vector2.Distance(Position, z.Position);
+            //foreach (Zombie z in _zombiesInView)
+            //{
+            //    float distance = Vector2.Distance(Position, z.Position);
 
-                if ((distance > 0) && (distance < 20))//20 pixels
-                {
-                    Separate(z.Position);
-                }
-            }
+            //    if ((distance > 0) && (distance < 20))//20 pixels
+            //    {
+            //        Separate(z.Position);
+            //    }
+            //}
             
         }
         public virtual void Separate(Vector2 target)
