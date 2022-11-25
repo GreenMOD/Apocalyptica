@@ -18,19 +18,22 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
        
 
-        public Screamer(Texture2D texture2D, Vector2 spawnLocation)
+        public Screamer(Texture2D texture2D, Vector2 spawnLocation,EntityManager entityManager)
         {
             _frames.Add(frame1);
             _frames.Add(frame2);
 
             _sprite = new Sprite(texture2D, _frames, Position);
             _texture2D = texture2D;
+            _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
+            _ninja = (Ninja)_entityManager.GetEntities<Ninja>();
             Position = spawnLocation;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+            
         }
         public override void Update(GameTime gameTime)
         {
-
+            _ninja = (Ninja)_entityManager.GetEntities<Ninja>();
             base.Update(gameTime);
 
 

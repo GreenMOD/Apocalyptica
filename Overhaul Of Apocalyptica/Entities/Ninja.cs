@@ -36,6 +36,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         Heart _heart;
 
+        bool IsActive = false;
         public Ninja(Texture2D texture2D, Texture2D heartSprite)
         {
             _texture2D = texture2D;
@@ -69,91 +70,103 @@ namespace Overhaul_Of_Apocalyptica.Entities
         }
         public void Update(GameTime gameTime)
         {
-            Vector2 temp = new Vector2(); // used to calculate current velocity
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && (Keyboard.GetState().IsKeyDown(Keys.A)))
+            if (IsActive == true)
             {
-                Speed = Vector2.Zero;
+                Vector2 temp = new Vector2(); // used to calculate current velocity
+                if (Keyboard.GetState().IsKeyDown(Keys.W) && (Keyboard.GetState().IsKeyDown(Keys.A)))
+                {
+                    Speed = Vector2.Zero;
 
-                _ninjaFacing = "left";
+                    _ninjaFacing = "left";
 
 
-                Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(-5, -5)), Speed);
+                    Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(-5, -5)), Speed);
 
-                Position = Vector2.Add(Speed, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
+                    Position = Vector2.Add(Speed, Position);
+                    CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
+
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.S) && (Keyboard.GetState().IsKeyDown(Keys.A)))
+                {
+                    Speed = Vector2.Zero;
+                    _ninjaFacing = "left";
+
+                    Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(-5, 5)), Speed);
+
+                    Position = Vector2.Add(Speed, Position);
+                    CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
+
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.W) && (Keyboard.GetState().IsKeyDown(Keys.D)))
+                {
+                    Speed = Vector2.Zero;
+                    _ninjaFacing = "right";
+
+                    Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(5, -5)), Speed);
+                    Position = Vector2.Add(Speed, Position);
+                    CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.S) && (Keyboard.GetState().IsKeyDown(Keys.D)))
+                {
+                    Speed = Vector2.Zero;
+                    _ninjaFacing = "right";
+                    Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(5, 5)), Speed);
+                    Position = Vector2.Add(Speed, Position);
+                    CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+                    Speed = Vector2.Zero;
+                    //Up
+                    _ninjaFacing = "up";
+                    Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(0, -5)), Speed);
+                    Position = Vector2.Add(Speed, Position);
+                    CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 19, 42);
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
+                    Speed = Vector2.Zero;
+                    // down
+                    _ninjaFacing = "down";
+
+                    Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(0, 5)), Speed);
+                    Position = Vector2.Add(Speed, Position);
+                    CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 19, 42);
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+                    Speed = Vector2.Zero;
+                    _ninjaFacing = "left";
+                    Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(-5, 0)), Speed);
+                    Position = Vector2.Add(Speed, Position);
+                    CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
+                }
+                else if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
+                    Speed = Vector2.Zero;
+                    _ninjaFacing = "right";
+                    Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(5, 0)), Speed);
+                    Position = Vector2.Add(Speed, Position);
+                    CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
+                }
+                else
+                {
+                    Speed = Vector2.Zero;
+                }
+                _sprite.Update(gameTime, Position);
+                _heart.Update(gameTime);
 
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && (Keyboard.GetState().IsKeyDown(Keys.A)))
-            {
-                Speed = Vector2.Zero;
-                _ninjaFacing = "left";
-                
-                Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(-5, 5)), Speed);
-               
-                Position = Vector2.Add(Speed, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
 
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.W) && (Keyboard.GetState().IsKeyDown(Keys.D)))
-            {
-                Speed = Vector2.Zero;
-                _ninjaFacing = "right";
-               
-                Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(5, -5)), Speed);
-                Position = Vector2.Add(Speed, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && (Keyboard.GetState().IsKeyDown(Keys.D)))
-            {
-                Speed = Vector2.Zero;
-                _ninjaFacing = "right";
-                Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(5, 5)), Speed);
-                Position = Vector2.Add(Speed, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.W))
-            {
-                Speed = Vector2.Zero;
-                //Up
-                _ninjaFacing = "up";
-                Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(0, -5)), Speed);
-                Position = Vector2.Add(Speed, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 19, 42);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S))
-            {
-                Speed = Vector2.Zero;
-                // down
-                _ninjaFacing = "down";
 
-                Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(0, 5)), Speed);
-                Position = Vector2.Add(Speed, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 19, 42);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A))
-            {
-                Speed = Vector2.Zero;
-                _ninjaFacing = "left";
-                Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(-5, 0)), Speed);
-                Position = Vector2.Add(Speed, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
-            }
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
-            {
-                Speed = Vector2.Zero;
-                _ninjaFacing = "right";
-                Speed = Vector2.Add(Vector2.Add(Vector2.Zero, temp = new Vector2(5, 0)), Speed);
-                Position = Vector2.Add(Speed, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
-            }
-            else
-            {
-                Speed = Vector2.Zero;
-            }
-            _sprite.Update(gameTime, Position);
-            _heart.Update(gameTime);
-
-          
+        }
+        public void Activate()
+        {
+            IsActive = true;
+        }
+        public void Deactivate()
+        {
+            IsActive = false;
         }
     }
 }

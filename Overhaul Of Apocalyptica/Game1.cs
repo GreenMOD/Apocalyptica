@@ -53,14 +53,16 @@ namespace Overhaul_Of_Apocalyptica
             
             Ninja player1 = new Ninja(NinjaSpriteSheet,HeartSpriteSheet);
             entityManager.AddEntity(player1);
-
+            
 
             waveManager = new WaveManager(ZombieSheet,player1,entityManager, WaveCounterSpriteSheet, projectileSpriteSheet);
             foreach (IEntity E in waveManager.zombiesToAdd)
             {
                 entityManager.AddEntity(E);
             }
-           
+
+            player1.Activate();
+            
            
         }
 
@@ -68,7 +70,7 @@ namespace Overhaul_Of_Apocalyptica
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+            
             waveManager.Update(gameTime);
             if (waveManager.zombiesToAdd.Count != 0)
             {

@@ -7,7 +7,7 @@ using Overhaul_Of_Apocalyptica.Entities.Zombies;
 using System.Linq;
 namespace Overhaul_Of_Apocalyptica.Entities
 {
-    class EntityManager
+    class EntityManager : IEntity
     {
         public List<IEntity> entities = new List<IEntity>();
         List<IEntity> toAdd = new List<IEntity>();

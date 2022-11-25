@@ -8,7 +8,7 @@ using Overhaul_Of_Apocalyptica.Entities.Zombies;
 
 namespace Overhaul_Of_Apocalyptica
 {
-    class WaveManager
+    class WaveManager : IEntity
     {
         public List<List<Zombie>> _Waves = new List<List<Zombie>>();
         Random rng = new Random();
@@ -17,8 +17,11 @@ namespace Overhaul_Of_Apocalyptica
         public List<Zombie> zombiesLeft = new List<Zombie>(); // all zombies that havenet been spawned yet but are to be
         public List<Zombie> zombiesToAdd = new List<Zombie>(); // all zombies are to be spawned
         public int _numZombiesSpawned;
-        double lastSpawned = 0; // tracks the time between spawning
-        float spawnBuffer = 5f;// time inbertween spawns
+        double _lastSpawned = 0; // tracks the time between spawning
+        float _spawnBuffer = 5f;// time inbertween spawns
+
+        Texture2D _zombieSpriteSheet;
+        Texture2D _projectilesSpriteSheet;
 
         Sprite _sprite;
         List<Rectangle> frames = new List<Rectangle>() {new Rectangle(2,1,5,31), new Rectangle(8,1,14,31), new Rectangle(23, 1, 18, 32), new Rectangle(42, 1, 24, 31), new Rectangle(68, 1, 19, 31)}; //TODO THIS ONLY GOES UP TO 5
@@ -28,48 +31,8 @@ namespace Overhaul_Of_Apocalyptica
         {
             _entityManager = entityManager;
             _sprite = new Sprite(waveCounterSprite, frames, new Vector2(400, 100));
-            
-            //Wave1 Load
-            List<Zombie> Wave1 = new List<Zombie>();
-            for (int i = 0; i < 10; i++)
-            {
-                Zombie b = new Walker(ZombieSheet,ninja,new Vector2(rng.Next(0, 800), rng.Next(480, 700)),zombiesSpawned); //TODO make it so it only updates zombies that are in there
-                Wave1.Add(b);
-            }
-            Zombie zombie = new Captain(ZombieSheet, ninja, new Vector2(rng.Next(0, 800), rng.Next(480, 700)), _entityManager,projectiles);
-            Wave1.Add(zombie);
-            //Wave2
-            List<Zombie> Wave2 = new List<Zombie>();
-            for (int i = 0; i < 2; i++)
-            {
-                Zombie b = new Captain(ZombieSheet, ninja, new Vector2(150,200),_entityManager,projectiles);
-                Wave2.Add(b);
-            }
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    Zombie z = new Walker(ZombieSheet, ninja, new Vector2(rng.Next(0, 800), rng.Next(480, 700)));
-            //    Wave2.Add(z);
-            //}
-            //Wave3
-            List<Zombie> Wave3 = new List<Zombie>();
-            for (int i = 0; i < 2; i++)
-            {
-                Zombie b = new Screamer(ZombieSheet, new Vector2(150, 200));
-                Wave3.Add(b);
-            }
-            Zombie z = new Captain(ZombieSheet, ninja, new Vector2(150, 200), _entityManager, projectiles);
-            Wave3.Add(z);
-            //etc.
-
-            //Gathering all waves
-
-
-
-
-            _Waves.Add(Wave3);
-            _Waves.Add(Wave2);           
-            zombiesLeft = _Waves[_currentWave];
-            SpawnZombie(3);
+            _zombieSpriteSheet = ZombieSheet;
+            _projectilesSpriteSheet = projectiles;
             
         }
         public void NextWave()
@@ -190,6 +153,51 @@ namespace Overhaul_Of_Apocalyptica
             //    //zombiesLeftToSeparate.Remove(z);  
             //}
 
+        }
+        public void Intialise()
+        {
+
+            //Wave1 Load
+            List<Zombie> Wave1 = new List<Zombie>();
+            for (int i = 0; i < 10; i++)
+            {
+                Zombie b = new Walker(_zombieSpriteSheet, _entityManager, new Vector2(rng.Next(0, 800), rng.Next(480, 700)), zombiesSpawned); //TODO make it so it only updates zombies that are in there
+                Wave1.Add(b);
+            }
+            Zombie zombie = new Captain(_zombieSpriteSheet, new Vector2(rng.Next(0, 800), rng.Next(480, 700)), _entityManager, _projectilesSpriteSheet);
+            Wave1.Add(zombie);
+            //Wave2
+            List<Zombie> Wave2 = new List<Zombie>();
+            for (int i = 0; i < 2; i++)
+            {
+                Zombie b = new Captain(_zombieSpriteSheet, new Vector2(150, 200), _entityManager, _projectilesSpriteSheet);
+                Wave2.Add(b);
+            }
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    Zombie z = new Walker(ZombieSheet, ninja, new Vector2(rng.Next(0, 800), rng.Next(480, 700)));
+            //    Wave2.Add(z);
+            //}
+            //Wave3
+            List<Zombie> Wave3 = new List<Zombie>();
+            for (int i = 0; i < 2; i++)
+            {
+                Zombie b = new Screamer(_zombieSpriteSheet, new Vector2(150, 200), _entityManager);
+                Wave3.Add(b);
+            }
+            Zombie z = new Captain(_zombieSpriteSheet, new Vector2(150, 200), _entityManager, _projectilesSpriteSheet);
+            Wave3.Add(z);
+            //etc.
+
+            //Gathering all waves
+
+
+
+
+            _Waves.Add(Wave3);
+            _Waves.Add(Wave2);
+            zombiesLeft = _Waves[_currentWave];
+            SpawnZombie(3);
         }
 
 

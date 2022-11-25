@@ -35,7 +35,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         public double _timeSinceLastRocket = 0;
         public double _timeSinceLastSwarmBomb = 0;
 
-        public Captain(Texture2D texture2D, Ninja ninja, Vector2 spawnLocation, EntityManager entityManager,Texture2D projectile)
+        public Captain(Texture2D texture2D, Vector2 spawnLocation, EntityManager entityManager,Texture2D projectile)
         {
 
             _entityManager = entityManager;
@@ -47,7 +47,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             _frames.Add(frame2);
             _sprite = new Sprite(texture2D, _frames, Position);
 
-            _ninja = ninja;
+            _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
+            _ninja = (Ninja)_entityManager.GetEntities<Ninja>();
             _texture2D = texture2D;
             _rocketProjectile = projectile;
 

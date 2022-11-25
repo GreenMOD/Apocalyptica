@@ -20,13 +20,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
         protected Rectangle altUp = new Rectangle(94, 0, 23, 42); //alternate up
         protected Rectangle altDown = new Rectangle(94, 0, 23, 42); //alternate down
 
-        public Walker(Texture2D texture2D, Ninja ninja, Vector2 spawnLocation,List<Zombie>zombiesInView )
+        public Walker(Texture2D texture2D, EntityManager entityManager, Vector2 spawnLocation,List<Zombie>zombiesInView )
         {
             _frames.Add(frame1);
             _frames.Add(frame2);
 
             _sprite = new Sprite(texture2D,_frames,Position);
-            _ninja = ninja;
+            _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
+            _ninja = (Ninja)_entityManager.GetEntities<Ninja>();
             _texture2D = texture2D;
             _zombiesInView = zombiesInView;
             Position = spawnLocation;
