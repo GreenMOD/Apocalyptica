@@ -67,14 +67,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
 
 
-            //if (zombieFacing == facing.Left)
-            //{
-            //    source = sourceBaseleft;
-            //}
-            //else if (NPCfacing == facing.Right)
-            //{
-            //    source = sourceBaseright;
-            //}
+            if (Speed.X >0)
+            {
+                _zombieFacing = "right";
+            }
+            else if (Speed.X < 0)
+            {
+                _zombieFacing = "left";
+            }
         }
 
 
@@ -110,14 +110,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
             }
             ApplyForce(steer);
 
-            if (Speed.X <0)
-            {
-                _zombieFacing = "left";
-            }
-            else
-            {
-                _zombieFacing = "right";
-            }
 
             Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce 
             if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity

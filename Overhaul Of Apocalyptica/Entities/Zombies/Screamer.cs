@@ -44,7 +44,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         public override void Update(GameTime gameTime)
         {
             
-            base.Update(gameTime);
+            
             List<SwarmBomb> swarmBombs =_entityManager.GetEntities<SwarmBomb>().ToList<SwarmBomb>();
 
             //checks position of all swarmbombs in entitymanager. If it finds one that is destoryed it will set its desination to be there
@@ -69,7 +69,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             {
                 reachedDestination = true;
             }
-            
+            base.Update(gameTime);
+
         }
        
 

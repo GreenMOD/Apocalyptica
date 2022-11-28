@@ -186,10 +186,10 @@ namespace Overhaul_Of_Apocalyptica
             List<Zombie> Wave3 = new List<Zombie>();
             for (int i = 0; i < 2; i++)
             {
-                Zombie b = new Screamer(_zombieSpriteSheet, new Vector2(150, 200), _entityManager);
+                Zombie b = new Screamer(_zombieSpriteSheet, new Vector2(rng.Next(0, 800), rng.Next(480, 700)), _entityManager);
                 Wave3.Add(b);
             }
-            Zombie z = new Captain(_zombieSpriteSheet, new Vector2(150, 200), _entityManager, _projectilesSpriteSheet);
+            Zombie z = new Captain(_zombieSpriteSheet, new Vector2(rng.Next(0, 800), rng.Next(480, 700)), _entityManager, _projectilesSpriteSheet);
             Wave3.Add(z);
             //etc.
 
