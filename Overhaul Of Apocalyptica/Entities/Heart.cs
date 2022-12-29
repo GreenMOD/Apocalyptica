@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Design;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-
+using Overhaul_Of_Apocalyptica.Entities.Characters;
 namespace Overhaul_Of_Apocalyptica.Entities
 {
     class Heart : IEntity
@@ -14,13 +14,13 @@ namespace Overhaul_Of_Apocalyptica.Entities
         private Sprite _sprite;
       
         private Vector2 _heartPosition;
-        private Ninja _ninja;
+        private Player _player;
 
         public int HeartsLeft { get; set; }
         private int MAXIMUM_AMOUNT_HEARTS;
 
         
-        public Heart(Texture2D heartSheet, int maximumHealth, Ninja ninja, List<Rectangle>frames)
+        public Heart(Texture2D heartSheet, int maximumHealth, Player player, List<Rectangle>frames)
         {
             _heartSheet = heartSheet;
 
@@ -29,12 +29,12 @@ namespace Overhaul_Of_Apocalyptica.Entities
             MAXIMUM_AMOUNT_HEARTS = maximumHealth;
             HeartsLeft = maximumHealth / 20;
 
-            _ninja = ninja;
+            _player = player;
         }
 
         public void Update(GameTime gameTime)
         {
-            HeartsLeft = _ninja.Health/20; 
+            HeartsLeft = _player.Health/20; 
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

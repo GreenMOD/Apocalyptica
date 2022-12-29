@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 { 
@@ -27,7 +28,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public bool IsDestroyed = false;
 
-        public Ninja _ninja;
+        public Player _target;
 
         
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 {
@@ -60,13 +61,13 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             _distanceUntilEdgeY = (480 - (int)Position.Y);
 
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
-            List<Ninja> ninjas = _entityManager.GetEntities<Ninja>().ToList(); //creates a list of all ninjas *to be changed to players* from a IEnumerable
-            _ninja = ninjas[0];
-            foreach (Ninja n in ninjas)
+            List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
+            _player = players[0];
+            foreach (Player n in players)
             {
-                if ((_ninja.Position - Position).Length() > (n.Position - Position).Length())
+                if ((_player.Position - Position).Length() > (n.Position - Position).Length())
                 {
-                    _ninja = n;
+                    _player = n;
                 }
             }
 
@@ -81,7 +82,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
 
            
-            Flee(_ninja.Position);
+            Flee(_player.Position);
             if (Position.X > 775)
             {
                 ApplyOffset();
@@ -121,7 +122,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             }
             else
             {
-                Flee(_ninja.Position);
+                Flee(_player.Position);
             }
             Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce
             if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity
@@ -145,12 +146,12 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             {
                 _timeSinceLastSwarmBomb = gameTime.TotalGameTime.TotalSeconds;
                 _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
-                Fire(gameTime, new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, _ninja, gameTime));
+                Fire(gameTime, new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, _player, gameTime));
             }
             else if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastRocket >= ROCKET_COOLDOWN) ^ (_timeSinceLastRocket == 0))
             {
                 _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
-                Fire(gameTime, new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, _ninja, gameTime));
+                Fire(gameTime, new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, _player, gameTime));
 
             }
           

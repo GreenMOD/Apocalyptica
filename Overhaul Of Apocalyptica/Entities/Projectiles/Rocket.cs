@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 namespace Overhaul_Of_Apocalyptica
 {/// <summary>
@@ -16,14 +17,14 @@ namespace Overhaul_Of_Apocalyptica
 /// </summary>
     class Rocket : Projectile
     {
-        Vector2 _target;
+        Vector2 posTarget;
         const double FLIGHT_MAXIMUM = 2.5;
-        public Rocket(Texture2D texture, List<Rectangle> frames, Vector2 start, Ninja target, GameTime gameTime) //One direction
+        public Rocket(Texture2D texture, List<Rectangle> frames, Vector2 start, Player target, GameTime gameTime) //One direction
         {
             Position = start;
             _frames = frames;
             _sprite = new Sprite(texture, _frames, Position);
-            _ninja = target;
+            _target = target;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _frames[0].Width, _frames[0].Height);
             FlightTime = gameTime.TotalGameTime.TotalSeconds;
             maxVelocity = 4f;
@@ -49,15 +50,15 @@ namespace Overhaul_Of_Apocalyptica
         public override void CheckCollision(GameTime gameTime)
         {
 
-            if (CollisionBox.Intersects(_ninja.CollisionBox))
+            if (CollisionBox.Intersects(_target.CollisionBox))
             {
-                _ninja.Health -= 10;
+                _target.Health -= 10;
                 IsDestroyed = true;
             }
         }
         public override void Movement(GameTime gameTime)
         {
-            _target = _ninja.Position;
+            posTarget = _target.Position;
             if (gameTime.TotalGameTime.TotalSeconds - FlightTime >= FLIGHT_MAXIMUM)
             {
                 IsDestroyed = true;
@@ -65,7 +66,7 @@ namespace Overhaul_Of_Apocalyptica
             else
             {
 
-                Vector2 desired = Vector2.Subtract(_target, Position); //creates the desired path towards the enemy
+                Vector2 desired = Vector2.Subtract(posTarget, Position); //creates the desired path towards the enemy
                 desired.Normalize();
                 desired = Vector2.Multiply(desired, maxVelocity);
 

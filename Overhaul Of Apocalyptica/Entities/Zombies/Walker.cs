@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Entities.Characters;
 using System.Linq;
 
 namespace Overhaul_Of_Apocalyptica.Entities
@@ -32,13 +33,13 @@ namespace Overhaul_Of_Apocalyptica.Entities
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
             
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
-            List<Ninja> ninjas = _entityManager.GetEntities<Ninja>().ToList(); //creates a list of all ninjas *to be changed to players* from a IEnumerable
-            _ninja = ninjas[0];
-            foreach (Ninja n in ninjas)
+            List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
+            _player = players[0];
+            foreach (Player n in players)
             {
-                if ((_ninja.Position - Position).Length() > (n.Position - Position).Length()) 
+                if ((_player.Position - Position).Length() > (n.Position - Position).Length()) 
                 {
-                    _ninja = n;
+                    _player = n;
                 }
             }
             

@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Entities.Characters;
+using System;
 
 namespace Overhaul_Of_Apocalyptica
 {
@@ -12,9 +14,8 @@ namespace Overhaul_Of_Apocalyptica
         private EntityManager entityManager;
         private Texture2D NinjaSpriteSheet;
         private Texture2D ZombieSheet;
+        private Texture2D SoldierSpriteSheet;
         private Texture2D DessertMap;
-        private Texture2D NodePathfinding;
-        private Texture2D Target;
         private Texture2D WaveCounterSpriteSheet;
         private Texture2D HeartSpriteSheet;
         private Texture2D projectileSpriteSheet;
@@ -44,14 +45,13 @@ namespace Overhaul_Of_Apocalyptica
             NinjaSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/NinjaSpriteSheet");
             ZombieSheet = Content.Load<Texture2D>(@"SpriteSheets/ApocZombieSpriteSheet");
             DessertMap = Content.Load<Texture2D>(@"SpriteSheets/Dessert1");
-            NodePathfinding = Content.Load<Texture2D>(@"Debugging/Pathfinder tracker");
-            Target = Content.Load<Texture2D>(@"Debugging/target");
+            SoldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierSpriteSheet1");
             WaveCounterSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/WaveCounterSprite");
             HeartSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/Heart");
             projectileSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/captainProjectile");
             
             
-            Ninja player1 = new Ninja(NinjaSpriteSheet,HeartSpriteSheet);
+            Player player1 = new Soldier(SoldierSpriteSheet,HeartSpriteSheet);
             entityManager.AddEntity(player1);
             
 
@@ -69,6 +69,7 @@ namespace Overhaul_Of_Apocalyptica
 
         protected override void Update(GameTime gameTime)
         {
+           
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
            

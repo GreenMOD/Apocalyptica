@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Zombies;
+using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 namespace Overhaul_Of_Apocalyptica
 {
@@ -29,7 +30,7 @@ namespace Overhaul_Of_Apocalyptica
         EntityManager _entityManager;
 
         public bool isRunning { get; set; }
-        public WaveManager(Texture2D ZombieSheet, Ninja ninja,EntityManager entityManager,Texture2D waveCounterSprite,Texture2D projectiles)
+        public WaveManager(Texture2D ZombieSheet, Player player,EntityManager entityManager,Texture2D waveCounterSprite,Texture2D projectiles)
         {
             _entityManager = entityManager;
             _sprite = new Sprite(waveCounterSprite, frames, new Vector2(400, 100));

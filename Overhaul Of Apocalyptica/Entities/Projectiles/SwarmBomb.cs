@@ -8,28 +8,29 @@ using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
     class SwarmBomb : Projectile
     {
-        Vector2 _target;
+        Vector2 posTarget;
         const double FLIGHT_MAXIMUM = 2.5;
         ///TODO either add list of all screamers or have a way of screamers being able to detect this class
-        public SwarmBomb(Texture2D texture, List<Rectangle> frames, Vector2 start, Ninja target,GameTime gameTime)
+        public SwarmBomb(Texture2D texture, List<Rectangle> frames, Vector2 start, Player target,GameTime gameTime)
         {
             Position = start;
             _frames = frames;
             _sprite = new Sprite(texture, _frames, Position);
-            _ninja = target;
+            _target = target;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _frames[0].Width, _frames[0].Height);
             _timeFire = gameTime.TotalGameTime.TotalSeconds;
         }
         public override void CheckCollision(GameTime gameTime)
         {
-            if (CollisionBox.Intersects(_ninja.CollisionBox))
+            if (CollisionBox.Intersects(_target.CollisionBox))
             {
-                _ninja.Health -= 10;
+                _target.Health -= 10;
                 IsDestroyed = true;
                 //swarm
             }
@@ -42,7 +43,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public override void Movement(GameTime gameTime)
         {
-            _target = _ninja.Position;
+            posTarget = _target.Position;
             if (gameTime.TotalGameTime.TotalSeconds - FlightTime >= FLIGHT_MAXIMUM)
             {
                 IsDestroyed = true;
@@ -50,7 +51,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             else
             {
 
-                Vector2 desired = Vector2.Subtract(_target, Position); //creates the desired path towards the enemy
+                Vector2 desired = Vector2.Subtract(posTarget, Position); //creates the desired path towards the enemy
                 desired.Normalize();
                 desired = Vector2.Multiply(desired, maxVelocity);
 

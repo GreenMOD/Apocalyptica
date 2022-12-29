@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 
 namespace Overhaul_Of_Apocalyptica.Entities
@@ -17,7 +18,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
        public Texture2D _texture2D;
        public List<Rectangle> _frames = new List<Rectangle>();
         
-       public Ninja _ninja;
+       public Player _player;
 
         public double Health { get; set; }
         public double Armour { get; set; }
@@ -151,7 +152,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         /// Predicts using the current velocity of the player 
         /// </summary>
         /// <param name="target"></param>
-        public virtual void Pursuit(Ninja target) // TODO Implement PC
+        public virtual void Pursuit(Player target) // TODO Implement PC
         {
             float predictFactor = 10f;
             //Number of cycles it will take to intercept the vehicle
@@ -188,11 +189,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public virtual void CheckCollision(GameTime gameTime)
         {
            
-            if (CollisionBox.Intersects(_ninja.CollisionBox))
+            if (CollisionBox.Intersects(_player.CollisionBox))
             {
                 if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= ATTACK_COOLDOWN)
                 {
-                    _ninja.Health -= 5;
+                    _player.Health -= 5;
                     _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
                 }
                 
