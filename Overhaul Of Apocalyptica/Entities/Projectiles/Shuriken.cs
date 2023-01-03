@@ -19,7 +19,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 
         }
 
-        public override void Movement(GameTime gameTime)
+        public override void Flight(GameTime gameTime)
         {
 
         }

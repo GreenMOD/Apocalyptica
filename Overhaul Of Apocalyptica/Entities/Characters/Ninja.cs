@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
+using Overhaul_Of_Apocalyptica.Entities.Weapons;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -32,6 +33,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public override double Armour { get; set; }
         public override string Facing { get; set; }
         public override bool IsActive { get; set; }
+        public override Gun Ranged { get; set; }
 
         private const float RUNNING_SPEED = 5f;
 
@@ -68,7 +70,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         {
             if (IsActive == true)
             {
-                Movement(RUNNING_SPEED);
+                PlayerInput(gameTime, Keyboard.GetState());
                 _sprite.Update(gameTime, Position);
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
@@ -80,6 +82,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
             _sprite.Draw(spriteBatch, gameTime, Facing);
             _heart.Draw(spriteBatch, gameTime);
 
+        }
+
+        public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
+        {
+            if (currentStateKeys.IsKeyDown(Keys.W) ^ currentStateKeys.IsKeyDown(Keys.A) ^ currentStateKeys.IsKeyDown(Keys.S) ^ currentStateKeys.IsKeyDown(Keys.D))
+            {
+                Movement(RUNNING_SPEED, currentStateKeys);
+            }
         }
         #endregion
     }

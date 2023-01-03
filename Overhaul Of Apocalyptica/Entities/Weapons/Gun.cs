@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
-   abstract class Gun
+   public abstract class Gun
     {
         /// Must have:
         /// Limited ammo
@@ -18,20 +18,22 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
         /// FireRate
         /// Should be compatable with both hitscan and projectile 
         /// Is it being held right now
-
+        public Vector2 Position { get; set; } 
         public int AmmoLeft { get; set; }
 
         public bool IsReloading { get; set; }
         
         public bool IsHeld { get; set; }
 
-        private const float FIRE_RATE = 0.5f;
+        public string Direction { get; set; }
 
-        public abstract void Fire();
+        public abstract void Fire(GameTime gameTime);
 
-        public abstract void Reload();
+        public abstract void Reload(GameTime gameTime);
 
-        public abstract void Update(GameTime gameTime);
+        public abstract void Update(GameTime gameTime , Vector2 updatePos, string direction);
+
+        public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
         
 

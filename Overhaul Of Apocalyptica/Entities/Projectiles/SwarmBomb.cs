@@ -41,7 +41,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             _sprite.Draw(spriteBatch, gameTime, 2.5f);
         }
 
-        public override void Movement(GameTime gameTime)
+        public override void Flight(GameTime gameTime)
         {
             posTarget = _target.Position;
             if (gameTime.TotalGameTime.TotalSeconds - FlightTime >= FLIGHT_MAXIMUM)
@@ -86,7 +86,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             if (IsDestroyed == false)
             {
                 FlightTime = gameTime.TotalGameTime.TotalSeconds;
-                Movement(gameTime);
+                Flight(gameTime);
                 _sprite.Update(gameTime, Position);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _frames[0].Width, _frames[0].Height);
                 CheckCollision(gameTime);

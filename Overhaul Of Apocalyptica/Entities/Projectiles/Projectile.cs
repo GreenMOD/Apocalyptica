@@ -42,7 +42,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public abstract void CheckCollision(GameTime gameTime);
 
-        public abstract void Movement(GameTime gameTime);
+        public abstract void Flight(GameTime gameTime);
 
         public abstract void Update(GameTime gameTime);
 

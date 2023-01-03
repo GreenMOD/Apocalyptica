@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Entities.Weapons;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Characters
 {
@@ -26,10 +27,13 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         public abstract bool IsActive { get; set; }
 
+        public abstract Gun Ranged { get; set; }
        
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
         public abstract void Update(GameTime gameTime);
+
+        public abstract void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys);
 
         public void Activate()
         {
@@ -40,8 +44,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             IsActive = false;
         }
 
-        public void Movement(float runningSpeed)
+        public void Movement(float runningSpeed, KeyboardState keyboardState)
         {
+
             if (Keyboard.GetState().IsKeyDown(Keys.W) && (Keyboard.GetState().IsKeyDown(Keys.A)))
             {
                 Speed = Vector2.Zero;
@@ -116,8 +121,11 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             {
                 Speed = Vector2.Zero;
             }
-          
 
+        }
+        public void FireR(Gun gun, GameTime gameTime)
+        {
+            gun.Fire(gameTime);
         }
     }
 }

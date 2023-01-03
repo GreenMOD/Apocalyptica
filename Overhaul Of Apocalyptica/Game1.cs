@@ -19,6 +19,7 @@ namespace Overhaul_Of_Apocalyptica
         private Texture2D WaveCounterSpriteSheet;
         private Texture2D HeartSpriteSheet;
         private Texture2D projectileSpriteSheet;
+        private Texture2D soldierSpriteSheet;
         private WaveManager waveManager;
         public Game1()
         {
@@ -45,13 +46,15 @@ namespace Overhaul_Of_Apocalyptica
             NinjaSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/NinjaSpriteSheet");
             ZombieSheet = Content.Load<Texture2D>(@"SpriteSheets/ApocZombieSpriteSheet");
             DessertMap = Content.Load<Texture2D>(@"SpriteSheets/Dessert1");
-            SoldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierSpriteSheet1");
+            SoldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierSpriteSheet2");
             WaveCounterSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/WaveCounterSprite");
             HeartSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/Heart");
             projectileSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/captainProjectile");
-            
-            
-            Player player1 = new Soldier(SoldierSpriteSheet,HeartSpriteSheet);
+            soldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierBulletSprite");
+
+            GameTime gameTime = new GameTime(); 
+
+            Player player1 = new Soldier(SoldierSpriteSheet,HeartSpriteSheet, soldierSpriteSheet,gameTime);
             entityManager.AddEntity(player1);
             
 

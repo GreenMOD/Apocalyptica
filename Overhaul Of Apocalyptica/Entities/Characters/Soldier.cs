@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
+using Overhaul_Of_Apocalyptica.Entities.Weapons;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Characters
 {
@@ -15,10 +16,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         private List<Rectangle> _frames = new List<Rectangle>();
 
-        protected Rectangle frame1 = new Rectangle(0, 0, 38, 43);  // left
-        protected Rectangle frame2 = new Rectangle(41, 0, 38, 43); // right
-        protected Rectangle frame3 = new Rectangle(0, 0, 38, 43); // left
-        protected Rectangle frame4 = new Rectangle(41, 0, 38, 43); // right
+        protected Rectangle frame1 = new Rectangle(82, 0, 76, 86);  // left
+        protected Rectangle frame2 = new Rectangle(0, 0, 76, 86);   // right
+        protected Rectangle frame3 = new Rectangle(167, 0, 40, 86); // up
+        protected Rectangle frame4 = new Rectangle(207, 0, 40, 86); // down
 
         public override Vector2 Position { get; set; }
         public override Vector2 Speed { get; set; }
@@ -27,6 +28,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public override double Armour { get; set; }
         public override string Facing { get; set; }
         public override bool IsActive { get; set; }
+        public override Gun Ranged { get; set; }
 
         private const float RUNNING_SPEED = 3.5f;
 
@@ -34,7 +36,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         private Sprite _sprite;
         private Heart _heart;
         #endregion
-        public Soldier(Texture2D texture, Texture2D heartSprite)
+        public Soldier(Texture2D texture, Texture2D heartTexture, Texture2D bulletTexture, GameTime gameTime)
         {
             _texture2D = texture;
             _frames.Add(frame1);
@@ -45,17 +47,20 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
             Speed = Vector2.Zero;
             Position = new Vector2(100, 200);
-            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 38, 43);
+            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 76, 86);
 
             Health = 100;
-            _heart = new Heart(heartSprite, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
+            _heart = new Heart(heartTexture, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
+
+            Ranged = new M4(Position,bulletTexture,Facing,gameTime);
         }
         #region Methods
         public override void Update(GameTime gameTime)
         {
             if (IsActive == true)
             {
-                Movement(RUNNING_SPEED);
+                Ranged.Update(gameTime, Position, Facing);
+                PlayerInput(gameTime, Keyboard.GetState());
                 _sprite.Update(gameTime, Position);
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
@@ -66,7 +71,19 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         {
             _sprite.Draw(spriteBatch, gameTime, Facing);
             _heart.Draw(spriteBatch, gameTime);
+            Ranged.Draw(spriteBatch, gameTime);
 
+        }
+        public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
+        {
+            if (currentStateKeys.IsKeyDown(Keys.W) ^ currentStateKeys.IsKeyDown(Keys.A) ^ currentStateKeys.IsKeyDown(Keys.S) ^ currentStateKeys.IsKeyDown(Keys.D)) //TODO THIS MOVEMENT DOESN'T WORK WITH MUTPLE BUTTON PRESSES
+            {
+                Movement(RUNNING_SPEED, currentStateKeys);
+            }
+            if (currentStateKeys.IsKeyDown(Keys.G))
+            {
+                Ranged.Fire(gameTime);
+            }
         }
         #endregion
     }
