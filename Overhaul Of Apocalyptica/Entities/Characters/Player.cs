@@ -47,7 +47,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public void Movement(float runningSpeed, KeyboardState keyboardState)
         {
 
-            if (Keyboard.GetState().IsKeyDown(Keys.W) && (Keyboard.GetState().IsKeyDown(Keys.A)))
+            if (keyboardState.IsKeyDown(Keys.W) && (keyboardState.IsKeyDown(Keys.A)))
             {
                 Speed = Vector2.Zero;
 
@@ -59,7 +59,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 Position = Vector2.Add(Speed, Position);
 
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && (Keyboard.GetState().IsKeyDown(Keys.A)))
+            else if (keyboardState.IsKeyDown(Keys.S) && (keyboardState.IsKeyDown(Keys.A)))
             {
                 Speed = Vector2.Zero;
                 Facing = "left";
@@ -69,7 +69,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 Position = Vector2.Add(Speed, Position);
 
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.W) && (Keyboard.GetState().IsKeyDown(Keys.D)))
+            else if (keyboardState.IsKeyDown(Keys.W) && (keyboardState.IsKeyDown(Keys.D)))
             {
                 Speed = Vector2.Zero;
                 Facing = "right";
@@ -77,7 +77,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 Speed = new Vector2(runningSpeed, -runningSpeed);
                 Position = Vector2.Add(Speed, Position);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S) && (Keyboard.GetState().IsKeyDown(Keys.D)))
+            else if (keyboardState.IsKeyDown(Keys.S) && (keyboardState.IsKeyDown(Keys.D)))
             {
                 Speed = Vector2.Zero;
                 Facing = "right";
@@ -85,7 +85,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 Speed = new Vector2(runningSpeed, runningSpeed);
                 Position = Vector2.Add(Speed, Position);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.W))
+            else if (keyboardState.IsKeyDown(Keys.W))
             {
                 Speed = Vector2.Zero;
                 Facing = "up";
@@ -93,7 +93,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 Speed = new Vector2(0, -runningSpeed);
                 Position = Vector2.Add(Speed, Position);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.S))
+            else if (keyboardState.IsKeyDown(Keys.S))
             {
                 Speed = Vector2.Zero;
                 Facing = "down";
@@ -101,7 +101,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 Speed = new Vector2(0, runningSpeed);
                 Position = Vector2.Add(Speed, Position);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.A))
+            else if (keyboardState.IsKeyDown(Keys.A))
             {
                 Speed = Vector2.Zero;
                 Facing = "left";
@@ -109,7 +109,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 Speed = new Vector2(-runningSpeed, 0);
                 Position = Vector2.Add(Speed, Position);
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.D))
+            else if (keyboardState.IsKeyDown(Keys.D))
             {
                 Speed = Vector2.Zero;
                 Facing = "right";
@@ -125,7 +125,11 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         }
         public void FireR(Gun gun, GameTime gameTime)
         {
-            gun.Fire(gameTime);
+            if (!gun.IsReloading)
+            {
+                gun.Fire(gameTime);
+            }
+            
         }
     }
 }

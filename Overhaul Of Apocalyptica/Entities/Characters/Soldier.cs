@@ -47,20 +47,21 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
             Speed = Vector2.Zero;
             Position = new Vector2(100, 200);
-            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 76, 86);
+
+            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
 
             Health = 100;
             _heart = new Heart(heartTexture, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
-            Ranged = new M4(Position,bulletTexture,Facing,gameTime);
+            Ranged = new M4(new Vector2(Position.X + _sprite.Source.Width, Position.Y - 22), bulletTexture, Facing, gameTime) ;
         }
         #region Methods
         public override void Update(GameTime gameTime)
         {
             if (IsActive == true)
             {
-                Ranged.Update(gameTime, Position, Facing);
                 PlayerInput(gameTime, Keyboard.GetState());
+                Ranged.Update(gameTime, new Vector2(Position.X + _sprite.Source.Width, Position.Y - 22) ,Facing);
                 _sprite.Update(gameTime, Position);
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
@@ -73,7 +74,11 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             _heart.Draw(spriteBatch, gameTime);
             Ranged.Draw(spriteBatch, gameTime);
 
-        }
+        }/// <summary>
+        /// When a user inputs any key this subroutine decifers which key it is and then executes the according subroutine
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="currentStateKeys"></param>
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
         {
             if (currentStateKeys.IsKeyDown(Keys.W) ^ currentStateKeys.IsKeyDown(Keys.A) ^ currentStateKeys.IsKeyDown(Keys.S) ^ currentStateKeys.IsKeyDown(Keys.D)) //TODO THIS MOVEMENT DOESN'T WORK WITH MUTPLE BUTTON PRESSES
@@ -82,7 +87,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             }
             if (currentStateKeys.IsKeyDown(Keys.G))
             {
-                Ranged.Fire(gameTime);
+                FireR(Ranged, gameTime);
             }
         }
         #endregion

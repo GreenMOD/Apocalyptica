@@ -13,7 +13,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 {
     class Bullet : Projectile
     {
-        private float _bulletSpeed = 2f;
+        private float _bulletSpeed = 4f;
         private string _direction;
         private Vector2 _movementVector2;
         
@@ -29,18 +29,18 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
                     _movementVector2 = new Vector2(_bulletSpeed, 0);
                     break;
                 case "up":
-                    _movementVector2 = new Vector2(0, _bulletSpeed);
+                    _movementVector2 = new Vector2(0, -_bulletSpeed);
                     break;
                 case "down":
-                    _movementVector2 = new Vector2(0, -_bulletSpeed);
+                    _movementVector2 = new Vector2(0, _bulletSpeed);
                     break;
             }
             Position = posFired;
-            _sprite = new Sprite(texture, new List<Rectangle>() {new Rectangle(0,0,3,1) }, Position);
+            _sprite = new Sprite(texture, new List<Rectangle>() {new Rectangle(0,0,12,6) }, Position);
         }
         public override void CheckCollision(GameTime gameTime)
         {
-            if (CollisionBox.Intersects(_target.CollisionBox))
+            if (true)
             {
                 _target.Health -= 10;
                 IsDestroyed = true;

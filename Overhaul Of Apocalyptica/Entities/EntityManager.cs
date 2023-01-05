@@ -61,6 +61,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public IEnumerable<E> GetEntities<E>() where E : IEntity 
         {
             return entities.OfType<E>();
-        }  
+        }
+
+        public void Clear()
+        {
+            foreach(IEntity e in entities) 
+            {
+                toRemove.Add(e);
+            }
+        }
     }
 }

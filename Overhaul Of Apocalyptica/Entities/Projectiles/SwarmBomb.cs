@@ -16,7 +16,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
     {
         Vector2 posTarget;
         const double FLIGHT_MAXIMUM = 2.5;
-        ///TODO either add list of all screamers or have a way of screamers being able to detect this class
         public SwarmBomb(Texture2D texture, List<Rectangle> frames, Vector2 start, Player target,GameTime gameTime)
         {
             Position = start;

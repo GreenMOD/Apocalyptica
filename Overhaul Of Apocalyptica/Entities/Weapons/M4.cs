@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities.Zombies;
@@ -13,7 +14,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
     class M4 : Gun
     {
 
-        private const float FIRE_RATE = 0.5f;
+        private const float FIRE_RATE = 0.25f;
 
         private const float _RELOAD_TIME = 2.5f;
 
@@ -32,22 +33,25 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             Position = start;
             _bulletTexture = bulletTexture;
             AmmoLeft = 30;
-            lastFired = 100000f;
+            lastFired = -100000f;
         }
 
         public override void Fire(GameTime gameTime)
         {
             if (AmmoLeft > 0)
             {
-                if (FIRE_RATE <= lastFired)
+                if (FIRE_RATE <= gameTime.TotalGameTime.TotalSeconds - lastFired)
                 {
                     Bullet bullet = new Bullet(Position,Direction,_bulletTexture);
                     lastFired = (float)gameTime.TotalGameTime.TotalSeconds;
                     bulletsFired.Add(bullet);
+                    AmmoLeft--;
+                    Debug.WriteLine(AmmoLeft.ToString());
                 }
             }
             else
             {
+                Debug.WriteLine("Reload start " + gameTime.TotalGameTime.Seconds.ToString());
                 Reload(gameTime);
             }
         }
@@ -55,6 +59,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
         public override void Reload(GameTime gameTime)
         {
             IsReloading = true;
+            _startReload = (float)gameTime.TotalGameTime.TotalSeconds;
         }
 
         public override void Update(GameTime gameTime, Vector2 updatePos, string direction)
