@@ -29,14 +29,17 @@ namespace Overhaul_Of_Apocalyptica
 
         EntityManager _entityManager;
 
+        private List<Player> _players;
         public bool isRunning { get; set; }
-        public WaveManager(Texture2D ZombieSheet, Player player,EntityManager entityManager,Texture2D waveCounterSprite,Texture2D projectiles)
+        public WaveManager(Texture2D ZombieSheet,EntityManager entityManager,Texture2D waveCounterSprite,Texture2D projectiles)
         {
             _entityManager = entityManager;
             _sprite = new Sprite(waveCounterSprite, frames, new Vector2(400, 100));
             _zombieSpriteSheet = ZombieSheet;
             _projectilesSpriteSheet = projectiles;
-            isRunning = false; 
+            isRunning = false;
+
+            _players = _entityManager.GetEntities<Player>();
         }
         public void NextWave()
         {
@@ -50,7 +53,7 @@ namespace Overhaul_Of_Apocalyptica
        
         public void Update(GameTime gameTime)
         {
-            
+            _entityManager.Update(gameTime);
             //TODO Zombies speed up when new ones are spawned this is because the game starts to run slowly
             if (zombiesToAdd.Count != 0) 
             {
@@ -62,31 +65,7 @@ namespace Overhaul_Of_Apocalyptica
             }
             //needs to be outside as while iside a foreach the list cannot be edited
             int index = zombiesSpawned.Count;
-            //foreach (Zombie z in zombiesSpawned)
-            //{
-            //    List<Zombie> zombiesCheckCollsion = zombiesSpawned;
-            //    zombiesCheckCollsion.Remove(z);
-            //    for (int i = 0; i < index - 1; i++)
-            //    {
-            //        if (zombiesCheckCollsion[i].CollisionBox.Intersects(z.CollisionBox))
-            //        {
-            //            z.Separate(zombiesCheckCollsion[i].Position); 
-            //        }
-            //    }
-            //}
             
-            //if (zombiesLeft.Count != 0)//& (_numZombiesSpawned != 0) )
-            //{
-            //    float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            //    if ((gameTime.TotalGameTime.TotalSeconds - lastSpawned) >= spawnBuffer)
-            //    {
-
-
-            //        SpawnZombie(1);
-            //        lastSpawned = gameTime.TotalGameTime.TotalSeconds;
-            //    }
-            //}
-            //Separate(zombiesSpawned);
 
         }
         /// <summary>
@@ -166,7 +145,7 @@ namespace Overhaul_Of_Apocalyptica
             List<Zombie> Wave1 = new List<Zombie>();
             for (int i = 0; i < 10; i++)
             {
-                Zombie b = new Walker(_zombieSpriteSheet, _entityManager, new Vector2(rng.Next(0, 800), rng.Next(480, 700)), zombiesSpawned); //TODO make it so it only updates zombies that are in there
+                Zombie b = new Walker(_zombieSpriteSheet, _entityManager, new Vector2(rng.Next(0, 800), rng.Next(480, 700)),_players); //TODO make it so it only updates zombies that are in there
                 Wave1.Add(b);
             }
             Zombie zombie = new Captain(_zombieSpriteSheet, new Vector2(rng.Next(0, 800), rng.Next(480, 700)), _entityManager, _projectilesSpriteSheet);
@@ -180,8 +159,8 @@ namespace Overhaul_Of_Apocalyptica
             }
             //for (int i = 0; i < 10; i++)
             //{
-            //    Zombie z = new Walker(ZombieSheet, ninja, new Vector2(rng.Next(0, 800), rng.Next(480, 700)));
-            //    Wave2.Add(z);
+            //    //Zombie w2 = new Walker(_zombieSpriteSheet,_entityManager, new Vector2(rng.Next(0, 800), rng.Next(480, 700)),_players);
+            //    Wave2.Add(w2);
             //}
             //Wave3
             List<Zombie> Wave3 = new List<Zombie>();
@@ -201,6 +180,11 @@ namespace Overhaul_Of_Apocalyptica
 
             _Waves.Add(Wave3);
             _Waves.Add(Wave2);
+            _Waves.Add(Wave2);
+            _Waves.Add(Wave2);
+            _Waves.Add(Wave2);
+            _Waves.Add(Wave2);
+            _Waves.Add(Wave2);
             zombiesLeft = _Waves[_currentWave];
             SpawnZombie(3);
         }
@@ -211,6 +195,30 @@ namespace Overhaul_Of_Apocalyptica
 
     }
 }
+//Spare code i foun in update
+////foreach (Zombie z in zombiesSpawned)
+//{
+//    List<Zombie> zombiesCheckCollsion = zombiesSpawned;
+//    zombiesCheckCollsion.Remove(z);
+//    for (int i = 0; i < index - 1; i++)
+//    {
+//        if (zombiesCheckCollsion[i].CollisionBox.Intersects(z.CollisionBox))
+//        {
+//            z.Separate(zombiesCheckCollsion[i].Position); 
+//        }
+//    }
+//}
+
+//if (zombiesLeft.Count != 0)//& (_numZombiesSpawned != 0) )
+//{
+//    float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
+//    if ((gameTime.TotalGameTime.TotalSeconds - lastSpawned) >= spawnBuffer)
+//    {
 
 
+//        SpawnZombie(1);
+//        lastSpawned = gameTime.TotalGameTime.TotalSeconds;
+//    }
+//}
+//Separate(zombiesSpawned);
 

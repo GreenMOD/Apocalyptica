@@ -86,10 +86,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
         {
-            if (currentStateKeys.IsKeyDown(Keys.W) ^ currentStateKeys.IsKeyDown(Keys.A) ^ currentStateKeys.IsKeyDown(Keys.S) ^ currentStateKeys.IsKeyDown(Keys.D))
+            if ((currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.D))) | ((currentStateKeys.IsKeyDown(Keys.S)) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.S) && (currentStateKeys.IsKeyDown(Keys.D))) | (currentStateKeys.IsKeyDown(Keys.W)) | (currentStateKeys.IsKeyDown(Keys.A)) | (currentStateKeys.IsKeyDown(Keys.S)) ^ (currentStateKeys.IsKeyDown(Keys.D))) //TODO THIS MOVEMENT DOESN'T WORK WITH MUTPLE BUTTON PRESSES
             {
                 Movement(RUNNING_SPEED, currentStateKeys);
             }
+            //if (currentStateKeys.IsKeyDown(Keys.G))
+            //{
+            //    FireR(Ranged, gameTime);
+            //}
         }
         #endregion
     }

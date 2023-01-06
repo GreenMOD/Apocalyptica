@@ -16,7 +16,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         private List<Rectangle> _frames = new List<Rectangle>();
 
-        protected Rectangle frame1 = new Rectangle(82, 0, 76, 86);  // left
+        protected Rectangle frame1 = new Rectangle(84, 0, 76, 86);  // left  //TODO SORT THE HITBOX ON THE SOLDIER
         protected Rectangle frame2 = new Rectangle(0, 0, 76, 86);   // right
         protected Rectangle frame3 = new Rectangle(167, 0, 40, 86); // up
         protected Rectangle frame4 = new Rectangle(207, 0, 40, 86); // down
@@ -53,7 +53,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Health = 100;
             _heart = new Heart(heartTexture, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
-            Ranged = new M4(new Vector2(Position.X + _sprite.Source.Width, Position.Y - 22), bulletTexture, Facing, gameTime) ;
+            Ranged = new M4(new Vector2(Position.X + +75, Position.Y), bulletTexture, Facing, gameTime) ; //TODO FIRE FROM Gun
         }
         #region Methods
         public override void Update(GameTime gameTime)
@@ -61,7 +61,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             if (IsActive == true)
             {
                 PlayerInput(gameTime, Keyboard.GetState());
-                Ranged.Update(gameTime, new Vector2(Position.X + _sprite.Source.Width, Position.Y - 22) ,Facing);
+                Ranged.Update(gameTime, new Vector2(Position.X +75, Position.Y - 22) ,Facing);
                 _sprite.Update(gameTime, Position);
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
@@ -81,7 +81,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         /// <param name="currentStateKeys"></param>
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
         {
-            if (currentStateKeys.IsKeyDown(Keys.W) ^ currentStateKeys.IsKeyDown(Keys.A) ^ currentStateKeys.IsKeyDown(Keys.S) ^ currentStateKeys.IsKeyDown(Keys.D)) //TODO THIS MOVEMENT DOESN'T WORK WITH MUTPLE BUTTON PRESSES
+            if ((currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.D))) | (( currentStateKeys.IsKeyDown(Keys.S)) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.S) && (currentStateKeys.IsKeyDown(Keys.D)))| (currentStateKeys.IsKeyDown(Keys.W)) | (currentStateKeys.IsKeyDown(Keys.A)) | (currentStateKeys.IsKeyDown(Keys.S)) ^ (currentStateKeys.IsKeyDown(Keys.D))) //TODO THIS MOVEMENT DOESN'T WORK WITH MUTPLE BUTTON PRESSES
             {
                 Movement(RUNNING_SPEED, currentStateKeys);
             }

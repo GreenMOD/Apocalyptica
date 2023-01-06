@@ -17,8 +17,9 @@ namespace Overhaul_Of_Apocalyptica.Entities
        public Sprite _sprite;
        public Texture2D _texture2D;
        public List<Rectangle> _frames = new List<Rectangle>();
-        
-       public Player _player;
+
+       public List<Player> Players { get; set; }
+       public Player CurrentTarget { get; set; }
 
         public double Health { get; set; }
         public double Armour { get; set; }
@@ -33,8 +34,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public float maxForce = 0.5f;
 
         public EntityManager _entityManager;
-
-        public WaveManager _waveManager;
 
         public string _zombieFacing;
 
@@ -189,11 +188,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public virtual void CheckCollision(GameTime gameTime)
         {
            
-            if (CollisionBox.Intersects(_player.CollisionBox))
+            if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
             {
                 if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= ATTACK_COOLDOWN)
                 {
-                    _player.Health -= 5;
+                    CurrentTarget.Health -= 5;
                     _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
                 }
                 

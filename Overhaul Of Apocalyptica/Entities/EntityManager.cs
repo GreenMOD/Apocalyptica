@@ -58,9 +58,9 @@ namespace Overhaul_Of_Apocalyptica.Entities
         /// </summary>
         /// <typeparam name="E"></typeparam>
         /// <returns></returns>
-        public IEnumerable<E> GetEntities<E>() where E : IEntity 
+        public List<E> GetEntities<E>() where E : IEntity 
         {
-            return entities.OfType<E>();
+            return entities.OfType<E>().ToList();
         }
 
         public void Clear()

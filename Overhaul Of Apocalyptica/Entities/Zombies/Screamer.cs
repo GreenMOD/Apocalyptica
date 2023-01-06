@@ -32,12 +32,12 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
             List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
-            _player = players[0];
+            CurrentTarget = players[0];
             foreach (Player n in players)
             {
-                if ((_player.Position - Position).Length() > (n.Position - Position).Length())
+                if ((CurrentTarget.Position - Position).Length() > (n.Position - Position).Length())
                 {
-                    _player = n;
+                    CurrentTarget = n;
                 }
             }
             

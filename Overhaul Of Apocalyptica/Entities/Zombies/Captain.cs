@@ -62,12 +62,12 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
             List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
-            _player = players[0];
+            CurrentTarget = players[0];
             foreach (Player n in players)
             {
-                if ((_player.Position - Position).Length() > (n.Position - Position).Length())
+                if ((CurrentTarget.Position - Position).Length() > (n.Position - Position).Length())
                 {
-                    _player = n;
+                    CurrentTarget = n;
                 }
             }
 
@@ -82,7 +82,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
 
            
-            Flee(_player.Position);
+            Flee(CurrentTarget.Position);
             if (Position.X > 775)
             {
                 ApplyOffset();
@@ -122,7 +122,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             }
             else
             {
-                Flee(_player.Position);
+                Flee(CurrentTarget.Position);
             }
             Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce
             if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity
@@ -146,12 +146,12 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             {
                 _timeSinceLastSwarmBomb = gameTime.TotalGameTime.TotalSeconds;
                 _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
-                Fire(gameTime, new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, _player, gameTime));
+                Fire(gameTime, new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, CurrentTarget, gameTime));
             }
             else if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastRocket >= ROCKET_COOLDOWN) ^ (_timeSinceLastRocket == 0))
             {
                 _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
-                Fire(gameTime, new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, _player, gameTime));
+                Fire(gameTime, new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, CurrentTarget, gameTime));
 
             }
           

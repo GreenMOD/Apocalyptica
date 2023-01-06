@@ -69,7 +69,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 Position = Vector2.Add(Speed, Position);
 
             }
-            else if (keyboardState.IsKeyDown(Keys.W) && (keyboardState.IsKeyDown(Keys.D)))
+            else if ((keyboardState.IsKeyDown(Keys.W) == true) && (keyboardState.IsKeyDown(Keys.D) == true))
             {
                 Speed = Vector2.Zero;
                 Facing = "right";
