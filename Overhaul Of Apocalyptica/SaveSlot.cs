@@ -21,6 +21,10 @@ namespace Overhaul_Of_Apocalyptica
         public int CurrentWave { get; set; }
 
         private string _filePath;
+        /// <summary>
+        /// Using a file path a saveslot is instaniated and loads all relavant data into that instance
+        /// </summary>
+        /// <param name="filePath"></param>
         public SaveSlot(string filePath)
         {
             if (File.Exists(filePath))
@@ -34,7 +38,7 @@ namespace Overhaul_Of_Apocalyptica
                     { 
                         PlayerName= sr.ReadLine().Substring(6);
                         PlayerClass = sr.ReadLine().Substring(7);
-                        CurrentWave = int.Parse(sr.ReadLine().Substring(6));
+                        CurrentWave = int.Parse(sr.ReadLine().Substring(6))-1;
 
                         //    GameTime gameTime = new GameTime();
 
@@ -75,6 +79,9 @@ namespace Overhaul_Of_Apocalyptica
             }
 
         }
+        /// <summary>
+        /// Overrides the file that stores the values and corrects the file.
+        /// </summary>
         public void OverrideSave()
         {
             using (StreamWriter sw = new StreamWriter(_filePath)) 
@@ -85,10 +92,6 @@ namespace Overhaul_Of_Apocalyptica
                 sw.WriteLine("Class: " + PlayerClass);
                 sw.WriteLine("Wave: " + CurrentWave);
             }
-        }
-        public List<string> Clicked()
-        {
-            return new List<string>() { PlayerName, PlayerClass, CurrentWave.ToString() };
         }
     }
 }

@@ -13,7 +13,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
     class M4 : Gun
     {
-
         private const float _FIRE_RATE = 0.25f;
 
         private const float _RELOAD_TIME = 2.5f;
@@ -35,7 +34,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             AmmoLeft = 30;
             _lastFired = -100000f;
         }
-
+        /// <summary>
+        /// Fires a bullet
+        /// </summary>
+        /// <param name="gameTime">Used to compare against the last time this gun was shot</param>
         public override void Fire(GameTime gameTime)
         {
             if (AmmoLeft > 0)
@@ -50,16 +52,31 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
                 }
             }
             else
-            {
-                Debug.WriteLine("Reload start " + gameTime.TotalGameTime.Seconds.ToString());
+            { 
                 Reload(gameTime);
             }
         }
-
-        public override void Reload(GameTime gameTime)
+        /// <summary>
+        /// Gun Checks if reload interval has passed
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public override bool Reload(GameTime gameTime)
         {
-            IsReloading = true;
-            _startReload = (float)gameTime.TotalGameTime.TotalSeconds;
+            if (_startReload == -1)
+            {
+                IsReloading = true;
+                _startReload = (float)gameTime.TotalGameTime.TotalSeconds;
+                Debug.WriteLine("Reload start " + gameTime.TotalGameTime.Seconds.ToString());
+                return true;
+            }
+            else if (gameTime.TotalGameTime.TotalSeconds - _startReload >= _RELOAD_TIME)
+            {
+                IsReloading = false;
+                AmmoLeft = _MAX_AMMO;
+                _startReload = -1;
+                return false;
+            }
+            return true;
         }
 
         public override void Update(GameTime gameTime, Vector2 updatePos, string direction)
@@ -74,14 +91,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
                 }
             }
             
-            if (IsReloading)
-            {
-                if (gameTime.TotalGameTime.TotalSeconds - _startReload >= _RELOAD_TIME)
-                {
-                    IsReloading = false;
-                    AmmoLeft = _MAX_AMMO;
-                }
-            }
+            
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)

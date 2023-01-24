@@ -29,7 +29,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 
         public abstract void Fire(GameTime gameTime);
 
-        public abstract void Reload(GameTime gameTime);
+        public abstract bool Reload(GameTime gameTime);
 
         public abstract void Update(GameTime gameTime , Vector2 updatePos, string direction);
 

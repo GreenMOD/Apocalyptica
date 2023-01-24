@@ -125,12 +125,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             }
 
         }
-        public void FireR(Gun gun, GameTime gameTime)
+        public void FireR(GameTime gameTime)
         {
-            if (!gun.IsReloading)
-            {
-                gun.Fire(gameTime);
-            }
+            Ranged.Fire(gameTime);
             
         }
 

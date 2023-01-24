@@ -45,7 +45,9 @@ namespace Overhaul_Of_Apocalyptica
             ZombiesSpawned = new List<Zombie>();
             ZombiesToAdd = new List<Zombie>();
             
-        }
+        }/// <summary>
+        /// Incrments the wave counter and spawns 5 zombies from the next wave
+        /// </summary>
         public void NextWave()
         {
             CurrentWave++;
@@ -190,7 +192,7 @@ namespace Overhaul_Of_Apocalyptica
             Waves.Add(Wave2);
             Waves.Add(Wave2);
             _zombiesLeft = Waves[CurrentWave];
-            SpawnZombie(3);
+            SpawnZombie(1);
         }
        
 

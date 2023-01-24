@@ -21,7 +21,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             throw new NotImplementedException();
         }
 
-        public override void Reload(GameTime gameTime)
+        public override bool Reload(GameTime gameTime)
         {
             throw new NotImplementedException();
         }

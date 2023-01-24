@@ -55,7 +55,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Health = 100;
             _heart = new Heart(heartTexture, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
-            Ranged = new M4(new Vector2(Position.X + +75, Position.Y), bulletTexture, Facing, gameTime) ; //TODO FIRE FROM Gun
+            Ranged = new M4(new Vector2(Position.X + 75, Position.Y), bulletTexture, Facing, gameTime) ; //TODO FIRE FROM Gun
         }
         #region Methods
         public override void Update(GameTime gameTime)
@@ -90,7 +90,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             }
             if (currentStateKeys.IsKeyDown(Keys.G))
             {
-                FireR(Ranged, gameTime);
+                FireR(gameTime);
             }
         }
         #endregion

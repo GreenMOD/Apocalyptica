@@ -24,7 +24,7 @@ namespace Overhaul_Of_Apocalyptica.Controls
         private Texture2D _texture;
 
 
-        public delegate void BeingClicked(Button button, ButtonClickedEventArgs e);
+        public delegate void BeingClicked(Button button);
 
         public BeingClicked Click;
 
@@ -35,6 +35,8 @@ namespace Overhaul_Of_Apocalyptica.Controls
         public Rectangle CollisionBox { get { return new Rectangle((int)Position.X, (int)Position.Y, _texture.Width, _texture.Height);  }  }
 
         public string Text { get; set; }
+
+        public bool hasBeenClicked = false;
 
         #endregion
 
@@ -67,7 +69,10 @@ namespace Overhaul_Of_Apocalyptica.Controls
                 spriteBatch.DrawString(_textFont, Text, new Vector2(x, y), TextColor);
             }
         }
-
+        /// <summary>
+        /// Checks if it has been clicked then invokes Click if it has been
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
             _previousMouse = _currentMouse;
@@ -81,7 +86,8 @@ namespace Overhaul_Of_Apocalyptica.Controls
 
                 if (_currentMouse.LeftButton == ButtonState.Released && _previousMouse.LeftButton == ButtonState.Pressed)
                 {
-                    Click?.Invoke(this, new ButtonClickedEventArgs()); //Means that if click is not null then run 
+                    Click?.Invoke(this); //Means that if click is not null then run 
+                    hasBeenClicked = true;
                 }
             }
         }

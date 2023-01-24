@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
 using Overhaul_Of_Apocalyptica.Events;
-using System.Configuration;
 
 namespace Overhaul_Of_Apocalyptica
 {
@@ -28,13 +27,15 @@ namespace Overhaul_Of_Apocalyptica
         private Texture2D _soldierSpriteSheet2;
         private WaveManager _waveManager;
         private CollisionManager _collisionManager;
-        private enum _GameState { PLAYING, MENU, INITIALISE, SAVESELECT };
+        private enum _GameState { PLAYING, MENU, INITIALISE, SAVELOAD , SAVENEW };
         private _GameState _gameState;
 
         private List<IEntity> _menuComponents;
 
         private List<SaveSlot> _saveSlots;
         private List<Button> _saveButtons;
+
+        private int _waveStartIndex = 0;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -52,7 +53,9 @@ namespace Overhaul_Of_Apocalyptica
 
         }
 
-
+        /// <summary>
+        /// Outputs a menu of buttons to select from: New Game, Load Game, Options, Quit Game
+        /// </summary>
         protected override void Initialize()
         {
 
@@ -114,80 +117,86 @@ namespace Overhaul_Of_Apocalyptica
             base.Initialize();
         }
 
-        private void TitleButton_Click(Button sender, ButtonClickedEventArgs e)
+        private void TitleButton_Click(Button sender)
         {
 
         }
-
-        private void NewGameButton_Click(Button sender, ButtonClickedEventArgs e)
+        /// <summary>
+        /// a save file menu showing 4 slots. Each slot can be overriden if they contain an itwm or they can open an empty file for character creation.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NewGameButton_Click(Button sender)
         {
             _entityManager.Clear();
 
-            _gameState = _GameState.SAVESELECT;
+            _gameState = _GameState.SAVENEW;
 
-            GameTime gameTime = new GameTime();
+            SaveFileMenu();           
+
+        }
+        /// <summary>
+        /// Outputs a save file menu showing 4 slots. Each slot can be loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LoadGameButton_Click(Button sender)
+        {
+            _entityManager.Clear();
+
+            _gameState = _GameState.SAVELOAD;
 
             SaveFileMenu();
 
-            //draw the save slots now
-            foreach (IEntity E in _saveButtons)
-            {
-                _entityManager.AddEntity(E);
-            }
 
+
+            //using (StreamReader sr = new StreamReader(@"PreviousSaves/Save1.txt"))
+            //{
+            //    sr.ReadLine();
+            //    string statusOfFile = sr.ReadLine().Substring(8);
+
+            //    if (statusOfFile == "Used")
+            //    {
+            //        string Name = sr.ReadLine().Substring(6);
+            //        string Class = sr.ReadLine().Substring(7);
+            //        string Wave = sr.ReadLine().Substring(6);
+
+            //        GameTime gameTime = new GameTime();
+
+            //        Player player1;
+            //        switch (Class)
+            //        {
+            //            case "Soldier":
+            //                Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
+            //                player1 = soldier;
+            //                break;
+            //            case "Ninja":
+            //                Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet);
+            //                player1 = ninja;
+            //                break;
+            //            default:
+            //                player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
+            //                break;
+            //        }
+
+            //        _entityManager.AddEntity(player1);
+            //        _collisionManager.AddCollidable(player1);
+            //        player1.Activate();
+
+            
+
+
+
+
+                
+            
         }
 
-        private void LoadGameButton_Click(Button sender, ButtonClickedEventArgs e)
-        {
-            _entityManager.Clear();
-
-            _gameState = _GameState.INITIALISE;
-            using (StreamReader sr = new StreamReader(@"PreviousSaves/Save1.txt"))
-            {
-                sr.ReadLine();
-                string statusOfFile = sr.ReadLine().Substring(8);
-
-                if (statusOfFile == "Used")
-                {
-                    string Name = sr.ReadLine().Substring(6);
-                    string Class = sr.ReadLine().Substring(7);
-                    string Wave = sr.ReadLine().Substring(6);
-
-                    GameTime gameTime = new GameTime();
-
-                    Player player1;
-                    switch (Class)
-                    {
-                        case "Soldier":
-                            Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
-                            player1 = soldier;
-                            break;
-                        case "Ninja":
-                            Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet);
-                            player1 = ninja;
-                            break;
-                        default:
-                            player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
-                            break;
-                    }
-
-                    _entityManager.AddEntity(player1);
-                    _collisionManager.AddCollidable(player1);
-                    player1.Activate();
-
-
-
-
-
-                }
-            }
-        }
-
-        private void OptionsButton_Click(Button sender, ButtonClickedEventArgs e)
+        private void OptionsButton_Click(Button sender)
         {
             throw new NotImplementedException();
         }
-        private void QuitButton_Click(Button sender, ButtonClickedEventArgs e)
+        private void QuitButton_Click(Button sender)
         {
             Exit();
         }
@@ -235,22 +244,26 @@ namespace Overhaul_Of_Apocalyptica
                 count++;
 
             }
+            foreach (IEntity E in _saveButtons)
+            {
+                _entityManager.AddEntity(E);
+            }
         }
 
         /// <summary>
-        /// What happens once clicked
+        /// What happens once clicked. It will determine wehter to load a save from the file or to override another save. 
         /// </summary>
-        /// <param name="sender"></param>
+        /// <param name="sender">Button that is being selected</param>
         /// <param name="e"></param>
-        private void SaveSlot_Click(Button sender, EventArgs e)
+        private void SaveSlot_Click(Button sender)
         {
             GameTime gameTime = new GameTime();
             if (sender.Text.Contains("Empty"))
             {
                 _entityManager.Clear();
-                CreateCharacter();
+                CreateCharacter(_saveSlots[_saveButtons.IndexOf(sender)]);
             }
-            else
+            else if (_gameState ==_GameState.SAVELOAD)
             {
                 _gameState = _GameState.INITIALISE;
 
@@ -274,12 +287,30 @@ namespace Overhaul_Of_Apocalyptica
                 _entityManager.AddEntity(player1);
                 _collisionManager.AddCollidable(player1);
                 player1.Activate();
-                _entityManager.Clear(); 
+                _entityManager.Clear();
+                _waveStartIndex = _saveSlots[_saveButtons.IndexOf(sender)].CurrentWave;
+            }
+            else if (_gameState == _GameState.SAVENEW)
+            {
+                if (sender.hasBeenClicked)
+                {
+                    _entityManager.Clear();
+                    CreateCharacter(_saveSlots[_saveButtons.IndexOf(sender)]);
+                }
+                else
+                {
+                    sender.Text = ("Confirm Override?");
+                }
+                
             }
         }
-        private void CreateCharacter()
+        /// <summary>
+        /// Opens the character creation menu then saves the character info into the save slot
+        /// </summary>
+        /// <param name="saveSlot">The save slot that will store this new game</param>
+        private void CreateCharacter(SaveSlot saveSlot)
         {
-
+            
         }
 
         protected override void LoadContent()
@@ -323,23 +354,19 @@ namespace Overhaul_Of_Apocalyptica
                 _collisionManager.Update(gameTime);
 
             }
-            else if (_gameState == _GameState.MENU)
-            {
-                _entityManager.Update(gameTime);
-            }
             else if (_gameState == _GameState.INITIALISE)
             {
                 _entityManager.Update(gameTime);
                 _collisionManager.Update(gameTime);
                 _gameState = _GameState.PLAYING;
                 _waveManager = new WaveManager(_zombieSheet, _entityManager, _collisionManager, _waveCounterSpriteSheet, _projectileSpriteSheet);
-
+                _waveManager.CurrentWave = _waveStartIndex;
                 _waveManager.Intialise();
 
 
 
             }
-            else if (_gameState == _GameState.SAVESELECT)
+            else
             {
                 _entityManager.Update(gameTime);
             }
