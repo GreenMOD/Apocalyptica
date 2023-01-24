@@ -16,10 +16,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         private List<Rectangle> _frames = new List<Rectangle>();
 
-        protected Rectangle frame1 = new Rectangle(84, 0, 76, 86);  // left  //TODO SORT THE HITBOX ON THE SOLDIER
-        protected Rectangle frame2 = new Rectangle(0, 0, 76, 86);   // right
-        protected Rectangle frame3 = new Rectangle(167, 0, 40, 86); // up
-        protected Rectangle frame4 = new Rectangle(207, 0, 40, 86); // down
+        protected Rectangle Frame1 = new Rectangle(84, 0, 76, 86);  // left  //TODO SORT THE HITBOX ON THE SOLDIER
+        protected Rectangle Frame2 = new Rectangle(0, 0, 76, 86);   // right
+        protected Rectangle Frame3 = new Rectangle(167, 0, 40, 86); // up
+        protected Rectangle Frame4 = new Rectangle(207, 0, 40, 86); // down
 
         public override Vector2 Position { get; set; }
         public override Vector2 Speed { get; set; }
@@ -35,14 +35,16 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         private Texture2D _texture2D;
         private Sprite _sprite;
         private Heart _heart;
+        
+        
         #endregion
         public Soldier(Texture2D texture, Texture2D heartTexture, Texture2D bulletTexture, GameTime gameTime)
         {
             _texture2D = texture;
-            _frames.Add(frame1);
-            _frames.Add(frame2);
-            _frames.Add(frame3);
-            _frames.Add(frame4);
+            _frames.Add(Frame1);
+            _frames.Add(Frame2);
+            _frames.Add(Frame3);
+            _frames.Add(Frame4);
             _sprite = new Sprite(texture, _frames, Position);
 
             Speed = Vector2.Zero;
@@ -65,6 +67,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 _sprite.Update(gameTime, Position);
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+                
             }
 
         }

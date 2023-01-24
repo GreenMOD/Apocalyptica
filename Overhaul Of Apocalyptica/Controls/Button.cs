@@ -6,6 +6,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Events;
+
 namespace Overhaul_Of_Apocalyptica.Controls
 {
     public class Button : IEntity
@@ -22,9 +24,9 @@ namespace Overhaul_Of_Apocalyptica.Controls
         private Texture2D _texture;
 
 
-        public event EventHandler Click;
+        public delegate void BeingClicked(Button button, ButtonClickedEventArgs e);
 
-        public bool Clicked { get; set; }
+        public BeingClicked Click;
 
         public Color TextColor { get; set; }
 
@@ -79,7 +81,7 @@ namespace Overhaul_Of_Apocalyptica.Controls
 
                 if (_currentMouse.LeftButton == ButtonState.Released && _previousMouse.LeftButton == ButtonState.Pressed)
                 {
-                    Click?.Invoke(this, new EventArgs()); //Means that if click is not null then run 
+                    Click?.Invoke(this, new ButtonClickedEventArgs()); //Means that if click is not null then run 
                 }
             }
         }

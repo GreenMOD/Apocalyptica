@@ -11,54 +11,56 @@ namespace Overhaul_Of_Apocalyptica.Entities
 {
     abstract class Zombie :IEntity,ICollidable
     {
-       public abstract Vector2 Position { get; set; }
+        private Vector2 _acceleration;
 
+        private float _maxVelocity = 0.75f;
 
-       public Sprite _sprite;
-       public Texture2D _texture2D;
-       public List<Rectangle> _frames = new List<Rectangle>();
+        private float _maxForce = 0.5f;
 
-       public List<Player> Players { get; set; }
-       public Player CurrentTarget { get; set; }
+        private Sprite _sprite;
 
+        private double _attackCooldown = 2.5f;
+
+        public abstract Vector2 Position { get; set; }
+        public List<Player> Players { get; set; }
+        public Player CurrentTarget { get; set; }
         public double Health { get; set; }
         public double Armour { get; set; }
-        public const double ATTACK_COOLDOWN = 2.5f;
-        public double _timeOfLastAttack = -1;
-
         public Vector2 Speed { get; set; }
         public Rectangle CollisionBox { get; set; }
-
-        public Vector2 _acceleration;
-        public float maxVelocity = 0.75f;
-        public float maxForce = 0.5f;
-
-        public EntityManager _entityManager;
-
-        public string _zombieFacing;
-
         public string Status { get; set; }
+        public string ZombieFacing { get; set; }
 
-        public bool isSeparating = false;
-        public List<Zombie> _zombiesInView;
+        public Vector2 Acceleration { get { return _acceleration; } set { _acceleration = value; } }
+       
 
-        public Random _rng = new Random();
+        public float MaxVelocity { get { return _maxVelocity; } set { _maxVelocity = value; } }
+
+
+        public float MaxForce { get { return _maxForce; } set { _maxForce = value; } }
+
+
+        public Sprite ZombieSprite{ get { return _sprite; } set {_sprite = value; } }
+
+        public double AttackCooldown { get { return _attackCooldown; }set{ _attackCooldown = value; } }
+
+        public bool isSeparating { get; set; }
+
+        private Random _rng = new Random();
 
         public virtual void Update(GameTime gameTime)
         {
-           
-            CheckCollision(gameTime);
           
             if (isSeparating == true)
             {
-                Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce
-                if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity
+                Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
+                if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
                 {
-                    Speed = Vector2.Normalize(Speed) * maxVelocity;
+                    Speed = Vector2.Normalize(Speed) * MaxVelocity;
 
                 }
                 Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-                _acceleration = Vector2.Multiply(_acceleration, 0); // resets acceleration in order to not have exponential growth
+                Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
                 isSeparating = false;
             }
 
@@ -69,11 +71,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
             if (Speed.X >0)
             {
-                _zombieFacing = "right";
+                ZombieFacing = "right";
             }
             else if (Speed.X < 0)
             {
-                _zombieFacing = "left";
+                ZombieFacing = "left";
             }
         }
 
@@ -84,13 +86,13 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
             Vector2 desired = Vector2.Subtract(target, Position); //creates the desired path towards the enemy
             desired.Normalize();
-            desired = Vector2.Multiply(desired, maxVelocity);
+            desired = Vector2.Multiply(desired, MaxVelocity);
 
 
             Vector2 steer = Vector2.Negate(desired);
-            if (steer.Length() > maxForce)
+            if (steer.Length() > MaxForce)
             {
-                steer = Vector2.Normalize(steer) * maxForce; //limits the steering force to maxforce
+                steer = Vector2.Normalize(steer) * MaxForce; //limits the steering force to maxforce
             }
             ApplyForce(steer);
               
@@ -100,25 +102,25 @@ namespace Overhaul_Of_Apocalyptica.Entities
         {
             Vector2 desired = Vector2.Subtract(target, Position); //creates the desired path towards the enemy
             desired.Normalize();
-            desired = Vector2.Multiply(desired, maxVelocity);
+            desired = Vector2.Multiply(desired, MaxVelocity);
 
             Vector2 steer = Vector2.Subtract(desired, Speed); //Reynold's formula for calculating steering 
 
-            if (steer.Length() > maxForce)
+            if (steer.Length() > MaxForce)
             {
-                steer = Vector2.Normalize(steer) * maxForce; //limits the steering force to maxforce
+                steer = Vector2.Normalize(steer) * MaxForce; //limits the steering force to maxforce
             }
             ApplyForce(steer);
 
 
-            Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce 
-            if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity
+            Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce 
+            if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
             {
-                Speed = Vector2.Normalize(Speed) * maxVelocity;
+                Speed = Vector2.Normalize(Speed) * MaxVelocity;
 
             }
             Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-            _acceleration = Vector2.Multiply(_acceleration, 0); // resets acceleration in order to not have exponential growth
+            Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
 
             Arrive(target);
         }
@@ -126,7 +128,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public virtual void ApplyForce(Vector2 force)
         {
-            _acceleration = Vector2.Add(_acceleration, force);
+            Acceleration = Vector2.Add(Acceleration, force);
         }
         /// <summary>
         /// Calculates whether to decrease the velocity of the vehicle given by a set distance.
@@ -181,32 +183,13 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprite.Draw(spriteBatch, gameTime, _zombieFacing, 2f);
+            _sprite.Draw(spriteBatch, gameTime, ZombieFacing, 2f);
         }
 
         
-        public virtual void CheckCollision(GameTime gameTime)
+        public virtual void Collided(GameTime gameTime)
         {
            
-            if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
-            {
-                if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= ATTACK_COOLDOWN)
-                {
-                    CurrentTarget.Health -= 5;
-                    _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
-                }
-                
-            }
-            //foreach (Zombie z in _zombiesInView)
-            //{
-            //    float distance = Vector2.Distance(Position, z.Position);
-
-            //    if ((distance > 0) && (distance < 20))//20 pixels
-            //    {
-            //        Separate(z.Position);
-            //    }
-            //}
-            
         }
         public virtual void Separate(Vector2 target)
         {
@@ -217,7 +200,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
             Vector2 desiredSeparation = (Vector2.Subtract(Position, target));
             desiredSeparation.Normalize();
-            desiredSeparation = Vector2.Multiply(desiredSeparation, maxVelocity);
+            desiredSeparation = Vector2.Multiply(desiredSeparation, MaxVelocity);
             
             ApplyForce(desiredSeparation);
 
@@ -225,25 +208,25 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public virtual void Idle()
         {
             Vector2 desired = Vector2.Subtract(new Vector2((float)_rng.Next(0, 800), (float)_rng.Next(0, 480)),Position);
-            desired = Vector2.Multiply(desired, maxForce);
+            desired = Vector2.Multiply(desired, MaxForce);
 
             Vector2 steer = Vector2.Subtract(desired, Position);
             steer.Normalize();
 
-            if (steer.Length() > maxForce)
+            if (steer.Length() > MaxForce)
             {
-                steer = Vector2.Normalize(steer) * maxForce; //limits the steering force to maxforce
+                steer = Vector2.Normalize(steer) * MaxForce; //limits the steering force to maxforce
             }
             ApplyForce(steer);
 
-            Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce 
-            if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity
+            Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce 
+            if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
             {
-                Speed = Vector2.Normalize(Speed) * maxVelocity;
+                Speed = Vector2.Normalize(Speed) * MaxVelocity;
 
             }
             Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-            _acceleration = Vector2.Multiply(_acceleration, 0); // resets acceleration in order to not have exponential growth
+            Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
         }
 
     }

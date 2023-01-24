@@ -30,35 +30,26 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
         private Texture2D _rocketProjectile;
 
-
+        private EntityManager _entityManager;
 
         public const double ROCKET_COOLDOWN = 2.5;
         public const double SWARM_BOMB_COOLDOWN = 10;
         public double _timeSinceLastRocket = 0;
         public double _timeSinceLastSwarmBomb = 0;
 
-        public Captain(Texture2D texture2D, Vector2 spawnLocation, EntityManager entityManager,Texture2D projectile)
+        public Captain(Texture2D captainTexture, Vector2 spawnLocation, EntityManager entityManager,Texture2D projectile)
         {
 
             _entityManager = entityManager;
 
-            maxForce = maxForce ;
-            maxVelocity = maxVelocity ;
+            ZombieSprite = new Sprite(captainTexture, new List<Rectangle>() { frame1,frame2}, Position);
 
-            _frames.Add(frame1);
-            _frames.Add(frame2);
-            _sprite = new Sprite(texture2D, _frames, Position);
-
-           
-            _texture2D = texture2D;
             _rocketProjectile = projectile;
 
             
 
             Position = new Vector2(650,250);
             Rockets = new List<Projectile>();
-            _distanceUntilEdgeX = (800 - (int)Position.X);
-            _distanceUntilEdgeY = (480 - (int)Position.Y);
 
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
             List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
@@ -124,20 +115,20 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             {
                 Flee(CurrentTarget.Position);
             }
-            Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce
-            if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity
+            Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
+            if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
             {
-                Speed = Vector2.Normalize(Speed) * maxVelocity;
+                Speed = Vector2.Normalize(Speed) * MaxVelocity;
 
             }
             Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-            _acceleration = Vector2.Multiply(_acceleration, 0); // resets acceleration in order to not have exponential growth
+            Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
 
             if (Position.Y < 45)
             {
                 Position = new Vector2(Position.X, 45);
             }
-            _sprite.Update(gameTime, Position);
+            ZombieSprite.Update(gameTime, Position);
 
 
             //Checks whether a rocket can be fired and then fires it
@@ -189,11 +180,11 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
             if (MagnitudePos(Speed.X, Speed.Y) > 0)
             {
-                _zombieFacing = "left";
+                ZombieFacing = "left";
             }
             else
             {
-                _zombieFacing = "right";
+                ZombieFacing = "right";
             }
 
 
@@ -232,14 +223,14 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             Vector2 counterVector = new Vector2(offsetX, offsetY);
             Vector2 steer = Vector2.Subtract(Speed, counterVector);
             //ApplyForce(steer);
-            Speed = Vector2.Add(Speed, _acceleration); //applyies a movement froce
-            if (Speed.Length() > maxVelocity) // limits the velocity to under the maximum velocity
+            Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
+            if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
             {
-                Speed = Vector2.Normalize(Speed) * maxVelocity;
+                Speed = Vector2.Normalize(Speed) * MaxVelocity;
 
             }
             Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-            _acceleration = Vector2.Multiply(_acceleration, 0); // resets acceleration in order to not have exponential growth
+            Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
 
             //    ///TWo vectors Attack and flee tune each to situations more to attack if its gets closer to wall 
             //    ///hyperbolic tanch  
@@ -250,7 +241,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
 
 
-
+        }
 
 
 
@@ -281,9 +272,33 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
 
 
+             public override void Collided(GameTime gameTime)
+             {
 
-        }
-        
+            ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
+            ////{
+            ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
+            ////    {
+            ////        CurrentTarget.Health -= 5;
+            ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
+            ////    }
+
+            ////}
+
+            ////foreach (Zombie z in _zombiesInView)
+            ////{
+            ////    float distance = Vector2.Distance(Position, z.Position);
+
+            ////    if ((distance > 0) && (distance < 20))//20 pixels
+            ////    {
+            ////        Separate(z.Position);
+            ////    }
+            ////}
+
+             }
+
     }
+
 }
+
 

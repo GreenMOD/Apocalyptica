@@ -10,23 +10,21 @@ namespace Overhaul_Of_Apocalyptica.Entities
 {
     class Heart : IEntity
     {
-        private Texture2D _heartSheet;
         private Sprite _sprite;
       
         private Vector2 _heartPosition;
         private Player _player;
 
         public int HeartsLeft { get; set; }
-        private int MAXIMUM_AMOUNT_HEARTS;
+        private int _MAXIMUM_AMOUNT_HEARTS;
 
         
         public Heart(Texture2D heartSheet, int maximumHealth, Player player, List<Rectangle>frames)
         {
-            _heartSheet = heartSheet;
 
-            _sprite = new Sprite(_heartSheet, frames, _heartPosition);
+            _sprite = new Sprite(heartSheet, frames, _heartPosition);
 
-            MAXIMUM_AMOUNT_HEARTS = maximumHealth;
+            _MAXIMUM_AMOUNT_HEARTS = maximumHealth;
             HeartsLeft = maximumHealth / 20;
 
             _player = player;

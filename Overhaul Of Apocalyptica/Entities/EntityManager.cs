@@ -9,36 +9,36 @@ namespace Overhaul_Of_Apocalyptica.Entities
 {
     class EntityManager : IEntity
     {
-        public List<IEntity> entities = new List<IEntity>();
-        List<IEntity> toAdd = new List<IEntity>();
-        List<IEntity> toRemove = new List<IEntity>();
+        public List<IEntity> Entities = new List<IEntity>();
+        private List<IEntity> _toAdd = new List<IEntity>();
+        private List<IEntity> _toRemove = new List<IEntity>();
 
         public void Update(GameTime gameTime)
         {
             
-            foreach (IEntity E in entities)
+            foreach (IEntity E in Entities)
             {
                 E.Update(gameTime);
                 
             }
-            foreach (IEntity E in toAdd)
+            foreach (IEntity E in _toAdd)
             {
                 
-                entities.Add(E);
+                Entities.Add(E);
                 
                  
             }
-            foreach (IEntity E in toRemove)
+            foreach (IEntity E in _toRemove)
             {
-                entities.Remove(E);
+                Entities.Remove(E);
             }
-            toAdd.Clear();
-            toRemove.Clear();
+            _toAdd.Clear();
+            _toRemove.Clear();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            foreach (IEntity E in entities)
+            foreach (IEntity E in Entities)
             {
                 E.Draw(spriteBatch, gameTime);
             }
@@ -46,12 +46,12 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public void AddEntity(IEntity entity)
         {
-            toAdd.Add(entity);
+            _toAdd.Add(entity);
         }
 
         public void RemoveEntity(IEntity entity)
         {
-            toRemove.Add(entity);
+            _toRemove.Add(entity);
         }
         /// <summary>
         /// Returns a list of entites of selected E
@@ -60,14 +60,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
         /// <returns></returns>
         public List<E> GetEntities<E>() where E : IEntity 
         {
-            return entities.OfType<E>().ToList();
+            return Entities.OfType<E>().ToList();
         }
 
         public void Clear()
         {
-            foreach(IEntity e in entities) 
+            foreach(IEntity e in Entities) 
             {
-                toRemove.Add(e);
+                _toRemove.Add(e);
             }
         }
     }

@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Diagnostics;
+using Overhaul_Of_Apocalyptica.Events;
+using System.Configuration;
 
 namespace Overhaul_Of_Apocalyptica
 {
@@ -15,35 +17,54 @@ namespace Overhaul_Of_Apocalyptica
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private EntityManager entityManager;
-        private Texture2D NinjaSpriteSheet;
-        private Texture2D ZombieSheet;
-        private Texture2D SoldierSpriteSheet;
-        private Texture2D DessertMap;
-        private Texture2D WaveCounterSpriteSheet;
-        private Texture2D HeartSpriteSheet;
-        private Texture2D projectileSpriteSheet;
-        private Texture2D soldierSpriteSheet;
-        private WaveManager waveManager;
-        private enum tempGameState { PLAYING, MENU, INITIALISE };
-        private tempGameState _gameState;
+        private EntityManager _entityManager;
+        private Texture2D _ninjaSpriteSheet;
+        private Texture2D _zombieSheet;
+        private Texture2D _soldierSpriteSheet;
+        private Texture2D _dessertMap;
+        private Texture2D _waveCounterSpriteSheet;
+        private Texture2D _heartSpriteSheet;
+        private Texture2D _projectileSpriteSheet;
+        private Texture2D _soldierSpriteSheet2;
+        private WaveManager _waveManager;
+        private CollisionManager _collisionManager;
+        private enum _GameState { PLAYING, MENU, INITIALISE, SAVESELECT };
+        private _GameState _gameState;
 
         private List<IEntity> _menuComponents;
+
+        private List<SaveSlot> _saveSlots;
+        private List<Button> _saveButtons;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            entityManager = new EntityManager();
+            _entityManager = new EntityManager();
+            _collisionManager = new CollisionManager(new List<ICollidable>());
+
+            _collisionManager.Collision += Object_Collided;
 
         }
+
+        private void Object_Collided(object sender, EventArgs e)
+        {
+
+        }
+
 
         protected override void Initialize()
         {
 
             IsMouseVisible = true;
-            _gameState = tempGameState.MENU;
-
+            _gameState = _GameState.MENU;
+            _saveSlots = new List<SaveSlot>()
+            {
+                new SaveSlot("PreviousSaves/Save1.txt"),
+                new SaveSlot("PreviousSaves/Save2.txt"),
+                new SaveSlot("PreviousSaves/Save3.txt"),
+                new SaveSlot("PreviousSaves/Save4.txt")
+            };
 
             Button titleButton = new Button(Content.Load<Texture2D>(@"Controls/TitleScreen"), Content.Load<SpriteFont>(@"Fonts/ButtonFont"))
             {
@@ -93,39 +114,36 @@ namespace Overhaul_Of_Apocalyptica
             base.Initialize();
         }
 
-        private void TitleButton_Click(object sender, EventArgs e)
+        private void TitleButton_Click(Button sender, ButtonClickedEventArgs e)
         {
-            
+
         }
 
-        private void NewGameButton_Click(object sender, EventArgs e)
+        private void NewGameButton_Click(Button sender, ButtonClickedEventArgs e)
         {
-            entityManager.Clear();
+            _entityManager.Clear();
 
-            _gameState = tempGameState.PLAYING;
+            _gameState = _GameState.SAVESELECT;
 
             GameTime gameTime = new GameTime();
 
-            Player player1 = new Soldier(SoldierSpriteSheet, HeartSpriteSheet, soldierSpriteSheet, gameTime);
-            entityManager.AddEntity(player1);
+            SaveFileMenu();
 
-
-            waveManager = new WaveManager(ZombieSheet, entityManager, WaveCounterSpriteSheet, projectileSpriteSheet);
-
-
-            player1.Activate();
-
+            //draw the save slots now
+            foreach (IEntity E in _saveButtons)
+            {
+                _entityManager.AddEntity(E);
+            }
 
         }
 
-        private void LoadGameButton_Click(object sender, EventArgs e)
+        private void LoadGameButton_Click(Button sender, ButtonClickedEventArgs e)
         {
-            entityManager.Clear();
+            _entityManager.Clear();
 
-            _gameState = tempGameState.INITIALISE;
+            _gameState = _GameState.INITIALISE;
             using (StreamReader sr = new StreamReader(@"PreviousSaves/Save1.txt"))
             {
-                string currentLine;
                 sr.ReadLine();
                 string statusOfFile = sr.ReadLine().Substring(8);
 
@@ -141,19 +159,20 @@ namespace Overhaul_Of_Apocalyptica
                     switch (Class)
                     {
                         case "Soldier":
-                            Player soldier = new Soldier(SoldierSpriteSheet, HeartSpriteSheet, soldierSpriteSheet, gameTime);
+                            Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
                             player1 = soldier;
                             break;
                         case "Ninja":
-                            Player ninja = new Ninja(NinjaSpriteSheet, HeartSpriteSheet);
+                            Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet);
                             player1 = ninja;
                             break;
                         default:
-                            player1 = new Soldier(SoldierSpriteSheet, HeartSpriteSheet, soldierSpriteSheet, gameTime);
+                            player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
                             break;
                     }
 
-                    entityManager.AddEntity(player1);
+                    _entityManager.AddEntity(player1);
+                    _collisionManager.AddCollidable(player1);
                     player1.Activate();
 
 
@@ -164,31 +183,119 @@ namespace Overhaul_Of_Apocalyptica
             }
         }
 
-        private void OptionsButton_Click(object sender, EventArgs e)
+        private void OptionsButton_Click(Button sender, ButtonClickedEventArgs e)
         {
             throw new NotImplementedException();
         }
-        private void QuitButton_Click(object sender, EventArgs e)
+        private void QuitButton_Click(Button sender, ButtonClickedEventArgs e)
         {
             Exit();
         }
+        /// <summary>
+        /// Loads all save files and makes them into buttons which are added to the entity manager
+        /// </summary>
+        private void SaveFileMenu()
+        {
+            int count = 0; // used to apply a modifier on to the x position or the y position.
+            _saveButtons = new List<Button>();
 
+            int[][] slotXY = new int[2][];
 
+            //TODO USING BINARY CALULATION MAKE THE SLOTS POSITION CORRECTLY
+            for (int y = 0; y < 2; y++)
+            {
+                
+                for (int x = 0; x < 2; x++)
+                {
+                    if (_saveSlots[x + (y+count)].CurrentWave != -1)
+                    {
+                        //_saveSlots[x + y].Status + " " + + _saveSlots[x +y].PlayerClass + " " + _saveSlots[x + y].CurrentWave
+                        string text = ( _saveSlots[x + y+ count].SlotName);
+                        Button saveSlot = new Button(Content.Load<Texture2D>(@"Controls/ButtonTexture"), Content.Load<SpriteFont>(@"Fonts/ButtonFont"))
+                        {
+                            Text = (text),
+                            Position = new Vector2(Window.ClientBounds.Width / 8 + (x * 450), Window.ClientBounds.Height / 4 + (y * 200))
+                        };
+                        //Event handler to a (saveSlot - button) 
+                        saveSlot.Click += SaveSlot_Click; 
+                        _saveButtons.Add(saveSlot);
+                    }
+                    else
+                    {
+                        Button emptySlot = new Button(Content.Load<Texture2D>(@"Controls/ButtonTexture"), Content.Load<SpriteFont>(@"Fonts/ButtonFont"))
+                        {
+                            Text = (_saveSlots[x + y + count].Status),
+                            Position = new Vector2(Window.ClientBounds.Width / 8 + (x * 450), Window.ClientBounds.Height / 4 + (y * 200))
+
+                        };
+                        emptySlot.Click += SaveSlot_Click;
+                        _saveButtons.Add(emptySlot);
+                    }
+                }
+                count++;
+
+            }
+        }
+
+        /// <summary>
+        /// What happens once clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SaveSlot_Click(Button sender, EventArgs e)
+        {
+            GameTime gameTime = new GameTime();
+            if (sender.Text.Contains("Empty"))
+            {
+                _entityManager.Clear();
+                CreateCharacter();
+            }
+            else
+            {
+                _gameState = _GameState.INITIALISE;
+
+                
+                Player player1;
+                switch (_saveSlots[_saveButtons.IndexOf(sender)].PlayerClass)
+                {
+                    case "Soldier":
+                        Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
+                        player1 = soldier;
+                        break;
+                    case "Ninja":
+                        Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet);
+                        player1 = ninja;
+                        break;
+                    default:
+                        player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
+                        break;
+                }
+
+                _entityManager.AddEntity(player1);
+                _collisionManager.AddCollidable(player1);
+                player1.Activate();
+                _entityManager.Clear(); 
+            }
+        }
+        private void CreateCharacter()
+        {
+
+        }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            NinjaSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/NinjaSpriteSheet");
-            ZombieSheet = Content.Load<Texture2D>(@"SpriteSheets/ApocZombieSpriteSheet");
-            DessertMap = Content.Load<Texture2D>(@"SpriteSheets/Dessert1");
-            SoldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierSpriteSheet2");
-            WaveCounterSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/WaveCounterSprite");
-            HeartSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/Heart");
-            projectileSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/captainProjectile");
-            soldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierBulletSprite");
+            _ninjaSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/NinjaSpriteSheet");
+            _zombieSheet = Content.Load<Texture2D>(@"SpriteSheets/ApocZombieSpriteSheet");
+            _dessertMap = Content.Load<Texture2D>(@"SpriteSheets/Dessert1");
+            _soldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierSpriteSheet2");
+            _waveCounterSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/WaveCounterSprite");
+            _heartSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/Heart");
+            _projectileSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/captainProjectile");
+            _soldierSpriteSheet2 = Content.Load<Texture2D>(@"SpriteSheets/SoldierBulletSprite");
             foreach (var b in _menuComponents)
             {
-                entityManager.AddEntity(b);
+                _entityManager.AddEntity(b);
             }
 
 
@@ -197,36 +304,44 @@ namespace Overhaul_Of_Apocalyptica
 
         protected override void Update(GameTime gameTime)
         {
-            if (_gameState == tempGameState.PLAYING)
+            if (_gameState == _GameState.PLAYING)
             {
 
-                waveManager.Update(gameTime);
-                if (waveManager.zombiesToAdd.Count != 0)
+                _waveManager.Update(gameTime);
+
+                foreach (Zombie z in _waveManager.ZombiesToAdd)
                 {
-                    foreach (Zombie z in waveManager.zombiesToAdd)
-                    {
-                        entityManager.AddEntity(z);
-                    }
+                    _entityManager.AddEntity(z);
+                    _collisionManager.AddCollidable(z);
                 }
+
+
+
                 base.Update(gameTime);
 
-                entityManager.Update(gameTime);
-                if (waveManager.isRunning == false) //not the most elegant of solutions however will be the best for the time being and in the long term for when game states are added
-                {
-                    waveManager.Intialise();
-                }
+                _entityManager.Update(gameTime);
+                _collisionManager.Update(gameTime);
+
             }
-            else if (_gameState == tempGameState.MENU)
+            else if (_gameState == _GameState.MENU)
             {
-                entityManager.Update(gameTime);
+                _entityManager.Update(gameTime);
             }
-            else if (_gameState == tempGameState.INITIALISE)
+            else if (_gameState == _GameState.INITIALISE)
             {
-                entityManager.Update(gameTime);
-                _gameState = tempGameState.PLAYING;
-                waveManager = new WaveManager(ZombieSheet, entityManager, WaveCounterSpriteSheet, projectileSpriteSheet);
-                
-                waveManager.Intialise();
+                _entityManager.Update(gameTime);
+                _collisionManager.Update(gameTime);
+                _gameState = _GameState.PLAYING;
+                _waveManager = new WaveManager(_zombieSheet, _entityManager, _collisionManager, _waveCounterSpriteSheet, _projectileSpriteSheet);
+
+                _waveManager.Intialise();
+
+
+
+            }
+            else if (_gameState == _GameState.SAVESELECT)
+            {
+                _entityManager.Update(gameTime);
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -245,16 +360,16 @@ namespace Overhaul_Of_Apocalyptica
 
 
 
-            if (_gameState == tempGameState.PLAYING)
+            if (_gameState == _GameState.PLAYING)
             {
-                _spriteBatch.Draw(DessertMap, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), Color.Yellow);
-                entityManager.Draw(_spriteBatch, gameTime);
-                waveManager.Draw(_spriteBatch, gameTime);
+                _spriteBatch.Draw(_dessertMap, new Rectangle(0, 0, Window.ClientBounds.Width, Window.ClientBounds.Height), Color.Yellow);
+                _entityManager.Draw(_spriteBatch, gameTime);
+                _waveManager.Draw(_spriteBatch, gameTime);
 
             }
             else
             {
-                entityManager.Draw(_spriteBatch, gameTime);
+                _entityManager.Draw(_spriteBatch, gameTime);
             }
 
             _spriteBatch.End();
@@ -262,6 +377,7 @@ namespace Overhaul_Of_Apocalyptica
             base.Draw(gameTime);
         }
     }
+    
 }
 
 

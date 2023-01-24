@@ -19,17 +19,15 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         protected Rectangle frame1 = new Rectangle(0, 40, 20, 20);  // left
         protected Rectangle frame2 = new Rectangle(22, 40, 20, 20);  // right
 
-        
+        private EntityManager _entityManager;
 
         public Screamer(Texture2D texture2D, Vector2 spawnLocation,EntityManager entityManager)
         {
-            _frames.Add(frame1);
-            _frames.Add(frame2);
+           
 
-            _sprite = new Sprite(texture2D, _frames, Position);
-            _texture2D = texture2D;
+            ZombieSprite = new Sprite(texture2D, new List<Rectangle>() {frame1,frame2 }, Position);
             Position = spawnLocation;
-            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ZombieSprite.Source.Width, ZombieSprite.Source.Height);
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
             List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
             CurrentTarget = players[0];
@@ -73,7 +71,32 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             base.Update(gameTime);
 
         }
-       
+        public override void Collided(GameTime gameTime)
+        {
+
+            ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
+            ////{
+            ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
+            ////    {
+            ////        CurrentTarget.Health -= 5;
+            ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
+            ////    }
+
+            ////}
+
+            ////foreach (Zombie z in _zombiesInView)
+            ////{
+            ////    float distance = Vector2.Distance(Position, z.Position);
+
+            ////    if ((distance > 0) && (distance < 20))//20 pixels
+            ////    {
+            ////        Separate(z.Position);
+            ////    }
+            ////}
+
+        }
+
+
 
     }
 }

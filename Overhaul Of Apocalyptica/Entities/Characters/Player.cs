@@ -28,6 +28,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public abstract bool IsActive { get; set; }
 
         public abstract Gun Ranged { get; set; }
+        
        
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
@@ -42,6 +43,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public void Deactivate()
         {
             IsActive = false;
+            
         }
 
         public void Movement(float runningSpeed, KeyboardState keyboardState)
@@ -130,6 +132,12 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
                 gun.Fire(gameTime);
             }
             
+        }
+
+        
+        public void Collided(GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -17,6 +17,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
         private string _direction;
         private Vector2 _movementVector2;
         
+        
         public Bullet(Vector2 posFired, string directionFired , Texture2D texture)
         {
             _direction = directionFired;
@@ -36,9 +37,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
                     break;
             }
             Position = posFired;
-            _sprite = new Sprite(texture, new List<Rectangle>() {new Rectangle(0,0,12,6) }, Position);
+            Sprite = new Sprite(texture, new List<Rectangle>() {new Rectangle(0,0,12,6) }, Position);
         }
-        public override void CheckCollision(GameTime gameTime)
+        public override void Collided(GameTime gameTime)
         {
             if (true)
             {
@@ -49,7 +50,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprite.Draw(spriteBatch, gameTime);
+            Sprite.Draw(spriteBatch, gameTime);
         }
 
         public override void Flight(GameTime gameTime)
@@ -60,7 +61,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
         public override void Update(GameTime gameTime)
         {
             Flight(gameTime);
-            _sprite.Update(gameTime, Position);
+            Sprite.Update(gameTime, Position);
         }
     }
 }

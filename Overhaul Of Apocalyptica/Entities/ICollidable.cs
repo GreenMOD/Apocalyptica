@@ -8,7 +8,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
     {
         public Rectangle CollisionBox { get; set; }
 
-        
-            
+        public void Collided(GameTime gameTime);
+
     }
 }

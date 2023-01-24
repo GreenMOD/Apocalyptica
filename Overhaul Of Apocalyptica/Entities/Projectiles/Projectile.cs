@@ -10,21 +10,20 @@ namespace Overhaul_Of_Apocalyptica.Entities
 { 
     abstract class Projectile: IEntity,ICollidable
     {
-        public Sprite _sprite;
-        public List<Rectangle> _frames;
+        public Sprite Sprite;
+        public List<Rectangle> Frames;
 
         public Rectangle CollisionBox { get; set; }
 
-        public double _timeFire; 
         public double FlightTime { get; set; }
 
         public Vector2 Position { get; set; }
 
 
         public Vector2 Speed { get; set; } 
-        public Vector2 _acceleration;
-        public float maxVelocity = 2.5f;
-        public float maxForce = 1f;
+        public Vector2 Acceleration;
+        public float MaxVelocity = 2.5f;
+        public float MaxForce = 1f;
 
         public bool IsDestroyed = false;
 
@@ -37,10 +36,10 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public void ApplyForce(Vector2 force)
         {
-            _acceleration = Vector2.Add(_acceleration, force);
+            Acceleration = Vector2.Add(Acceleration, force);
         }
 
-        public abstract void CheckCollision(GameTime gameTime);
+        public abstract void Collided(GameTime gameTime);
 
         public abstract void Flight(GameTime gameTime);
 

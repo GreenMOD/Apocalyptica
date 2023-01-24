@@ -8,7 +8,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
     class Shuriken : Projectile, IEntity
     {
-        public override void CheckCollision(GameTime gameTime)
+        public override void Collided(GameTime gameTime)
         {
 
         }
