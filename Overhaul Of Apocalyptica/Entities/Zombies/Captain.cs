@@ -31,16 +31,20 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         private Texture2D _rocketProjectile;
 
         private EntityManager _entityManager;
+        
+        private CollisionManager _collisionManager;
 
         public const double ROCKET_COOLDOWN = 2.5;
         public const double SWARM_BOMB_COOLDOWN = 10;
         public double _timeSinceLastRocket = 0;
         public double _timeSinceLastSwarmBomb = 0;
 
-        public Captain(Texture2D captainTexture, Vector2 spawnLocation, EntityManager entityManager,Texture2D projectile)
+        public Captain(Texture2D captainTexture, Vector2 spawnLocation, EntityManager entityManager, CollisionManager collisionManager,Texture2D projectile) //Add CollisionManager
         {
 
             _entityManager = entityManager;
+
+            _collisionManager= collisionManager;
 
             ZombieSprite = new Sprite(captainTexture, new List<Rectangle>() { frame1,frame2}, Position);
 
@@ -61,7 +65,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
                     CurrentTarget = n;
                 }
             }
-
+            Health = 150;
         }
 
         /// <summary>
@@ -137,13 +141,14 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             {
                 _timeSinceLastSwarmBomb = gameTime.TotalGameTime.TotalSeconds;
                 _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
-                Fire(gameTime, new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, CurrentTarget, gameTime));
+                Projectile swarmBomb = new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, CurrentTarget, gameTime);
+                Fire(gameTime, swarmBomb);
             }
             else if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastRocket >= ROCKET_COOLDOWN) ^ (_timeSinceLastRocket == 0))
             {
                 _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
-                Fire(gameTime, new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, CurrentTarget, gameTime));
-
+                Projectile seeker = new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, CurrentTarget, gameTime);
+                Fire(gameTime, seeker);
             }
           
             
@@ -170,6 +175,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
                     {
                         Rockets.Remove(item);
                         _entityManager.RemoveEntity(item);
+                        _collisionManager.RemoveCollidable(item);
+                        
+                        
                     }
                 }
             }
@@ -201,6 +209,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             Rockets.Add(projectile);
 
             _entityManager.AddEntity(projectile);
+
+            _collisionManager.AddCollidable(projectile);
         }
         public void ApplyOffset()
         {
@@ -245,57 +255,56 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
 
 
-            //}
+        //}
 
-            //public void MovementSelection(int hyperbolicrange)
-            //{
-            //    float tuningFactor = 1.25f;
-            //    switch (HyperbolicRange)
-            //    {
-            //        case 2:
-            //            Seek(_ninja.Position / tuningFactor);
-            //            break;
-            //        case 1:
-            //            Seek(_ninja.Position / tuningFactor);
-            //            break;
-            //        case 0:
-            //            Speed = Vector2.Zero;
-            //            break;
-            //        case -1:
-            //            Flee(_ninja.Position * tuningFactor);
-            //            break;
-            //        case -2:
-            //            Flee(_ninja.Position * tuningFactor);
-            //            break;
-            //    }
-            //}
+        //public void MovementSelection(int hyperbolicrange)
+        //{
+        //    float tuningFactor = 1.25f;
+        //    switch (HyperbolicRange)
+        //    {
+        //        case 2:
+        //            Seek(_ninja.Position / tuningFactor);
+        //            break;
+        //        case 1:
+        //            Seek(_ninja.Position / tuningFactor);
+        //            break;
+        //        case 0:
+        //            Speed = Vector2.Zero;
+        //            break;
+        //        case -1:
+        //            Flee(_ninja.Position * tuningFactor);
+        //            break;
+        //        case -2:
+        //            Flee(_ninja.Position * tuningFactor);
+        //            break;
+        //    }
+        //}
 
 
 
-             public override void Collided(GameTime gameTime)
-             {
+        
 
-            ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
-            ////{
-            ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
-            ////    {
-            ////        CurrentTarget.Health -= 5;
-            ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
-            ////    }
+        ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
+        ////{
+        ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
+        ////    {
+        ////        CurrentTarget.Health -= 5;
+        ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
+        ////    }
 
-            ////}
+        ////}
 
-            ////foreach (Zombie z in _zombiesInView)
-            ////{
-            ////    float distance = Vector2.Distance(Position, z.Position);
+        ////foreach (Zombie z in _zombiesInView)
+        ////{
+        ////    float distance = Vector2.Distance(Position, z.Position);
 
-            ////    if ((distance > 0) && (distance < 20))//20 pixels
-            ////    {
-            ////        Separate(z.Position);
-            ////    }
-            ////}
+        ////    if ((distance > 0) && (distance < 20))//20 pixels
+        ////    {
+        ////        Separate(z.Position);
+        ////    }
+        ////}
 
-             }
+
 
     }
 

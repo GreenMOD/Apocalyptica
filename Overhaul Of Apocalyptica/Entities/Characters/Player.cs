@@ -16,12 +16,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public abstract Vector2 Speed { get; set; }
 
         public Rectangle CollisionBox { get; set; }
-        
-        public abstract float MovementSpeed { get; set; }
 
         public abstract int Health { get; set; }
-
-        public abstract double Armour { get; set; }
 
         public abstract string Facing { get; set; }
 
@@ -123,6 +119,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             {
                 Speed = Vector2.Zero;
             }
+            Ranged.Position = Position;
+            Ranged.Direction = Facing;
 
         }
         public void FireR(GameTime gameTime)
@@ -131,10 +129,21 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             
         }
 
-        
-        public void Collided(GameTime gameTime)
+
+        public void Collided(GameTime gameTime, ICollidable collidedWith)
         {
-            throw new NotImplementedException();
+            switch (collidedWith.GetType().Name)
+            {
+                case "Walker":
+                    Health = Health - 10;
+                    break;
+                case "Screamer":
+                    Health = Health - 5;
+                    break;
+                case "Rocket":
+                    Health = Health - 10;
+                    break;
+            }
         }
     }
 }

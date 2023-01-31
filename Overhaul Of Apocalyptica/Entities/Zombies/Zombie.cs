@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
-
+using Overhaul_Of_Apocalyptica.Entities.Projectiles;
+using System.Diagnostics;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -50,33 +51,36 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public virtual void Update(GameTime gameTime)
         {
-          
-            if (isSeparating == true)
+            if (Health > 0)
             {
-                Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
-                if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
+                if (isSeparating == true)
                 {
-                    Speed = Vector2.Normalize(Speed) * MaxVelocity;
+                    Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
+                    if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
+                    {
+                        Speed = Vector2.Normalize(Speed) * MaxVelocity;
 
+                    }
+                    Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
+                    Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
+                    isSeparating = false;
                 }
-                Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-                Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
-                isSeparating = false;
+
+                _sprite.Update(gameTime, Position);
+                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+
+
+
+                if (Speed.X > 0)
+                {
+                    ZombieFacing = "right";
+                }
+                else if (Speed.X < 0)
+                {
+                    ZombieFacing = "left";
+                }
             }
-
-            _sprite.Update(gameTime, Position);
-            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
-
-
-
-            if (Speed.X >0)
-            {
-                ZombieFacing = "right";
-            }
-            else if (Speed.X < 0)
-            {
-                ZombieFacing = "left";
-            }
+            
         }
 
 
@@ -183,14 +187,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprite.Draw(spriteBatch, gameTime, ZombieFacing, 2f);
+            if (Health >0)
+            {
+                _sprite.Draw(spriteBatch, gameTime, ZombieFacing, 2f);
+            }
         }
 
         
-        public virtual void Collided(GameTime gameTime)
-        {
-           
-        }
+       
         public virtual void Separate(Vector2 target)
         {
             /// AIM to avoid the other zombie
@@ -229,5 +233,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
             Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
         }
 
+        public virtual void Collided(GameTime gameTime, ICollidable collidedWith)
+        {
+            switch (collidedWith.GetType().Name)
+            {
+                case "Bullet":
+                    Health = Health - 5;
+                    break;
+            }
+        }
     }
 }

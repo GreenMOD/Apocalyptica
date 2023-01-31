@@ -23,7 +23,7 @@ namespace Overhaul_Of_Apocalyptica
         {
             Position = start;
             Frames = frames;
-            Sprite = new Sprite(texture, Frames, Position);
+            ProjectSprite = new Sprite(texture, Frames, Position);
             _target = target;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
             FlightTime = gameTime.TotalGameTime.TotalSeconds;
@@ -38,23 +38,17 @@ namespace Overhaul_Of_Apocalyptica
             {
                 
                 Flight(gameTime);
-                Sprite.Update(gameTime, Position);
+                ProjectSprite.Update(gameTime, Position);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
-                Collided(gameTime);
             }
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Draw(spriteBatch, gameTime, 2.5f);
+            ProjectSprite.Draw(spriteBatch, gameTime, 2.5f);
         }
-        public override void Collided(GameTime gameTime)
+        public override void Collided(GameTime gameTime , ICollidable collidedWith)
         {
-
-            if (CollisionBox.Intersects(_target.CollisionBox))
-            {
-                _target.Health -= 10;
                 IsDestroyed = true;
-            }
         }
         public override void Flight(GameTime gameTime)
         {
@@ -87,7 +81,7 @@ namespace Overhaul_Of_Apocalyptica
                 Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
 
                 double toFindAngle = Position.Y / Position.X; //In order to work out the angle I have to take the arctan of the x value and the y value this then produces the angle that the rocketSource must turn
-                Sprite.Rotation = (float)Math.Atan(toFindAngle)/ 360;  
+                ProjectSprite.Rotation = (float)Math.Atan(toFindAngle)/ 360;  
                 
                 //TODO Projectile either spins constantly or it doesn't change
 

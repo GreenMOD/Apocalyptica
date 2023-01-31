@@ -28,31 +28,31 @@ namespace Overhaul_Of_Apocalyptica.Entities
             ZombieSprite = new Sprite(texture2D, new List<Rectangle>() {frame1, frame2 }, Position);
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ZombieSprite.Source.Width, ZombieSprite.Source.Height);
             Players = players;
+            Health = 100;
         }
-        public override void Collided(GameTime gameTime)
-        {
+        
 
-            ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
-            ////{
-            ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
-            ////    {
-            ////        CurrentTarget.Health -= 5;
-            ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
-            ////    }
+        ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
+        ////{
+        ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
+        ////    {
+        ////        CurrentTarget.Health -= 5;
+        ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
+        ////    }
 
-            ////}
+        ////}
 
-            ////foreach (Zombie z in _zombiesInView)
-            ////{
-            ////    float distance = Vector2.Distance(Position, z.Position);
+        ////foreach (Zombie z in _zombiesInView)
+        ////{
+        ////    float distance = Vector2.Distance(Position, z.Position);
 
-            ////    if ((distance > 0) && (distance < 20))//20 pixels
-            ////    {
-            ////        Separate(z.Position);
-            ////    }
-            ////}
+        ////    if ((distance > 0) && (distance < 20))//20 pixels
+        ////    {
+        ////        Separate(z.Position);
+        ////    }
+        ////}
 
-        }
+    
 
     }
 }

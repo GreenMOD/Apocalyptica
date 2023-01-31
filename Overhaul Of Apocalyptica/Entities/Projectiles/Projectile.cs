@@ -8,9 +8,9 @@ using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 { 
-    abstract class Projectile: IEntity,ICollidable
+    public abstract class Projectile: IEntity, ICollidable
     {
-        public Sprite Sprite;
+        public Sprite ProjectSprite;
         public List<Rectangle> Frames;
 
         public Rectangle CollisionBox { get; set; }
@@ -39,12 +39,12 @@ namespace Overhaul_Of_Apocalyptica.Entities
             Acceleration = Vector2.Add(Acceleration, force);
         }
 
-        public abstract void Collided(GameTime gameTime);
 
         public abstract void Flight(GameTime gameTime);
 
         public abstract void Update(GameTime gameTime);
 
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
+        public abstract void Collided(GameTime gameTime, ICollidable collidedWith);
     }
 }

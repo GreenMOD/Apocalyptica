@@ -23,9 +23,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         public override Vector2 Position { get; set; }
         public override Vector2 Speed { get; set; }
-        public override float MovementSpeed { get; set; }
         public override int Health { get; set; }
-        public override double Armour { get; set; }
         public override string Facing { get; set; }
         public override bool IsActive { get; set; }
         public override Gun Ranged { get; set; }
@@ -35,7 +33,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         private Texture2D _texture2D;
         private Sprite _sprite;
         private Heart _heart;
-        
+        private EntityManager _entityManager;
+        private CollisionManager _collisionManager;
         
         #endregion
         public Soldier(Texture2D texture, Texture2D heartTexture, Texture2D bulletTexture, GameTime gameTime)
@@ -55,7 +54,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Health = 100;
             _heart = new Heart(heartTexture, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
-            Ranged = new M4(new Vector2(Position.X + 75, Position.Y), bulletTexture, Facing, gameTime) ; //TODO FIRE FROM Gun
+            Ranged = new M4(new Vector2(Position.X + 75, Position.Y), bulletTexture, gameTime) ; //TODO FIRE FROM Gun
         }
         #region Methods
         public override void Update(GameTime gameTime)
@@ -63,11 +62,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             if (IsActive == true)
             {
                 PlayerInput(gameTime, Keyboard.GetState());
-                Ranged.Update(gameTime, new Vector2(Position.X +75, Position.Y - 22) ,Facing);
+                Ranged.Update(gameTime);
                 _sprite.Update(gameTime, Position);
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
-                
             }
 
         }

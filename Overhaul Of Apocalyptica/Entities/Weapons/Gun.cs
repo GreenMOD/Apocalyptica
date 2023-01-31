@@ -5,10 +5,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities.Zombies;
 using System.Linq;
+using Overhaul_Of_Apocalyptica.Entities.Projectiles;
+using System.Windows.Forms.VisualStyles;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
-   public abstract class Gun
+   public abstract class Gun : IEntity
     {
         /// Must have:
         /// Limited ammo
@@ -18,24 +20,23 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
         /// FireRate
         /// Should be compatable with both hitscan and projectile 
         /// Is it being held right now
-        public Vector2 Position { get; set; } 
-        public int AmmoLeft { get; set; }
+        public  Vector2 Position { get; set; } 
+        public  int AmmoLeft { get; set; }
 
-        public bool IsReloading { get; set; }
+        public  bool IsReloading { get; set; }
         
         public bool IsHeld { get; set; }
 
         public string Direction { get; set; }
+        public abstract List<Bullet> BulletsToAdd { get; set; }
+        public abstract List<Bullet> BulletsToRemove { get; set; }
 
         public abstract void Fire(GameTime gameTime);
 
         public abstract bool Reload(GameTime gameTime);
 
-        public abstract void Update(GameTime gameTime , Vector2 updatePos, string direction);
+        public abstract void Update(GameTime gameTime);
 
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
-
-        
-
     }
 }

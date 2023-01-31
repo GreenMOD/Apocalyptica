@@ -7,7 +7,7 @@ using Overhaul_Of_Apocalyptica.Entities;
 
 namespace Overhaul_Of_Apocalyptica
 {
-     class Sprite
+    public class Sprite
     {
         public Texture2D Texture;
 

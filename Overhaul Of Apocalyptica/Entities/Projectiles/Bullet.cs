@@ -5,13 +5,13 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
-using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 {
-    class Bullet : Projectile
+   public class Bullet : Projectile, ICollidable
     {
         private float _bulletSpeed = 4f;
         private string _direction;
@@ -37,31 +37,45 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
                     break;
             }
             Position = posFired;
-            Sprite = new Sprite(texture, new List<Rectangle>() {new Rectangle(0,0,12,6) }, Position);
+            ProjectSprite = new Sprite(texture, new List<Rectangle>() {new Rectangle(0,0,12,6) }, Position);
+            CollisionBox = new Rectangle((int)Position.X,(int)Position.Y, ProjectSprite.Source.Width, ProjectSprite.Source.Height);
         }
-        public override void Collided(GameTime gameTime)
+        public override void Collided(GameTime gameTime, ICollidable collidedWith)
         {
-            if (true)
+            if (!((collidedWith.GetType().Name == "Soldier") || (collidedWith.GetType().Name == "Bullet")))
             {
-                _target.Health -= 10;
+                Debug.WriteLine(collidedWith.GetType().Name);
                 IsDestroyed = true;
             }
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Draw(spriteBatch, gameTime);
+            if (!IsDestroyed)
+            {
+                ProjectSprite.Draw(spriteBatch, gameTime);
+            }
         }
 
         public override void Flight(GameTime gameTime)
         {
-            Position = Vector2.Add(Position, _movementVector2);
+            if (!IsDestroyed)
+            {
+                Position = Vector2.Add(Position, _movementVector2);
+            }
+          
         }
 
         public override void Update(GameTime gameTime)
         {
-            Flight(gameTime);
-            Sprite.Update(gameTime, Position);
+            if (!IsDestroyed)
+            {
+                Flight(gameTime);
+                ProjectSprite.Update(gameTime, Position);
+                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ProjectSprite.Source.Width, ProjectSprite.Source.Height);
+            }
+
         }
+
     }
 }

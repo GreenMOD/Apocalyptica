@@ -1,55 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Overhaul_Of_Apocalyptica.Entities.Zombies;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
-using System.Linq;
-
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
-    class M4 : Gun
+    class HeavyWeapon : Gun
     {
-        private const float _FIRE_RATE = 0.25f;
+        private const float _FIRE_RATE = 0.05f;
 
-        private const float _RELOAD_TIME = 2.5f;
+        private const float _RELOAD_TIME = 5f;
 
-        private const int _MAX_AMMO = 30;
+        private const int _MAX_AMMO = 100;
 
         private float _lastFired;
 
         private float _startReload;
 
         protected Texture2D BulletTexture;
-
         private List<Bullet> _bulletsFired;
+
         public override List<Bullet> BulletsToAdd { get; set; }
 
-        public override List<Bullet> BulletsToRemove { get; set; }
-
-        public M4(Vector2 start, Texture2D bulletTexture, GameTime gameTime)
+        public HeavyWeapon(Vector2 start, Texture2D bulletTexture, GameTime gameTime)
         {
             Position = start;
             BulletTexture = bulletTexture;
-            AmmoLeft = 30;
+            AmmoLeft = 100;
             _lastFired = -100000f;
             _bulletsFired = new List<Bullet>();
-            BulletsToAdd = new List<Bullet>();
+            BulletsToAdd= new List<Bullet>();
         }
-        /// <summary>
-        /// Fires a bullet
-        /// </summary>
-        /// <param name="gameTime">Used to compare against the last time this gun was shot</param>
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            if (_bulletsFired.Count != 0)
+            {
+                foreach (Bullet b in _bulletsFired)
+                {
+                    b.Draw(spriteBatch, gameTime);
+                }
+            }
+        }
+
         public override void Fire(GameTime gameTime)
         {
             if (AmmoLeft > 0)
             {
                 if (_FIRE_RATE <= gameTime.TotalGameTime.TotalSeconds - _lastFired)
                 {
-                    Bullet bullet = new Bullet(Position,Direction,BulletTexture);
+                    Bullet bullet = new Bullet(Position, Direction, BulletTexture);
                     _lastFired = (float)gameTime.TotalGameTime.TotalSeconds;
                     _bulletsFired.Add(bullet);
                     AmmoLeft--;
@@ -58,14 +60,11 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
                 }
             }
             else
-            { 
+            {
                 Reload(gameTime);
             }
         }
-        /// <summary>
-        /// Gun Checks if reload interval has passed
-        /// </summary>
-        /// <param name="gameTime"></param>
+
         public override bool Reload(GameTime gameTime)
         {
             if (_startReload == -1)
@@ -91,34 +90,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             {
                 foreach (Bullet b in _bulletsFired)
                 {
-                    if (b.IsDestroyed)
-                    {
-                        BulletsToRemove.Add(b);
-                    }
-                    else
-                    {
-                        b.Update(gameTime);
-                    }
-                    
-                }
-                foreach (Bullet b in BulletsToRemove)
-                {
-                    _bulletsFired.Remove(b);
+                    b.Update(gameTime);
                 }
             }
-            
-            
         }
 
-        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            if (_bulletsFired.Count != 0)
-            {
-                foreach (Bullet b in _bulletsFired)
-                {
-                    b.Draw(spriteBatch,gameTime);
-                }
-            }
-        }
     }
 }

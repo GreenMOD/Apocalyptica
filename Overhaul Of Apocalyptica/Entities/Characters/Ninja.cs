@@ -26,9 +26,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public override Vector2 Position { get; set; }
         public override Vector2 Speed { get; set; }
-        public override float MovementSpeed { get; set; }
         public override int Health { get; set; }
-        public override double Armour { get; set; }
         public override string Facing { get; set; }
         public override bool IsActive { get; set; }
         public override Gun Ranged { get; set; }

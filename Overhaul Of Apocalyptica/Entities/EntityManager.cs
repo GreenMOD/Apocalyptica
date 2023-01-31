@@ -19,7 +19,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
             foreach (IEntity E in Entities)
             {
                 E.Update(gameTime);
-                
             }
             foreach (IEntity E in _toAdd)
             {

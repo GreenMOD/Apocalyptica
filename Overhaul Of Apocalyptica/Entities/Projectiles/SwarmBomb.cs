@@ -12,7 +12,7 @@ using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
-    class SwarmBomb : Projectile
+    class SwarmBomb : Projectile, ICollidable 
     {
         Vector2 posTarget;
         const double FLIGHT_MAXIMUM = 2.5;
@@ -21,24 +21,19 @@ namespace Overhaul_Of_Apocalyptica.Entities
         {
             Position = start;
             Frames = frames;
-            Sprite = new Sprite(texture, Frames, Position);
+            ProjectSprite = new Sprite(texture, Frames, Position);
             _target = target;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
             _timeFire = gameTime.TotalGameTime.TotalSeconds;
         }
-        public override void Collided(GameTime gameTime)
-        {
-            if (CollisionBox.Intersects(_target.CollisionBox))
-            {
-                _target.Health -= 10;
+        public override void Collided(GameTime gameTime, ICollidable collidedWith)
+        { 
                 IsDestroyed = true;
-                //swarm
-            }
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Sprite.Draw(spriteBatch, gameTime, 2.5f);
+            ProjectSprite.Draw(spriteBatch, gameTime, 2.5f);
         }
 
         public override void Flight(GameTime gameTime)
@@ -72,7 +67,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
                 Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
 
                 double toFindAngle = Position.Y / Position.X; //In order to work out the angle I have to take the arctan of the x value and the y value this then produces the angle that the rocketSource must turn
-                Sprite.Rotation = (float)Math.Atan(toFindAngle) / 360;
+                ProjectSprite.Rotation = (float)Math.Atan(toFindAngle) / 360;
 
                 //TODO Projectile either spins constantly or it doesn't change
 
@@ -87,9 +82,8 @@ namespace Overhaul_Of_Apocalyptica.Entities
             {
                 FlightTime = gameTime.TotalGameTime.TotalSeconds;
                 Flight(gameTime);
-                Sprite.Update(gameTime, Position);
+                ProjectSprite.Update(gameTime, Position);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
-                Collided(gameTime);
             }
         }
     }

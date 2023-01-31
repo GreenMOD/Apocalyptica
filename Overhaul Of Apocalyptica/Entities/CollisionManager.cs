@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
 using Overhaul_Of_Apocalyptica.Entities;
+using System.Configuration;
+
 namespace Overhaul_Of_Apocalyptica.Entities
 {
     class CollisionManager
@@ -12,7 +14,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public List<ICollidable> Collidables { get; set; }
         private List<ICollidable> _toAdd;
         private List<ICollidable> _toRemove;
-        public event EventHandler Collision;
         
 
         public CollisionManager(List<ICollidable> collidables)
@@ -24,13 +25,16 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public void Update(GameTime gameTime)
         {
-            foreach (ICollidable c in Collidables)
+            foreach (ICollidable c in Collidables) //TODO check zombies get hit
             {
                 for (int i = 0; i < Collidables.Count-1; i++)
                 {
-                    if (c.CollisionBox.Intersects(Collidables[i].CollisionBox))
+                    if (c != Collidables[i])
                     {
-                        Collision.Invoke(Collidables[i],EventArgs.Empty);
+                        if (c.CollisionBox.Intersects(Collidables[i].CollisionBox))
+                        {
+                           c.Collided(gameTime, Collidables[i]);
+                        }
                     }
                 }
                 

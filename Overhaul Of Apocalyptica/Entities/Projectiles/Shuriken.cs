@@ -8,11 +8,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
     class Shuriken : Projectile, IEntity
     {
-        public override void Collided(GameTime gameTime)
+        public override void Collided(GameTime gameTime, ICollidable collidedWith)
         {
-
+            throw new NotImplementedException();
         }
-
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {

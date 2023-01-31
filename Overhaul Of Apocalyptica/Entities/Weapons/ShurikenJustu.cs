@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Overhaul_Of_Apocalyptica.Entities.Projectiles;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,8 +9,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
     class ShurikenJustu : Gun, IEntity
     {
-
-
+        public override List<Bullet> BulletsToAdd { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
@@ -26,12 +26,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             throw new NotImplementedException();
         }
 
-        public override void Update(GameTime gameTime, Vector2 updatePos, string direction)
-        {
-            throw new NotImplementedException();
-        }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             throw new NotImplementedException();
         }

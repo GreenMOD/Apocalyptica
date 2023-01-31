@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
+using System.Diagnostics;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 {
@@ -30,14 +31,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ZombieSprite.Source.Width, ZombieSprite.Source.Height);
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
             List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
-            CurrentTarget = players[0];
-            foreach (Player n in players)
-            {
-                if ((CurrentTarget.Position - Position).Length() > (n.Position - Position).Length())
-                {
-                    CurrentTarget = n;
-                }
-            }
+            Health = 50;
             
         }
         public override void Update(GameTime gameTime)
@@ -71,31 +65,36 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             base.Update(gameTime);
 
         }
-        public override void Collided(GameTime gameTime)
+
+
+        ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
+        ////{
+        ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
+        ////    {
+        ////        CurrentTarget.Health -= 5;
+        ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
+        ////    }
+
+        ////}
+
+        ////foreach (Zombie z in _zombiesInView)
+        ////{
+        ////    float distance = Vector2.Distance(Position, z.Position);
+
+        ////    if ((distance > 0) && (distance < 20))//20 pixels
+        ////    {
+        ////        Separate(z.Position);
+        ////    }
+        ////}
+
+
+        public override void Collided(GameTime gameTime, ICollidable collidedWith)
         {
-
-            ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
-            ////{
-            ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
-            ////    {
-            ////        CurrentTarget.Health -= 5;
-            ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
-            ////    }
-
-            ////}
-
-            ////foreach (Zombie z in _zombiesInView)
-            ////{
-            ////    float distance = Vector2.Distance(Position, z.Position);
-
-            ////    if ((distance > 0) && (distance < 20))//20 pixels
-            ////    {
-            ////        Separate(z.Position);
-            ////    }
-            ////}
-
+            if (collidedWith.GetType().Name == "Bullet")
+            {
+                Health = Health - 5;
+            }
         }
-
 
 
     }
