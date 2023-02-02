@@ -10,6 +10,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
+using System.Diagnostics;
 
 namespace Overhaul_Of_Apocalyptica
 {/// <summary>
@@ -29,6 +30,7 @@ namespace Overhaul_Of_Apocalyptica
             FlightTime = gameTime.TotalGameTime.TotalSeconds;
             MaxVelocity = 4f;
             MaxForce = 4.15f;
+            IsDestroyed= false;
         }
 
         public override void Update(GameTime gameTime)
@@ -40,6 +42,7 @@ namespace Overhaul_Of_Apocalyptica
                 Flight(gameTime);
                 ProjectSprite.Update(gameTime, Position);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
+                CollisionBox.Inflate(2.5f, 2.5f);
             }
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -48,7 +51,13 @@ namespace Overhaul_Of_Apocalyptica
         }
         public override void Collided(GameTime gameTime , ICollidable collidedWith)
         {
+            Debug.WriteLine(collidedWith.GetType().FullName);
+           
+            if(collidedWith.GetType().FullName == _target.GetType().FullName)
+            {
                 IsDestroyed = true;
+                _target.Health = _target.Health - 10;
+            }
         }
         public override void Flight(GameTime gameTime)
         {

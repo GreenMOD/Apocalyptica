@@ -24,7 +24,8 @@ namespace Overhaul_Of_Apocalyptica.Entities
         protected Rectangle AltUp = new Rectangle(345, 0, 23, 42); //alternate up
         protected Rectangle AltDown = new Rectangle(552, 0, 23, 42); //alternate down
 
-        public override Vector2 Position { get; set; }
+        private Vector2 _position = new Vector2();
+        public override Vector2 Position { get { return _position; } set { _position = new Vector2((float)MathHelper.Clamp(value.X, 45, 755), (float)MathHelper.Clamp(value.Y, 45, 435)); } }
         public override Vector2 Speed { get; set; }
         public override int Health { get; set; }
         public override string Facing { get; set; }
@@ -37,7 +38,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         private Heart _heart;
         #endregion
         #region Constructor
-        public Ninja(Texture2D texture, Texture2D heartSprite )
+        public Ninja(Texture2D texture, Texture2D heartSprite, Texture2D shuriken, GameTime gameTime)
         {
 
             _sprite = new Sprite(texture, new List<Rectangle>() {Frame1,Frame2,Frame3,Frame4 },new List<Rectangle>() {AltLeft,AltRight,AltUp,AltDown }, Position);
@@ -49,6 +50,8 @@ namespace Overhaul_Of_Apocalyptica.Entities
             Health = 100;
             _heart = new Heart(heartSprite, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
+
+            Ranged = new ShurikenJustu(new Vector2(Position.X + 75, Position.Y), shuriken, gameTime);
         }
         #endregion
         #region Methods
@@ -57,6 +60,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             if (IsActive == true)
             {
                 PlayerInput(gameTime, Keyboard.GetState());
+                Ranged.Update(gameTime);
                 _sprite.Update(gameTime, Position);
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
@@ -72,14 +76,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
         {
-            if ((currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.D))) | ((currentStateKeys.IsKeyDown(Keys.S)) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.S) && (currentStateKeys.IsKeyDown(Keys.D))) | (currentStateKeys.IsKeyDown(Keys.W)) | (currentStateKeys.IsKeyDown(Keys.A)) | (currentStateKeys.IsKeyDown(Keys.S)) ^ (currentStateKeys.IsKeyDown(Keys.D))) //TODO THIS MOVEMENT DOESN'T WORK WITH MUTPLE BUTTON PRESSES
+            if ((currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.D))) | ((currentStateKeys.IsKeyDown(Keys.S)) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.S) && (currentStateKeys.IsKeyDown(Keys.D))) | (currentStateKeys.IsKeyDown(Keys.W)) | (currentStateKeys.IsKeyDown(Keys.A)) | (currentStateKeys.IsKeyDown(Keys.S)) ^ (currentStateKeys.IsKeyDown(Keys.D))) 
             {
                 Movement(RUNNING_SPEED, currentStateKeys);
             }
-            //if (currentStateKeys.IsKeyDown(Keys.G))
-            //{
-            //    FireR(Ranged, gameTime);
-            //}
+            if (currentStateKeys.IsKeyDown(Keys.G))
+            {
+                FireR(gameTime);
+            }
         }
         #endregion
     }

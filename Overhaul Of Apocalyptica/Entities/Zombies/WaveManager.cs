@@ -36,9 +36,10 @@ namespace Overhaul_Of_Apocalyptica
         private List<Player> _players;
         public bool IsRunning { get; set; }
 
-        private bool _nextWaveBegin = false;
+        private float _waveRestPeriod = 10f;
+        private float _waveRestStart;
 
-        private enum managerStates {NewWave,NextWave,Waiting}
+        private enum managerStates {NewWave,NextWave,Waiting, RestPeriod}
         private managerStates _waveStates;
 
 
@@ -78,34 +79,62 @@ namespace Overhaul_Of_Apocalyptica
                     BeginWave();
                     break;
                 case managerStates.Waiting:
+
+                    foreach (Zombie z in _zombiesToAdd)
+                    {
+                        ZombiesSpawned.Add(z);
+                        _entityManager.AddEntity(z);
+                        _collisionManager.AddCollidable(z);
+                    }
+
                     foreach (Zombie z in ZombiesSpawned)
                     {
                         if (z.Health <= 0)
                         {
                             _zombiesToRemove.Add(z);
                         }
-                        else
-                        {
-                            z.Update(gameTime);
-                        }
+
                     }
 
                     foreach (Zombie z in _zombiesToRemove)
                     {
                         ZombiesSpawned.Remove(z);
+                        _entityManager.RemoveEntity(z);
+                        _collisionManager.RemoveCollidable(z);
                     }
 
-                    foreach (Zombie z in _zombiesToAdd)
-                    {
-                        ZombiesSpawned.Add(z);
-                    }
+
 
 
                     _zombiesToAdd.Clear();
                     _zombiesToRemove.Clear();
 
+                    if (ZombiesSpawned.Count == 0)
+                    {
+                        if (_zombiesLeft.Count ==0)
+                        {
+                            _waveStates = managerStates.RestPeriod;
+                            _waveRestStart = (float)gameTime.TotalGameTime.TotalSeconds;
+
+                        }
+                        else if (_zombiesLeft.Count < 3)
+                        {
+                            SpawnZombie(_zombiesLeft.Count);
+                        }
+                        else
+                        {
+                            SpawnZombie(_rng.Next(1,3));
+                        }
+                       
+                    }
+
                     break;
-                default:
+
+                case managerStates.RestPeriod:
+                    if (gameTime.TotalGameTime.TotalSeconds - _waveRestStart >= _waveRestPeriod)
+                    {
+                       _waveStates = managerStates.NextWave;
+                    }
                     break;
             }
             
@@ -132,11 +161,8 @@ namespace Overhaul_Of_Apocalyptica
             for (int i = 0; i < numZombies; i++)
             {
                 _zombiesToAdd.Add(_zombiesLeft[i]);
-                _entityManager.AddEntity(_zombiesLeft[i]);
-                _collisionManager.AddCollidable(_zombiesLeft[i]);
 
             }
-
             _zombiesLeft.RemoveRange(0, numZombies);
 
         }
@@ -154,28 +180,26 @@ namespace Overhaul_Of_Apocalyptica
                 Wave1.Add(b);
               
             }
-            Zombie zombie = new Captain(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager,_collisionManager, _projectilesSpriteSheet);
-            Wave1.Add(zombie);
             //Wave2
             List<Zombie> Wave2 = new List<Zombie>();
             for (int i = 0; i < 2; i++)
             {
-                Zombie b = new Captain(_zombieSpriteSheet, new Vector2(150, 200), _entityManager,_collisionManager, _projectilesSpriteSheet);
+                Zombie b = new Captain(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager,_collisionManager, _projectilesSpriteSheet);
                 Wave2.Add(b);
             }
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    //Zombie w2 = new Walker(_zombieSpriteSheet,_entityManager, new Vector2(rng.Next(0, 800), rng.Next(480, 700)),_players);
-            //    Wave2.Add(w2);
-            //}
+            for (int i = 0; i < 10; i++)
+            {
+                Zombie w2 = new Walker(_zombieSpriteSheet, _entityManager, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _players);
+                Wave2.Add(w2);
+            }
             //Wave3
             List<Zombie> Wave3 = new List<Zombie>();
             for (int i = 0; i < 3; i++)
             {
-                Zombie b = new Screamer(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager);
-                Wave3.Add(b);
+                
+                Wave3.Add(new Screamer(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager));
             }
-           
+
             //etc.
 
             //Gathering all waves
@@ -183,14 +207,9 @@ namespace Overhaul_Of_Apocalyptica
 
 
 
+            Waves.Add(Wave1);
+            Waves.Add(Wave2);
             Waves.Add(Wave3);
-            Waves.Add(Wave2);
-            Waves.Add(Wave2);
-            Waves.Add(Wave2);
-            Waves.Add(Wave2);
-            Waves.Add(Wave2);
-            Waves.Add(Wave2);
-            _zombiesLeft = Waves[CurrentWave];
             _waveStates = managerStates.NewWave;
         }
        

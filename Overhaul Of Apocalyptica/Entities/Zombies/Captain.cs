@@ -6,13 +6,16 @@ using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
+using System.ComponentModel.DataAnnotations;
+using SharpDX.Direct3D9;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 {
     class Captain : Zombie, ICollidable
     {
-        public override Vector2 Position { get; set; }
-
+        private Vector2 _position = new Vector2();
+        public override Vector2 Position { get { return _position; } set { _position = new Vector2((float)MathHelper.Clamp(value.X, 45, 755), (float)MathHelper.Clamp(value.Y, 45, 435)); } }
+        
 
         protected Rectangle frame1 = new Rectangle(0, 62, 19, 33);  // left
         protected Rectangle frame2 = new Rectangle(21, 62, 19, 33);  // right
@@ -50,9 +53,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 
             _rocketProjectile = projectile;
 
-            
-
-            Position = new Vector2(650,250);
+            Position = spawnLocation;
             Rockets = new List<Projectile>();
 
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
@@ -73,120 +74,52 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
-        { //TODO Problem 1 I cannot keep the captian zombie inside the GameWindow Bounds. The code below only stops them at the border
+        { 
 
 
            
             Flee(CurrentTarget.Position);
-            if (Position.X > 775)
-            {
-                ApplyOffset();
-                if (Position.X > 775)
-                {
-                    Position = new Vector2(775f, Position.Y);
-                }
 
 
-            }
-            else if (Position.X < 25)
-            {
-                ApplyOffset();
-                if (Position.X < 25)
-                {
-                    Position = new Vector2(25f, Position.Y);
-                }
-
-            }
-            if (Position.Y > 440)
-            {
-                ApplyOffset();
-                if (Position.Y > 440)
-                {
-                    Position = new Vector2(Position.X, 440);
-                }
-                
-            }
-            else if (Position.Y < 45)
-            {
-                ApplyOffset();
-                if (Position.Y < 45)
-                {
-                    Position = new Vector2(Position.X, 45);
-                }
-               
-            }
-            else
-            {
-                Flee(CurrentTarget.Position);
-            }
-            Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
-            if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
-            {
-                Speed = Vector2.Normalize(Speed) * MaxVelocity;
-
-            }
-            Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-            Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
-
-            if (Position.Y < 45)
-            {
-                Position = new Vector2(Position.X, 45);
-            }
-            ZombieSprite.Update(gameTime, Position);
+            base.Update(gameTime);
 
 
             //Checks whether a rocket can be fired and then fires it
 
-            if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastSwarmBomb >= SWARM_BOMB_COOLDOWN) ^ (_timeSinceLastSwarmBomb == 0))
+            if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastSwarmBomb >= SWARM_BOMB_COOLDOWN))
             {
                 _timeSinceLastSwarmBomb = gameTime.TotalGameTime.TotalSeconds;
                 _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
                 Projectile swarmBomb = new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, CurrentTarget, gameTime);
                 Fire(gameTime, swarmBomb);
             }
-            else if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastRocket >= ROCKET_COOLDOWN) ^ (_timeSinceLastRocket == 0))
+            else if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastRocket >= ROCKET_COOLDOWN))
             {
                 _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
                 Projectile seeker = new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, CurrentTarget, gameTime);
                 Fire(gameTime, seeker);
             }
-          
-            
+
+
             ///updates all rockets that are currently fire
-            if (Rockets.Count != 0)
+
+            List<Projectile> rocketsToRemove = new List<Projectile>();
+            foreach (Projectile item in Rockets)
             {
-                //foreach (var item in Rockets)
-                //{
-                //    if (item.IsDestroyed == true)
-                //    {
-                //        Rockets.Remove(item);
-                //        _entityManager.RemoveEntity(item);
-                //    }
-                //    else
-                //    {
-                //        item.Update(gameTime);
-                //    }
-                   
-                //}
-                for (int i = 0; i < Rockets.Count; i++)
+                if (item.IsDestroyed)
                 {
-                    Projectile item = Rockets[i];
-                    if (item.IsDestroyed)
-                    {
-                        Rockets.Remove(item);
-                        _entityManager.RemoveEntity(item);
-                        _collisionManager.RemoveCollidable(item);
-                        
-                        
-                    }
+                    rocketsToRemove.Add(item);
                 }
             }
+            foreach (Projectile item in rocketsToRemove)
+            {
+                Rockets.Remove(item);
+                _entityManager.RemoveEntity(item);
+                _collisionManager.RemoveCollidable(item);
+            }
+            rocketsToRemove.Clear();
 
-
-
-
-
-            if (MagnitudePos(Speed.X, Speed.Y) > 0)
+            if (Speed.Length() > 0)
             {
                 ZombieFacing = "left";
             }

@@ -29,9 +29,17 @@ namespace Overhaul_Of_Apocalyptica.Entities
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ZombieSprite.Source.Width, ZombieSprite.Source.Height);
             Players = players;
             Health = 100;
-        }
-        
+            CanAttack = true;
 
+            Vector2 closestVector = new Vector2();
+            CurrentTarget = Players[0];
+        }
+
+        public override void Update(GameTime gameTime)
+        {
+            Pursuit(CurrentTarget);
+            base.Update(gameTime);
+        }
         ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
         ////{
         ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
@@ -52,7 +60,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         ////    }
         ////}
 
-    
+
 
     }
 }

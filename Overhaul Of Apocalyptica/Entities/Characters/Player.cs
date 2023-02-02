@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
+using System.Reflection;
+using System.Diagnostics;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Characters
 {
@@ -132,17 +134,28 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         public void Collided(GameTime gameTime, ICollidable collidedWith)
         {
+            
+            
+            ///sort extraction of collidewith   
             switch (collidedWith.GetType().Name)
             {
+                
                 case "Walker":
-                    Health = Health - 10;
+                    if (collidedWith.GetType().GetProperty("CanAttack").GetValue(collidedWith).ToString() == "True")
+                    {
+                        Health = Health - 10;
+                        collidedWith.GetType().GetProperty("CanAttack").SetValue(collidedWith, false);
+                    }
                     break;
                 case "Screamer":
-                    Health = Health - 5;
+                    if (collidedWith.GetType().GetProperty("CanAttack").GetValue(collidedWith).ToString() == "True")
+                    {
+                        Health = Health - 5;
+                        collidedWith.GetType().GetProperty("CanAttack").SetValue(collidedWith, false);
+                    }
                     break;
-                case "Rocket":
-                    Health = Health - 10;
-                    break;
+
+               
             }
         }
     }

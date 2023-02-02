@@ -13,6 +13,18 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ../../../../../Desktop/Projects/Project RGB/Apocalyptica/SoldierSpriteSheet2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../../Desktop/Projects/Project RGB/Apocalyptica/SoldierSpriteSheet2.png;SpriteSheets/SoldierSpriteSheet2.png
+
 #begin Controls/ButtonTexture.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -140,6 +152,18 @@
 /processorParam:TextureFormat=Color
 /build:SpriteSheets/NinjaSpriteSheet.png
 
+#begin SpriteSheets/Shuriken.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:SpriteSheets/Shuriken.png
+
 #begin SpriteSheets/SoldierBulletSprite.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -175,18 +199,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:SpriteSheets/SoldierSpriteSheet1.png
-
-#begin SpriteSheets/SoldierSpriteSheet2.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:SpriteSheets/SoldierSpriteSheet2.png
 
 #begin SpriteSheets/WaveCounterSprite.png
 /importer:TextureImporter

@@ -7,6 +7,7 @@ using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
 using System.Diagnostics;
+using System.Security.Principal;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -20,8 +21,13 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         private Sprite _sprite;
 
-        private double _attackCooldown = 2.5f;
+        private double _attackCooldown = 1f;
 
+        private float _timeLastAttack = -1;
+        private GameTime _gameTime = new GameTime();
+        public bool CanAttack { get { return _attackCooldown < _gameTime.TotalGameTime.TotalSeconds - _timeLastAttack; } set { _timeLastAttack = (float)_gameTime.TotalGameTime.Seconds; } }
+
+        private Vector2 _position;
         public abstract Vector2 Position { get; set; }
         public List<Player> Players { get; set; }
         public Player CurrentTarget { get; set; }
@@ -43,44 +49,39 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public Sprite ZombieSprite{ get { return _sprite; } set {_sprite = value; } }
 
-        public double AttackCooldown { get { return _attackCooldown; }set{ _attackCooldown = value; } }
-
         public bool isSeparating { get; set; }
 
         private Random _rng = new Random();
 
         public virtual void Update(GameTime gameTime)
         {
-            if (Health > 0)
+            _gameTime = gameTime;
+
+            Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
+            if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
             {
-                if (isSeparating == true)
-                {
-                    Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
-                    if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
-                    {
-                        Speed = Vector2.Normalize(Speed) * MaxVelocity;
+                Speed = Vector2.Normalize(Speed) * MaxVelocity;
 
-                    }
-                    Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-                    Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
-                    isSeparating = false;
-                }
-
-                _sprite.Update(gameTime, Position);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
-
-
-
-                if (Speed.X > 0)
-                {
-                    ZombieFacing = "right";
-                }
-                else if (Speed.X < 0)
-                {
-                    ZombieFacing = "left";
-                }
             }
-            
+            Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
+            Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
+
+
+
+
+            _sprite.Update(gameTime, Position);
+            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+
+            if (Speed.X > 0)
+            {
+                ZombieFacing = "right";
+            }
+            else if (Speed.X < 0)
+            {
+                ZombieFacing = "left";
+            }
+
+
         }
 
 
@@ -157,7 +158,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         /// Predicts using the current velocity of the player 
         /// </summary>
         /// <param name="target"></param>
-        public virtual void Pursuit(Player target) // TODO Implement PC
+        public virtual void Pursuit(Player target) 
         {
             float predictFactor = 10f;
             //Number of cycles it will take to intercept the vehicle
@@ -209,9 +210,9 @@ namespace Overhaul_Of_Apocalyptica.Entities
             ApplyForce(desiredSeparation);
 
         }
-        public virtual void Idle()
+        public virtual void Idle(Vector2 randomPos)
         {
-            Vector2 desired = Vector2.Subtract(new Vector2((float)_rng.Next(0, 800), (float)_rng.Next(0, 480)),Position);
+            Vector2 desired = Vector2.Subtract(randomPos,Position);
             desired = Vector2.Multiply(desired, MaxForce);
 
             Vector2 steer = Vector2.Subtract(desired, Position);
@@ -226,7 +227,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce 
             if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
             {
-                Speed = Vector2.Normalize(Speed) * MaxVelocity;
+                Speed = Vector2.Normalize(Speed) * MaxVelocity; 
 
             }
             Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement

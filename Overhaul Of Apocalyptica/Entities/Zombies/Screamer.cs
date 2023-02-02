@@ -31,7 +31,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ZombieSprite.Source.Width, ZombieSprite.Source.Height);
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
             List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
-            Health = 50;
+            Health = 5;
             
         }
         public override void Update(GameTime gameTime)
@@ -52,7 +52,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             }
             if ((reachedDestination == true))
             {
-                Idle();
+                Random rng = new Random();
+                Destination = new Vector2((float)rng.Next(0, 800), (float)rng.Next(0, 480));
+                reachedDestination = false;
             }
             else 
             {

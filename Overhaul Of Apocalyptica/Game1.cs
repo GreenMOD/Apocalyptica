@@ -26,6 +26,7 @@ namespace Overhaul_Of_Apocalyptica
         private Texture2D _heartSpriteSheet;
         private Texture2D _projectileSpriteSheet;
         private Texture2D _soldierBulletSprite;
+        private Texture2D _shurikenSprite;
         private Texture2D _heavySpriteSheet1;
         private Texture2D _soldierIcon;
         private Texture2D _ninjaIcon;
@@ -152,49 +153,6 @@ namespace Overhaul_Of_Apocalyptica
             _gameState = _GameState.SAVELOAD;
 
             SaveFileMenu();
-
-
-
-            //using (StreamReader sr = new StreamReader(@"PreviousSaves/Save1.txt"))
-            //{
-            //    sr.ReadLine();
-            //    string statusOfFile = sr.ReadLine().Substring(8);
-
-            //    if (statusOfFile == "Used")
-            //    {
-            //        string Name = sr.ReadLine().Substring(6);
-            //        string Class = sr.ReadLine().Substring(7);
-            //        string Wave = sr.ReadLine().Substring(6);
-
-            //        GameTime gameTime = new GameTime();
-
-            //        Player player1;
-            //        switch (Class)
-            //        {
-            //            case "Soldier":
-            //                Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
-            //                player1 = soldier;
-            //                break;
-            //            case "Ninja":
-            //                Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet);
-            //                player1 = ninja;
-            //                break;
-            //            default:
-            //                player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierSpriteSheet2, gameTime);
-            //                break;
-            //        }
-
-            //        _entityManager.AddEntity(player1);
-            //        _collisionManager.AddCollidable(player1);
-            //        player1.Activate();
-
-            
-
-
-
-
-                
-            
         }
 
         private void OptionsButton_Click(Button sender)
@@ -215,7 +173,6 @@ namespace Overhaul_Of_Apocalyptica
 
             int[][] slotXY = new int[2][];
 
-            //TODO USING BINARY CALULATION MAKE THE SLOTS POSITION CORRECTLY
             for (int y = 0; y < 2; y++)
             {
                 
@@ -280,7 +237,7 @@ namespace Overhaul_Of_Apocalyptica
                         _player1 = soldier;
                         break;
                     case "Ninja":
-                        Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet);
+                        Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet,_shurikenSprite,gameTime);
                         _player1 = ninja;
                         break;
                     case "Heavy":
@@ -365,7 +322,7 @@ namespace Overhaul_Of_Apocalyptica
 
                     break;
                 case "Ninja":
-                    Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet);
+                    Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet,_shurikenSprite,gameTime);
                     _player1 = ninja;
                     _saveSlots[_currentSaveSlotIndex].Status = "Used";
                     _saveSlots[_currentSaveSlotIndex].PlayerName = "Player1";
@@ -406,6 +363,7 @@ namespace Overhaul_Of_Apocalyptica
             _heartSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/Heart");
             _projectileSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/captainProjectile");
             _soldierBulletSprite = Content.Load<Texture2D>(@"SpriteSheets/SoldierBulletSprite");
+            _shurikenSprite = Content.Load<Texture2D>(@"SpriteSheets/Shuriken");
             _heavySpriteSheet1 = Content.Load<Texture2D>(@"SpriteSheets/HeavySpriteSheet1");
             _soldierIcon= Content.Load<Texture2D>(@"SpriteSheets/SoldierIcon");
             _ninjaIcon= Content.Load<Texture2D>(@"SpriteSheets/NinjaIcon");
@@ -426,23 +384,19 @@ namespace Overhaul_Of_Apocalyptica
 
                 _waveManager.Update(gameTime);
 
-                if ((_player1.GetType().Name == "Soldier") ||(_player1.GetType().Name == "Heavy"))
+                foreach (Projectile b in _player1.Ranged.BulletsToAdd)
                 {
-                    foreach (Bullet b in _player1.Ranged.BulletsToAdd)
-                    {
-                        _entityManager.AddEntity(b);
-                        _collisionManager.AddCollidable(b);
-                    }
-                    _player1.Ranged.BulletsToAdd.Clear();
-                    foreach (Bullet b in _player1.Ranged.BulletsToRemove)
-                    {
-                        _entityManager.RemoveEntity(b);
-                        _collisionManager.RemoveCollidable(b);
-                    }
-                    _player1.Ranged.BulletsToAdd.Clear();
-                } 
-
-
+                    _entityManager.AddEntity(b);
+                    _collisionManager.AddCollidable(b);
+                }
+                _player1.Ranged.BulletsToAdd.Clear();
+                foreach (Projectile b in _player1.Ranged.BulletsToRemove)
+                {
+                    _entityManager.RemoveEntity(b);
+                    _collisionManager.RemoveCollidable(b);
+                }
+                _player1.Ranged.BulletsToAdd.Clear();
+                _player1.Ranged.BulletsToRemove.Clear();
 
                 base.Update(gameTime);
 
@@ -451,6 +405,7 @@ namespace Overhaul_Of_Apocalyptica
                 if (_saveSlots[_currentSaveSlotIndex].CurrentWave != _waveManager.CurrentWave)
                 {
                     _saveSlots[_currentSaveSlotIndex].CurrentWave = _waveManager.CurrentWave;
+                    _saveSlots[_currentSaveSlotIndex].OverrideSave();
                 }
 
             }

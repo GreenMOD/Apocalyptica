@@ -23,7 +23,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
         protected Texture2D BulletTexture;
         private List<Bullet> _bulletsFired;
 
-        public override List<Bullet> BulletsToAdd { get; set; }
+        public override List<Projectile> BulletsToAdd { get; set; }
+        public override List<Projectile> BulletsToRemove { get; set; }
 
         public HeavyWeapon(Vector2 start, Texture2D bulletTexture, GameTime gameTime)
         {
@@ -32,7 +33,8 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             AmmoLeft = 100;
             _lastFired = -100000f;
             _bulletsFired = new List<Bullet>();
-            BulletsToAdd= new List<Bullet>();
+            BulletsToAdd= new List<Projectile>();
+            BulletsToRemove = new List<Projectile>();
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
