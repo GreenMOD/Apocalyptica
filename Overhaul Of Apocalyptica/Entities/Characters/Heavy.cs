@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
+using Overhaul_Of_Apocalyptica.Sprites;
 using SharpDX.Direct3D9;
 using System;
 using System.Collections.Generic;
@@ -23,9 +24,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public override Vector2 Position { get { return _position; } set { _position = new Vector2((float)MathHelper.Clamp(value.X, 45, 755), (float)MathHelper.Clamp(value.Y, 45, 435)); } }
         public override Vector2 Speed { get; set; }
         public override int Health { get; set; }
-        public override string Facing { get; set; }
         public override bool IsActive { get; set; }
         public override Gun Ranged { get; set; }
+        public override List<Animation> Animations { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         private const float RUNNING_SPEED = 1.5f;
 
@@ -34,7 +35,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         private Heart _heart;
         public Heavy(Texture2D texture, Texture2D heartTexture, Texture2D bulletTexture, GameTime gameTime)
         {
-
+            Facing = "";
             _texture2D = texture;
             _frames.Add(Frame1);
             _frames.Add(Frame2);
@@ -53,7 +54,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprite.Draw(spriteBatch, gameTime, Facing);
+            _sprite.Draw(spriteBatch, gameTime);
             _heart.Draw(spriteBatch, gameTime);
             Ranged.Draw(spriteBatch, gameTime);
         }
@@ -76,7 +77,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             {
                 PlayerInput(gameTime, Keyboard.GetState());
                 Ranged.Update(gameTime);
-                _sprite.Update(gameTime, Position);
+                _sprite.Update(gameTime, Position,Facing);
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
 

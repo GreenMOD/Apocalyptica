@@ -190,7 +190,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         {
             if (Health >0)
             {
-                _sprite.Draw(spriteBatch, gameTime, ZombieFacing, 2f);
+                _sprite.Draw(spriteBatch, gameTime, 2f); //TODO ZOMBIES NEED TO DOUBLE IN SIZE WITH OUT SPRITE
             }
         }
 
@@ -239,6 +239,9 @@ namespace Overhaul_Of_Apocalyptica.Entities
             switch (collidedWith.GetType().Name)
             {
                 case "Bullet":
+                    Health = Health - 5;
+                    break;
+                case "Shuriken":
                     Health = Health - 5;
                     break;
             }

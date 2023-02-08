@@ -71,7 +71,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
             if (!IsDestroyed)
             {
                 Flight(gameTime);
-                ProjectSprite.Update(gameTime, Position);
+                ProjectSprite.Update(gameTime, Position,_direction);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ProjectSprite.Source.Width, ProjectSprite.Source.Height);
             }
 

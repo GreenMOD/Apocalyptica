@@ -7,18 +7,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
-namespace Overhaul_Of_Apocalyptica.Entities.Weapons
+namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 {
     class Shuriken : Projectile, ICollidable
     {
         private float _speed = 4f;
-        private string _direction;
+        public string Facing { get; set; }
         private Vector2 _movementVector2;
 
         public Shuriken(Vector2 posFired, string directionFired, Texture2D texture)
         {
-            _direction = directionFired;
-            switch (_direction)
+            Facing = directionFired;
+            switch (Facing)
             {
                 case "left":
                     _movementVector2 = new Vector2(-_speed, 0);
@@ -39,7 +39,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
         }
         public override void Collided(GameTime gameTime, ICollidable collidedWith)
         {
-            if (!((collidedWith.GetType().Name == "Ninja") || (collidedWith.GetType().Name == "Bullet")))
+            if (!((collidedWith.GetType().Name == "Ninja") || (collidedWith.GetType().FullName.Contains("Projectile"))))
             {
                 IsDestroyed = true;
             }
@@ -50,7 +50,11 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             if (!IsDestroyed)
             {
                 //start animations U CAN DO THIS UR SO CLOSE
-                ProjectSprite.Draw(spriteBatch, gameTime,);
+                ProjectSprite.Draw(spriteBatch, gameTime);
+                if (ProjectSprite.TimeForCurrentFrame >= ProjectSprite.FrameTime)
+                {
+                    ProjectSprite.Rotation = ProjectSprite.Rotation + 90;
+                }
             }
         }
 

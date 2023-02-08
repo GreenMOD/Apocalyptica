@@ -44,13 +44,13 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
                 _heartPosition = new Vector2(XBeginPoint, YBeginPoint);
 
-                _sprite.Update(gameTime, _heartPosition);
+                //_sprite.Update(gameTime, _heartPosition);
                 for (int i = 0; i <= HeartsLeft; i++)
                 {
-                    _sprite.Draw(spriteBatch, gameTime);
-                    XBeginPoint = 800 - (_sprite.Source.Width * (HeartsLeft - i)); //moves the position along to the next position for the heart to be drawn
-                    _heartPosition = new Vector2(XBeginPoint, YBeginPoint);
-                    _sprite.Update(gameTime, _heartPosition);
+                        _sprite.Draw(spriteBatch, gameTime);
+                        XBeginPoint = 800 - (_sprite.Source.Width * (HeartsLeft - i)); //moves the position along to the next position for the heart to be drawn
+                        _heartPosition = new Vector2(XBeginPoint, YBeginPoint);
+                        _sprite.Update(gameTime, _heartPosition);
                 }
             }
            

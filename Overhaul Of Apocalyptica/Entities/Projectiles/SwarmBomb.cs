@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
+using System.Windows.Forms;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -82,7 +83,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             {
                 FlightTime = gameTime.TotalGameTime.TotalSeconds;
                 Flight(gameTime);
-                ProjectSprite.Update(gameTime, Position);
+                ProjectSprite.Update(gameTime, Position,""); //TODO CHANGE DIRCTION OF SWARMBOMB
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
             }
         }

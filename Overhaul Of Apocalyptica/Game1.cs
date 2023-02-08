@@ -10,6 +10,7 @@ using System.IO;
 using System.Diagnostics;
 using Overhaul_Of_Apocalyptica.Events;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
+using System.Security.Cryptography.Xml;
 
 namespace Overhaul_Of_Apocalyptica
 {
@@ -45,6 +46,10 @@ namespace Overhaul_Of_Apocalyptica
         private int _waveStartIndex = 0;
 
         private Player _player1;
+
+        private List<Texture2D> _ninjaAnimationTextures = new List<Texture2D>();
+        private List<Texture2D> _soldierAnimationTextures = new List<Texture2D>();
+        private List<Texture2D> _heavyAnimationTextures = new List<Texture2D>();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -52,11 +57,6 @@ namespace Overhaul_Of_Apocalyptica
             IsMouseVisible = true;
             _entityManager = new EntityManager();
             _collisionManager = new CollisionManager(new List<ICollidable>());
-        }
-
-        private void Object_Collided(object sender, EventArgs e)
-        {
-
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace Overhaul_Of_Apocalyptica
                 switch (_saveSlots[_currentSaveSlotIndex].PlayerClass)
                 {
                     case "Soldier":
-                        Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime);
+                        Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime,_soldierAnimationTextures);
                         _player1 = soldier;
                         break;
                     case "Ninja":
@@ -245,7 +245,7 @@ namespace Overhaul_Of_Apocalyptica
                         _player1 = heavy;
                         break;
                     default:
-                        _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime);
+                        _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime, _soldierAnimationTextures);
                         break;
                 }
 
@@ -312,7 +312,7 @@ namespace Overhaul_Of_Apocalyptica
             switch (button.Text)
             {
                 case "Soldier":
-                    Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime);
+                    Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime, _soldierAnimationTextures);
                     _player1 = soldier;
                     _saveSlots[_currentSaveSlotIndex].Status = "Used";
                     _saveSlots[_currentSaveSlotIndex].PlayerName = "Player1";
@@ -341,7 +341,7 @@ namespace Overhaul_Of_Apocalyptica
                     _saveSlots[_currentSaveSlotIndex].OverrideSave();
                     break;
                 default:
-                    _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite,gameTime);
+                    _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime, _soldierAnimationTextures);
                     break;
             }
             _entityManager.AddEntity(_player1);
@@ -368,6 +368,12 @@ namespace Overhaul_Of_Apocalyptica
             _soldierIcon= Content.Load<Texture2D>(@"SpriteSheets/SoldierIcon");
             _ninjaIcon= Content.Load<Texture2D>(@"SpriteSheets/NinjaIcon");
             _heavyIcon= Content.Load<Texture2D>(@"SpriteSheets/HeavyIcon");
+
+            _soldierAnimationTextures.Add(Content.Load<Texture2D>(@"SpriteSheets/SoldierAnimations/SoldierLeftAnimation"));
+            _soldierAnimationTextures.Add(Content.Load<Texture2D>(@"SpriteSheets/SoldierAnimations/SoldierRightAnimation"));
+            _soldierAnimationTextures.Add(Content.Load<Texture2D>(@"SpriteSheets/SoldierAnimations/SoldierUpAnimation"));
+            _soldierAnimationTextures.Add(Content.Load<Texture2D>(@"SpriteSheets/SoldierAnimations/SoldierDownAnimation"));
+
             foreach (var b in _menuComponents)
             {
                 _entityManager.AddEntity(b);
@@ -404,7 +410,7 @@ namespace Overhaul_Of_Apocalyptica
                 _collisionManager.Update(gameTime);
                 if (_saveSlots[_currentSaveSlotIndex].CurrentWave != _waveManager.CurrentWave)
                 {
-                    _saveSlots[_currentSaveSlotIndex].CurrentWave = _waveManager.CurrentWave;
+                    _saveSlots[_currentSaveSlotIndex].CurrentWave = _waveManager.CurrentWave+1;
                     _saveSlots[_currentSaveSlotIndex].OverrideSave();
                 }
 

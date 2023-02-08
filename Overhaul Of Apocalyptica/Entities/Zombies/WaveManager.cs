@@ -194,22 +194,42 @@ namespace Overhaul_Of_Apocalyptica
             }
             //Wave3
             List<Zombie> Wave3 = new List<Zombie>();
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 2; i++)
             {
-                
-                Wave3.Add(new Screamer(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager));
+              Wave3.Add(new Captain(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager, _collisionManager, _projectilesSpriteSheet));
+                for (int j = 0; j < 3; j++)
+                {
+                    Wave3.Add(new Screamer(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager));
+                }
             }
-
+            List<Zombie> Wave4 = new List<Zombie>();
+            for (int i = 0; i < 2; i++)
+            {
+                Wave3.Add(new Captain(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager, _collisionManager, _projectilesSpriteSheet));
+                for (int j = 0; j < 3; j++)
+                {
+                    Wave4.Add(new Screamer(_zombieSpriteSheet, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _entityManager));
+                    Wave4.Add(new Walker(_zombieSpriteSheet, _entityManager, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _players));
+                }
+            }
+            List<Zombie> Wave5 = new List<Zombie>();
+            Zombie z = new Walker(_zombieSpriteSheet, _entityManager, new Vector2(_rng.Next(0, 800), _rng.Next(480, 700)), _players);
+            z.Health = 200;
+            z.MaxVelocity = 0.2f;
+            z.MaxForce = 0.2f;
+            Wave5.Add(z);
             //etc.
 
             //Gathering all waves
 
 
 
-
             Waves.Add(Wave1);
             Waves.Add(Wave2);
             Waves.Add(Wave3);
+            Waves.Add(Wave4);
+            Waves.Add(Wave5);
+
             _waveStates = managerStates.NewWave;
         }
        

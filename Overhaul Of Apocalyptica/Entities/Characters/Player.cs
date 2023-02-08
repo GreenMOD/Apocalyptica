@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
+using Overhaul_Of_Apocalyptica.Sprites;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
 using System.Reflection;
 using System.Diagnostics;
@@ -20,12 +21,13 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public Rectangle CollisionBox { get; set; }
 
         public abstract int Health { get; set; }
-
-        public abstract string Facing { get; set; }
+        public string Facing { get; set; }
 
         public abstract bool IsActive { get; set; }
 
         public abstract Gun Ranged { get; set; }
+
+        public abstract List<Animation> Animations { get; set; }
         
        
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
@@ -123,7 +125,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             }
             Ranged.Position = Position;
             Ranged.Direction = Facing;
-
         }
         public void FireR(GameTime gameTime)
         {

@@ -7,6 +7,7 @@ using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
+using Overhaul_Of_Apocalyptica.Sprites;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -19,18 +20,18 @@ namespace Overhaul_Of_Apocalyptica.Entities
         protected Rectangle Frame3 = new Rectangle(257, 0, 38, 84);  // up
         protected Rectangle Frame4 = new Rectangle(356, 0, 38, 84);  // down
 
-        protected Rectangle AltLeft = new Rectangle(69, 0, 44, 84); //ternate left
-        protected Rectangle AltRight = new Rectangle(70, 0, 44, 84); //alternate right
-        protected Rectangle AltUp = new Rectangle(345, 0, 23, 42); //alternate up
-        protected Rectangle AltDown = new Rectangle(552, 0, 23, 42); //alternate down
+        protected Rectangle AltLeft = new Rectangle(190, 0, 45, 84); //ternate left
+        protected Rectangle AltRight = new Rectangle(70, 0, 45, 84); //alternate right
+        protected Rectangle AltUp = new Rectangle(300, 0, 38, 84); //alternate up
+        protected Rectangle AltDown = new Rectangle(398, 0, 38, 84); //alternate down
 
         private Vector2 _position = new Vector2();
         public override Vector2 Position { get { return _position; } set { _position = new Vector2((float)MathHelper.Clamp(value.X, 45, 755), (float)MathHelper.Clamp(value.Y, 45, 435)); } }
         public override Vector2 Speed { get; set; }
         public override int Health { get; set; }
-        public override string Facing { get; set; }
         public override bool IsActive { get; set; }
         public override Gun Ranged { get; set; }
+        public override List<Animation> Animations { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         private const float RUNNING_SPEED = 5f;
 
@@ -40,8 +41,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
         #region Constructor
         public Ninja(Texture2D texture, Texture2D heartSprite, Texture2D shuriken, GameTime gameTime)
         {
+            Facing = "";
 
-            _sprite = new Sprite(texture, new List<Rectangle>() {Frame1,Frame2,Frame3,Frame4 },new List<Rectangle>() {AltLeft,AltRight,AltUp,AltDown }, Position);
+
+            _sprite = new Sprite(texture, new List<Rectangle>() {Frame1,AltLeft,Frame2,AltRight,Frame3,AltUp,Frame4,AltDown }, Position);
+            _sprite.FrameTime = 0.75f;
 
             Speed = Vector2.Zero;
             Position = new Vector2(100, 200);
@@ -61,7 +65,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             {
                 PlayerInput(gameTime, Keyboard.GetState());
                 Ranged.Update(gameTime);
-                _sprite.Update(gameTime, Position);
+                _sprite.Update(gameTime, Position,Facing); 
                 _heart.Update(gameTime);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
             }
@@ -69,9 +73,8 @@ namespace Overhaul_Of_Apocalyptica.Entities
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprite.Draw(spriteBatch, gameTime, Facing);
+            _sprite.Draw(spriteBatch, gameTime);
             _heart.Draw(spriteBatch, gameTime);
-
         }
 
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
@@ -79,6 +82,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             if ((currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.D))) | ((currentStateKeys.IsKeyDown(Keys.S)) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.S) && (currentStateKeys.IsKeyDown(Keys.D))) | (currentStateKeys.IsKeyDown(Keys.W)) | (currentStateKeys.IsKeyDown(Keys.A)) | (currentStateKeys.IsKeyDown(Keys.S)) ^ (currentStateKeys.IsKeyDown(Keys.D))) 
             {
                 Movement(RUNNING_SPEED, currentStateKeys);
+                
             }
             if (currentStateKeys.IsKeyDown(Keys.G))
             {

@@ -6,8 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
-using System.ComponentModel.DataAnnotations;
-using SharpDX.Direct3D9;
+using Overhaul_Of_Apocalyptica.Entities.Projectiles;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 {

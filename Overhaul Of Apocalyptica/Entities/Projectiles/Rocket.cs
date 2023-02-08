@@ -2,17 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Design;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 using System.Diagnostics;
 
-namespace Overhaul_Of_Apocalyptica
+namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 {/// <summary>
 /// This is a rocket that doesn't cause Zombies to swarm
 /// </summary>
@@ -40,7 +34,7 @@ namespace Overhaul_Of_Apocalyptica
             {
                 
                 Flight(gameTime);
-                ProjectSprite.Update(gameTime, Position);
+                ProjectSprite.Update(gameTime, Position,""); // TODO change direction of sprite of rocket
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
                 CollisionBox.Inflate(2.5f, 2.5f);
             }
@@ -51,7 +45,6 @@ namespace Overhaul_Of_Apocalyptica
         }
         public override void Collided(GameTime gameTime , ICollidable collidedWith)
         {
-            Debug.WriteLine(collidedWith.GetType().FullName);
            
             if(collidedWith.GetType().FullName == _target.GetType().FullName)
             {

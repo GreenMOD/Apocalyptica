@@ -26,7 +26,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
         public  bool IsReloading { get; set; }
         
         public bool IsHeld { get; set; }
-
         public string Direction { get; set; }
         public abstract List<Projectile> BulletsToAdd { get; set; }
         public abstract List<Projectile> BulletsToRemove { get; set; }
@@ -38,5 +37,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
         public abstract void Update(GameTime gameTime);
 
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
+
     }
 }
