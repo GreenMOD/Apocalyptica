@@ -9,12 +9,23 @@ using Overhaul_Of_Apocalyptica.Sprites;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
 using System.Reflection;
 using System.Diagnostics;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Characters
 {
     public abstract class Player : IEntity, ICollidable
     {
-        public abstract Vector2 Position { get; set; }
+
+        #region Declarations
+
+        private Vector2 _position = new Vector2();
+
+        private Animation _currentAnimation;
+
+        private List<Animation> _animations =new List<Animation>();
+
+        #endregion
+        public virtual Vector2 Position { get { return _position; } set { _position = new Vector2((float)MathHelper.Clamp(value.X, 45, 755), (float)MathHelper.Clamp(value.Y, 45, 435)); } }
 
         public abstract Vector2 Speed { get; set; }
 
@@ -27,7 +38,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         public abstract Gun Ranged { get; set; }
 
-        public abstract List<Animation> Animations { get; set; }
+        public virtual List<Animation> Animations { get { return _animations; } set { _animations = value; } }
+
+        public virtual Animation CurrentAnimation { get { return _currentAnimation; } set { _currentAnimation = value; } } 
         
        
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);

@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Overhaul_Of_Apocalyptica.Events;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
 using System.Security.Cryptography.Xml;
+using Overhaul_Of_Apocalyptica.FireworkAnimationComponents;
 
 namespace Overhaul_Of_Apocalyptica
 {
@@ -32,6 +33,8 @@ namespace Overhaul_Of_Apocalyptica
         private Texture2D _soldierIcon;
         private Texture2D _ninjaIcon;
         private Texture2D _heavyIcon;
+        private Texture2D _fireworkTexture;
+        private Texture2D _particleTexture;
         private WaveManager _waveManager;
         private CollisionManager _collisionManager;
         private enum _GameState { PLAYING, MENU, INITIALISE, SAVELOAD , SAVENEW };
@@ -126,6 +129,9 @@ namespace Overhaul_Of_Apocalyptica
         private void TitleButton_Click(Button sender)
         {
 
+            Firework f =  new Firework(_fireworkTexture, new Vector2(0, 0.2f), _particleTexture);
+
+            _entityManager.AddEntity(f);
         }
         /// <summary>
         /// a save file menu showing 4 slots. Each slot can be overriden if they contain an itwm or they can open an empty file for character creation.
@@ -157,7 +163,7 @@ namespace Overhaul_Of_Apocalyptica
 
         private void OptionsButton_Click(Button sender)
         {
-            throw new NotImplementedException();
+             
         }
         private void QuitButton_Click(Button sender)
         {
@@ -184,11 +190,11 @@ namespace Overhaul_Of_Apocalyptica
                         string text = ( _saveSlots[x + y+ count].SlotName);
                         Button saveSlot = new Button(Content.Load<Texture2D>(@"Controls/ButtonTexture"), Content.Load<SpriteFont>(@"Fonts/ButtonFont"))
                         {
-                            Text = (text),
+                            Text = (_saveSlots[x + y + count].Status),
                             Position = new Vector2(Window.ClientBounds.Width / 8 + (x * 450), Window.ClientBounds.Height / 4 + (y * 200))
                         };
                         //Event handler to a (saveSlot - button) 
-                        saveSlot.Click += SaveSlot_Click; 
+                        saveSlot.Click += SaveSlot_Clicked; 
                         _saveButtons.Add(saveSlot);
                     }
                     else
@@ -199,7 +205,7 @@ namespace Overhaul_Of_Apocalyptica
                             Position = new Vector2(Window.ClientBounds.Width / 8 + (x * 450), Window.ClientBounds.Height / 4 + (y * 200))
 
                         };
-                        emptySlot.Click += SaveSlot_Click;
+                        emptySlot.Click += SaveSlot_Clicked;
                         _saveButtons.Add(emptySlot);
                     }
                 }
@@ -217,7 +223,7 @@ namespace Overhaul_Of_Apocalyptica
         /// </summary>
         /// <param name="sender">Button that is being selected</param>
         /// <param name="e"></param>
-        private void SaveSlot_Click(Button sender)
+        private void SaveSlot_Clicked(Button sender)
         {
             GameTime gameTime = new GameTime();
             if (sender.Text.Contains("Empty"))
@@ -233,7 +239,7 @@ namespace Overhaul_Of_Apocalyptica
                 switch (_saveSlots[_currentSaveSlotIndex].PlayerClass)
                 {
                     case "Soldier":
-                        Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime,_soldierAnimationTextures);
+                        Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime);
                         _player1 = soldier;
                         break;
                     case "Ninja":
@@ -245,7 +251,7 @@ namespace Overhaul_Of_Apocalyptica
                         _player1 = heavy;
                         break;
                     default:
-                        _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime, _soldierAnimationTextures);
+                        _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime);
                         break;
                 }
 
@@ -312,7 +318,7 @@ namespace Overhaul_Of_Apocalyptica
             switch (button.Text)
             {
                 case "Soldier":
-                    Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime, _soldierAnimationTextures);
+                    Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime);
                     _player1 = soldier;
                     _saveSlots[_currentSaveSlotIndex].Status = "Used";
                     _saveSlots[_currentSaveSlotIndex].PlayerName = "Player1";
@@ -341,7 +347,7 @@ namespace Overhaul_Of_Apocalyptica
                     _saveSlots[_currentSaveSlotIndex].OverrideSave();
                     break;
                 default:
-                    _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime, _soldierAnimationTextures);
+                    _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime);
                     break;
             }
             _entityManager.AddEntity(_player1);
@@ -355,19 +361,33 @@ namespace Overhaul_Of_Apocalyptica
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+
             _ninjaSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/NinjaSpriteSheet");
-            _zombieSheet = Content.Load<Texture2D>(@"SpriteSheets/ApocZombieSpriteSheet");
-            _dessertMap = Content.Load<Texture2D>(@"SpriteSheets/Dessert1");
-            _soldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierSpriteSheet2");
-            _waveCounterSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/WaveCounterSprite");
-            _heartSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/Heart");
-            _projectileSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/captainProjectile");
-            _soldierBulletSprite = Content.Load<Texture2D>(@"SpriteSheets/SoldierBulletSprite");
             _shurikenSprite = Content.Load<Texture2D>(@"SpriteSheets/Shuriken");
+            _ninjaIcon = Content.Load<Texture2D>(@"SpriteSheets/NinjaIcon");
+
+            _soldierSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/SoldierSpriteSheet2");
+            _soldierBulletSprite = Content.Load<Texture2D>(@"SpriteSheets/SoldierBulletSprite");
+            _soldierIcon = Content.Load<Texture2D>(@"SpriteSheets/SoldierIcon");
+
             _heavySpriteSheet1 = Content.Load<Texture2D>(@"SpriteSheets/HeavySpriteSheet1");
-            _soldierIcon= Content.Load<Texture2D>(@"SpriteSheets/SoldierIcon");
-            _ninjaIcon= Content.Load<Texture2D>(@"SpriteSheets/NinjaIcon");
-            _heavyIcon= Content.Load<Texture2D>(@"SpriteSheets/HeavyIcon");
+            _heavyIcon = Content.Load<Texture2D>(@"SpriteSheets/HeavyIcon");
+
+            _zombieSheet = Content.Load<Texture2D>(@"SpriteSheets/ApocZombieSpriteSheet");
+
+            _dessertMap = Content.Load<Texture2D>(@"SpriteSheets/Dessert1");
+
+            _waveCounterSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/WaveCounterSprite");
+
+            _heartSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/Heart");
+
+            _projectileSpriteSheet = Content.Load<Texture2D>(@"SpriteSheets/captainProjectile");
+
+
+
+            _fireworkTexture= Content.Load<Texture2D>(@"SpriteSheets/Particle2");
+            _particleTexture= Content.Load<Texture2D>(@"SpriteSheets/Particle1");
 
             _soldierAnimationTextures.Add(Content.Load<Texture2D>(@"SpriteSheets/SoldierAnimations/SoldierLeftAnimation"));
             _soldierAnimationTextures.Add(Content.Load<Texture2D>(@"SpriteSheets/SoldierAnimations/SoldierRightAnimation"));

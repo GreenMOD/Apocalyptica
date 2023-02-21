@@ -10,10 +10,8 @@ using Overhaul_Of_Apocalyptica.Entities.Projectiles;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 {
-    class Captain : Zombie, ICollidable
+    class Captain : Zombie
     {
-        private Vector2 _position = new Vector2();
-        public override Vector2 Position { get { return _position; } set { _position = new Vector2((float)MathHelper.Clamp(value.X, 45, 755), (float)MathHelper.Clamp(value.Y, 45, 435)); } }
         
 
         protected Rectangle frame1 = new Rectangle(0, 62, 19, 33);  // left
@@ -22,13 +20,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         protected Rectangle swarmBombSource = new Rectangle(6,0 , 5, 3);
         //List of all ISwarmable Zombies or a Swarm Manager
         private List<Projectile> Rockets;
-
-
-        
-
-        private int _distanceUntilEdgeX;
-        private int _distanceUntilEdgeY;
-
 
         private Texture2D _rocketProjectile;
 
@@ -83,24 +74,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             base.Update(gameTime);
 
 
-            //Checks whether a rocket can be fired and then fires it
-
-            if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastSwarmBomb >= SWARM_BOMB_COOLDOWN))
-            {
-                _timeSinceLastSwarmBomb = gameTime.TotalGameTime.TotalSeconds;
-                _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
-                Projectile swarmBomb = new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, CurrentTarget, gameTime);
-                Fire(gameTime, swarmBomb);
-            }
-            else if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastRocket >= ROCKET_COOLDOWN))
-            {
-                _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
-                Projectile seeker = new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, CurrentTarget, gameTime);
-                Fire(gameTime, seeker);
-            }
+            Fire(gameTime);
 
 
-            ///updates all rockets that are currently fire
 
             List<Projectile> rocketsToRemove = new List<Projectile>();
             foreach (Projectile item in Rockets)
@@ -128,116 +104,38 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             }
 
 
-        }/// <summary>
-         /// Normal Seeking Algorithm using Reynolds except the vector is inverted in order to flee
-         /// </summary>
-         /// <param name="target"></param>
-
-         /// <summary>
-         /// Creates an new rocketSource that seeks the current target
-         /// </summary>
-        public void Fire(GameTime gameTime, Projectile projectile)
-        {
-            Rockets.Add(projectile);
-
-            _entityManager.AddEntity(projectile);
-
-            _collisionManager.AddCollidable(projectile);
         }
-        public void ApplyOffset()
+        /// <summary>
+        /// Checks if the zombie can fire then if it can adds a new instanse of a rocket/swarmbomb to the entity manager and collision manager
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Fire(GameTime gameTime)
         {
-            //    ///Modelling the offset vector as hyperbolic tangent will allow a steady increase of speed for attacking
-            //    ///With range of -2  ------ 2 each degree it goes up the vector of attack will be increase and each degree it goes down it will become 
-
-
-            _distanceUntilEdgeX = (800 - (int)Position.X); //
-            _distanceUntilEdgeY = (480 - (int)Position.Y);
-
-
-            //    //every 10 pixels the closer it gets the harder the force is applyed
-
-            int forceMultiplerX = _distanceUntilEdgeX / 10;
-            int forceMultiplerY = _distanceUntilEdgeY / 10;
-
-
-            float offsetX = forceMultiplerX * Vector2.Negate(Speed).X; //a multiplier for the amount of force added to a specific direction is added to this as it geths closer to the wall
-            float offsetY = forceMultiplerY * Vector2.Negate(Speed).Y; //a multiplier for the amount of force added to a specific direction is added to this as it geths closer to the wall
-            Vector2 counterVector = new Vector2(offsetX, offsetY);
-            Vector2 steer = Vector2.Subtract(Speed, counterVector);
-            //ApplyForce(steer);
-            Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
-            if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
+            if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastSwarmBomb >= SWARM_BOMB_COOLDOWN))
             {
-                Speed = Vector2.Normalize(Speed) * MaxVelocity;
+                _timeSinceLastSwarmBomb = gameTime.TotalGameTime.TotalSeconds;
+                _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
+                Projectile swarmBomb = new SwarmBomb(_rocketProjectile, new List<Rectangle>() { swarmBombSource }, Position, CurrentTarget, gameTime);
+
+                Rockets.Add(swarmBomb);
+
+                _entityManager.AddEntity(swarmBomb);
+
+                _collisionManager.AddCollidable(swarmBomb);
 
             }
-            Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-            Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
+            else if ((gameTime.TotalGameTime.TotalSeconds - _timeSinceLastRocket >= ROCKET_COOLDOWN))
+            {
+                _timeSinceLastRocket = gameTime.TotalGameTime.TotalSeconds;
+                Projectile seeker = new Rocket(_rocketProjectile, new List<Rectangle>() { rocketSource }, Position, CurrentTarget, gameTime);
 
-            //    ///TWo vectors Attack and flee tune each to situations more to attack if its gets closer to wall 
-            //    ///hyperbolic tanch  
+                Rockets.Add(seeker);
 
-            //    Vector2 attackVector;
-            //    Vector2 fleeVector;
+                _entityManager.AddEntity(seeker);
 
-
-
-
+                _collisionManager.AddCollidable(seeker);
+            }
         }
-
-
-
-        //}
-
-        //public void MovementSelection(int hyperbolicrange)
-        //{
-        //    float tuningFactor = 1.25f;
-        //    switch (HyperbolicRange)
-        //    {
-        //        case 2:
-        //            Seek(_ninja.Position / tuningFactor);
-        //            break;
-        //        case 1:
-        //            Seek(_ninja.Position / tuningFactor);
-        //            break;
-        //        case 0:
-        //            Speed = Vector2.Zero;
-        //            break;
-        //        case -1:
-        //            Flee(_ninja.Position * tuningFactor);
-        //            break;
-        //        case -2:
-        //            Flee(_ninja.Position * tuningFactor);
-        //            break;
-        //    }
-        //}
-
-
-
-        
-
-        ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
-        ////{
-        ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
-        ////    {
-        ////        CurrentTarget.Health -= 5;
-        ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
-        ////    }
-
-        ////}
-
-        ////foreach (Zombie z in _zombiesInView)
-        ////{
-        ////    float distance = Vector2.Distance(Position, z.Position);
-
-        ////    if ((distance > 0) && (distance < 20))//20 pixels
-        ////    {
-        ////        Separate(z.Position);
-        ////    }
-        ////}
-
-
-
     }
 
 }

@@ -19,14 +19,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         protected Rectangle Frame2 = new Rectangle(0, 0, 63, 85);   // right
         protected Rectangle Frame3 = new Rectangle(132, 0, 47, 85); // up
         protected Rectangle Frame4 = new Rectangle(187, 0, 47, 85); // down
-
-        private Vector2 _position = new Vector2();
-        public override Vector2 Position { get { return _position; } set { _position = new Vector2((float)MathHelper.Clamp(value.X, 45, 755), (float)MathHelper.Clamp(value.Y, 45, 435)); } }
         public override Vector2 Speed { get; set; }
         public override int Health { get; set; }
         public override bool IsActive { get; set; }
         public override Gun Ranged { get; set; }
-        public override List<Animation> Animations { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         private const float RUNNING_SPEED = 1.5f;
 
@@ -46,7 +42,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Position = new Vector2(100, 200);
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
 
-            Health = 100;
+            Health = 120;
             _heart = new Heart(heartTexture, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
             Ranged = new HeavyWeapon(Position, bulletTexture, gameTime);

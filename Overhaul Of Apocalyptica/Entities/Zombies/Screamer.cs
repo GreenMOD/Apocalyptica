@@ -10,9 +10,8 @@ using System.Diagnostics;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 {
-    class Screamer : Zombie, ICollidable
-    {
-        public override Vector2 Position { get; set; }
+    class Screamer : Zombie
+    { 
 
         public Vector2 Destination { get; set; }
         bool reachedDestination = true;
@@ -30,7 +29,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             Position = spawnLocation;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ZombieSprite.Source.Width, ZombieSprite.Source.Height);
             _entityManager = entityManager; //assigned an entitymanager to allow for it to track any enitiy as its target
-            List<Player> players = _entityManager.GetEntities<Player>().ToList(); //creates a list of all players from a IEnumerable
             Health = 5;
             
         }
@@ -89,14 +87,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         ////    }
         ////}
 
-
-        public override void Collided(GameTime gameTime, ICollidable collidedWith)
-        {
-            if (collidedWith.GetType().Name == "Bullet")
-            {
-                Health = Health - 5;
-            }
-        }
 
 
     }

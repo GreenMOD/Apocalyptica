@@ -9,7 +9,7 @@ using System.Text;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 {
-    class Shuriken : Projectile, ICollidable
+    class Shuriken : Projectile
     {
         private float _speed = 4f;
         public string Facing { get; set; }

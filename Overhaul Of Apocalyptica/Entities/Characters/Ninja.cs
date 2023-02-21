@@ -24,17 +24,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
         protected Rectangle AltRight = new Rectangle(70, 0, 45, 84); //alternate right
         protected Rectangle AltUp = new Rectangle(300, 0, 38, 84); //alternate up
         protected Rectangle AltDown = new Rectangle(398, 0, 38, 84); //alternate down
-
-        private Vector2 _position = new Vector2();
-        public override Vector2 Position { get { return _position; } set { _position = new Vector2((float)MathHelper.Clamp(value.X, 45, 755), (float)MathHelper.Clamp(value.Y, 45, 435)); } }
         public override Vector2 Speed { get; set; }
         public override int Health { get; set; }
         public override bool IsActive { get; set; }
-        public override Gun Ranged { get; set; }
-        public override List<Animation> Animations { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override Gun Ranged { get { return _ranged; } set { _ranged = value; } }
 
         private const float RUNNING_SPEED = 5f;
 
+        private Gun _ranged;
         private Sprite _sprite;
         private Heart _heart;
         #endregion
@@ -55,7 +52,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             _heart = new Heart(heartSprite, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
 
-            Ranged = new ShurikenJustu(new Vector2(Position.X + 75, Position.Y), shuriken, gameTime);
+            _ranged = new ShurikenJustu(new Vector2(Position.X + 75, Position.Y), shuriken, gameTime);
         }
         #endregion
         #region Methods

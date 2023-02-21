@@ -12,6 +12,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Content\SpriteSheets\captainProjectile.png" />
+    <None Remove="Content\SpriteSheets\Particle1.png" />
+    <None Remove="Content\SpriteSheets\Particle2.png" />
     <None Remove="Content\SpriteSheets\ZombieSheet2.png" />
   </ItemGroup>
   <ItemGroup>

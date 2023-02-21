@@ -21,9 +21,6 @@ namespace Overhaul_Of_Apocalyptica
         private List<Zombie> _zombiesToAdd = new List<Zombie>();// all zombies are to be spawned
         private List<Zombie> _zombiesToRemove = new List<Zombie>(); 
 
-        private double _lastSpawned = 0; // tracks the time between spawning
-        private float _spawnBuffer = 5f;// time inbertween spawns
-
         Texture2D _zombieSpriteSheet;
         Texture2D _projectilesSpriteSheet;
 
@@ -39,7 +36,7 @@ namespace Overhaul_Of_Apocalyptica
         private float _waveRestPeriod = 10f;
         private float _waveRestStart;
 
-        private enum managerStates {NewWave,NextWave,Waiting, RestPeriod}
+        private enum managerStates {NewWave,NextWave,WaveInProgress, RestPeriod}
         private managerStates _waveStates;
 
 
@@ -54,7 +51,7 @@ namespace Overhaul_Of_Apocalyptica
             _players = _entityManager.GetEntities<Player>();
             _collisionManager = collsionManager;
             ZombiesSpawned = new List<Zombie>();
-            _waveStates = managerStates.Waiting;
+            _waveStates = managerStates.WaveInProgress;
             
         }/// <summary>
         /// Incrments the wave counter and spawns 5 zombies from the next wave
@@ -63,7 +60,7 @@ namespace Overhaul_Of_Apocalyptica
         {
             _zombiesLeft = Waves[CurrentWave];
             SpawnZombie(3);
-            _waveStates = managerStates.Waiting;
+            _waveStates = managerStates.WaveInProgress;
 
         }
        
@@ -78,7 +75,7 @@ namespace Overhaul_Of_Apocalyptica
                     CurrentWave++;
                     BeginWave();
                     break;
-                case managerStates.Waiting:
+                case managerStates.WaveInProgress:
 
                     foreach (Zombie z in _zombiesToAdd)
                     {

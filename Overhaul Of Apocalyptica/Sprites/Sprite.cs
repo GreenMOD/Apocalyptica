@@ -83,7 +83,7 @@ namespace Overhaul_Of_Apocalyptica
         }
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime, float scale)
         {
-            spriteBatch.Draw(Texture, Position, Source, _tintColor, _rotation, new Vector2(_frameWidth / 2, _frameHeight / 2),scale, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(Texture, Position, Source, _tintColor, _rotation, new Vector2(_frameWidth /4, _frameHeight/4),scale, SpriteEffects.None, 0.0f);
         }
 
         public virtual void Update(GameTime gameTime, Vector2 newPosition, string facing)

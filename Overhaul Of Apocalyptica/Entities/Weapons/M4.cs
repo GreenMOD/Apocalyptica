@@ -96,6 +96,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
                     {
                         BulletsToRemove.Add(b);
                     }
+                    else if (b.FlightTime > 8f)
+                    {
+                        BulletsToRemove.Add(b);
+                    }
                     else
                     {
                         b.Update(gameTime);
@@ -103,7 +107,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
                     
                 }
                 foreach (Bullet b in BulletsToRemove)
-                {
+                { 
                     _bulletsFired.Remove(b);
                 }
             }

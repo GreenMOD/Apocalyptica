@@ -59,6 +59,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 
         public override void Flight(GameTime gameTime)
         {
+            float elasped = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            FlightTime += elasped;
             if (!IsDestroyed)
             {
                 Position = Vector2.Add(Position, _movementVector2);

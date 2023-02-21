@@ -33,7 +33,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
                     {
                         if (c.CollisionBox.Intersects(Collidables[i].CollisionBox))
                         {
-                           c.Collided(gameTime, Collidables[i]);
+                          c.Collided(gameTime, Collidables[i]);
                            Collidables[i].Collided(gameTime, c);
                         }
                     }

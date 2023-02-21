@@ -1,19 +1,12 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Design;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
-using System.Windows.Forms;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
-    class SwarmBomb : Projectile, ICollidable 
+    class SwarmBomb : Projectile 
     {
         Vector2 posTarget;
         const double FLIGHT_MAXIMUM = 2.5;

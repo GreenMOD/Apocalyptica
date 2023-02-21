@@ -16,7 +16,7 @@ namespace Overhaul_Of_Apocalyptica.Sprites
         private float _frameTime= 0f;
         private float _frameDelay = 0.05f;
 
-        private int _currentFrame;
+        private int _currentFrame = 0;
 
         private bool _isLooping = true;
         private bool _hasFinished = false;
@@ -24,6 +24,9 @@ namespace Overhaul_Of_Apocalyptica.Sprites
         private string _name;
         private string _nextAnimation;
 
+        private Vector2 _position = new Vector2();
+
+        public Vector2 Position { get { return _position; } set { _position = value; } }
 
         public int FrameWidth { get { return _frameWidth; } set { _frameWidth = value; } }
 
@@ -51,6 +54,8 @@ namespace Overhaul_Of_Apocalyptica.Sprites
             FrameWidth = frameWidth;
             FrameHeight = frameHeight;
             Name = name;
+
+            
         }
 
         public void Play()
@@ -58,8 +63,10 @@ namespace Overhaul_Of_Apocalyptica.Sprites
             _currentFrame = 0;
             HasFinished = false;
         }
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime , Vector2 position)
         {
+            Position = position;
+
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             _frameTime += elapsed;
@@ -67,25 +74,25 @@ namespace Overhaul_Of_Apocalyptica.Sprites
             if (_frameTime >= _frameDelay)
             {
                 _currentFrame++;
-                if (_currentFrame >= FrameCount)
-                {
-                    if (IsLooping)
-                    {
-                        _currentFrame = 0;
-                    }
-                    else
-                    {
-                        _currentFrame = FrameCount - 1;
-                        HasFinished = true;
-                    }
-                }
+                //if (_currentFrame >= frames)
+                //{
+                //    if (IsLooping)
+                //    {
+                //        _currentFrame = 0;
+                //    }
+                //    else
+                //    {
+                //        _currentFrame = FrameCount - 1;
+                //        HasFinished = true;
+                //    }
+                //}
 
                 _frameTime = 0;
             }
         }
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            
+            spriteBatch.Draw(Texture, Position, Frame, Color.White);
         }
     }
 }

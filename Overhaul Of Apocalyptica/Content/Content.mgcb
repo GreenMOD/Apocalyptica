@@ -13,6 +13,30 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ../../../../../Desktop/Projects/Project Room in Spirit and Time/Second_Form/Assets/Particle1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../../Desktop/Projects/Project Room in Spirit and Time/Second_Form/Assets/Particle1.png;SpriteSheets/Particle1.png
+
+#begin ../../../../../Desktop/Projects/Project Room in Spirit and Time/Second_Form/Assets/Particle2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../../Desktop/Projects/Project Room in Spirit and Time/Second_Form/Assets/Particle2.png;SpriteSheets/Particle2.png
+
 #begin Controls/ButtonTexture.png
 /importer:TextureImporter
 /processor:TextureProcessor

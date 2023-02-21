@@ -13,7 +13,15 @@ namespace Overhaul_Of_Apocalyptica.Entities
 {
     abstract class Zombie :IEntity,ICollidable
     {
-        private Vector2 _acceleration;
+        #region Declarations
+
+        private Vector2 _position = Vector2.Zero;
+
+        private Vector2 _acceleration = Vector2.Zero;
+
+        private Vector2 _speed = Vector2.Zero;
+
+        private int _health = 100;
 
         private float _maxVelocity = 0.75f;
 
@@ -24,34 +32,56 @@ namespace Overhaul_Of_Apocalyptica.Entities
         private double _attackCooldown = 1f;
 
         private float _timeLastAttack = -1;
-        private GameTime _gameTime = new GameTime();
-        public bool CanAttack { get { return _attackCooldown < _gameTime.TotalGameTime.TotalSeconds - _timeLastAttack; } set { _timeLastAttack = (float)_gameTime.TotalGameTime.Seconds; } }
 
-        private Vector2 _position;
-        public abstract Vector2 Position { get; set; }
-        public List<Player> Players { get; set; }
-        public Player CurrentTarget { get; set; }
-        public double Health { get; set; }
-        public double Armour { get; set; }
-        public Vector2 Speed { get; set; }
-        public Rectangle CollisionBox { get; set; }
-        public string Status { get; set; }
-        public string ZombieFacing { get; set; }
+        private GameTime _gameTime = new GameTime();
+
+        private List<Player> _players= new List<Player>();
+
+        private Player _currentTarget;
+
+        private Rectangle _collisionBox = new Rectangle();
+
+        private string _facing = "";
+
+        private float _minimumX = 5f;
+
+        private float _maximumX = 755f;
+
+        private float _minimumY = 5f;
+
+        private float _maximumY = 445f;
+
+        private bool isSeparating = false;
+        #endregion
+
+        #region Properties
+        public virtual Vector2 Position { get { return _position; } set { _position =new Vector2(MathHelper.Clamp(value.X,_minimumX,_maximumX),(MathHelper.Clamp(value.Y, _minimumY,_maximumY))); } }
 
         public Vector2 Acceleration { get { return _acceleration; } set { _acceleration = value; } }
-       
+
+        public virtual Vector2 Speed { get { return _speed; } set { _speed = value; } }
+
+        public virtual int Health { get { return _health; } set { _health = value; } }
 
         public float MaxVelocity { get { return _maxVelocity; } set { _maxVelocity = value; } }
 
-
         public float MaxForce { get { return _maxForce; } set { _maxForce = value; } }
 
+        public Sprite ZombieSprite { get { return _sprite; } set { _sprite = value; } }
 
-        public Sprite ZombieSprite{ get { return _sprite; } set {_sprite = value; } }
+        public virtual bool CanAttack { get { return _attackCooldown < _gameTime.TotalGameTime.TotalSeconds - _timeLastAttack; } set { _timeLastAttack = (float)_gameTime.TotalGameTime.Seconds; } }
 
-        public bool isSeparating { get; set; }
+        public virtual List<Player> Players { get { return _players; } set { _players = value; } }
 
-        private Random _rng = new Random();
+        public virtual Player CurrentTarget { get { return _currentTarget; } set { _currentTarget = value; } }
+
+        public Rectangle CollisionBox { get { return _collisionBox; } set { _collisionBox = value; } }
+
+        public string ZombieFacing { get { return _facing; } set { _facing = value; } }
+
+        #endregion
+
+        #region Methods
 
         public virtual void Update(GameTime gameTime)
         {
@@ -67,21 +97,8 @@ namespace Overhaul_Of_Apocalyptica.Entities
             Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
 
 
-
-
-            _sprite.Update(gameTime, Position);
-            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
-
-            if (Speed.X > 0)
-            {
-                ZombieFacing = "right";
-            }
-            else if (Speed.X < 0)
-            {
-                ZombieFacing = "left";
-            }
-
-
+            ZombieSprite.Update(gameTime, Position);
+            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width*2, _sprite.Source.Height * 2);
         }
 
 
@@ -196,18 +213,18 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         
        
-        public virtual void Separate(Vector2 target)
+        public virtual void Separate(Rectangle collisionBox)
         {
             /// AIM to avoid the other zombie
             /// HOW by placing a small force on the zombie that will only be taken off when it is out of range of the zombie
             /// Luckly Vectors can be added together to produce a resultant hence i can place many vectors into a single 
             /// IMPLEMENTATION Bool if on Separate runs and applies the force after movement.
 
-            Vector2 desiredSeparation = (Vector2.Subtract(Position, target));
-            desiredSeparation.Normalize();
-            desiredSeparation = Vector2.Multiply(desiredSeparation, MaxVelocity);
+           Rectangle boxIntersect =  Rectangle.Intersect(CollisionBox, collisionBox);
+
+           Position =  Vector2.Add(Position, new Vector2(boxIntersect.Width, boxIntersect.Height));
             
-            ApplyForce(desiredSeparation);
+            
 
         }
         public virtual void Idle(Vector2 randomPos)
@@ -244,7 +261,17 @@ namespace Overhaul_Of_Apocalyptica.Entities
                 case "Shuriken":
                     Health = Health - 5;
                     break;
+                case "Walker":
+                    Separate(collidedWith.CollisionBox);
+                    break;
+                case "Screamer":
+                    Separate(collidedWith.CollisionBox);
+                    break;
+                case "Captain":
+                    Separate(collidedWith.CollisionBox);
+                    break;
             }
         }
+        #endregion
     }
 }
