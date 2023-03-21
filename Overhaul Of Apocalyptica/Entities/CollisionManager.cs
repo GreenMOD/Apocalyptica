@@ -25,7 +25,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public void Update(GameTime gameTime)
         {
-            foreach (ICollidable c in Collidables) //TODO check zombies get hit
+            foreach (ICollidable c in Collidables) // ERROR DAMAGE OCCURS TWICE AS ELEMENT IS CHECKED TWCIE
             {
                 for (int i = 0; i < Collidables.Count-1; i++)
                 {
@@ -33,8 +33,8 @@ namespace Overhaul_Of_Apocalyptica.Entities
                     {
                         if (c.CollisionBox.Intersects(Collidables[i].CollisionBox))
                         {
-                          c.Collided(gameTime, Collidables[i]);
-                           Collidables[i].Collided(gameTime, c);
+                            c.Collided(gameTime, Collidables[i]);
+                            Collidables[i].Collided(gameTime, c);
                         }
                     }
                 }

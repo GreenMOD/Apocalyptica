@@ -27,12 +27,12 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         
         private CollisionManager _collisionManager;
 
-        public const double ROCKET_COOLDOWN = 2.5;
+        public const double ROCKET_COOLDOWN = 3.5;
         public const double SWARM_BOMB_COOLDOWN = 10;
         public double _timeSinceLastRocket = 0;
         public double _timeSinceLastSwarmBomb = 0;
 
-        public Captain(Texture2D captainTexture, Vector2 spawnLocation, EntityManager entityManager, CollisionManager collisionManager,Texture2D projectile) //Add CollisionManager
+        public Captain(Texture2D captainTexture, Vector2 spawnLocation, EntityManager entityManager, CollisionManager collisionManager,Texture2D projectile) 
         {
 
             _entityManager = entityManager;
@@ -56,7 +56,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
                     CurrentTarget = n;
                 }
             }
-            Health = 150;
+            Health = 50;
         }
 
         /// <summary>
@@ -64,21 +64,26 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
-        { 
-
+        {
+           
 
            
             Flee(CurrentTarget.Position);
-
-
-            base.Update(gameTime);
-
-
             Fire(gameTime);
 
 
 
             List<Projectile> rocketsToRemove = new List<Projectile>();
+            if (Health == 0)
+            {
+                foreach (Projectile r in Rockets)
+                {
+                    if (!r.IsDestroyed)
+                    {
+                        r.IsDestroyed = true;
+                    }
+                }
+            }
             foreach (Projectile item in Rockets)
             {
                 if (item.IsDestroyed)
@@ -93,15 +98,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
                 _collisionManager.RemoveCollidable(item);
             }
             rocketsToRemove.Clear();
+            base.Update(gameTime);
 
-            if (Speed.Length() > 0)
-            {
-                ZombieFacing = "left";
-            }
-            else
-            {
-                ZombieFacing = "right";
-            }
+
+          
 
 
         }

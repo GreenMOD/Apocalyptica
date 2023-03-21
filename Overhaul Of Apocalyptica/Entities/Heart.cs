@@ -8,31 +8,30 @@ using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 namespace Overhaul_Of_Apocalyptica.Entities
 {
-    class Heart : IEntity
+   public class Heart
     {
         private Sprite _sprite;
       
         private Vector2 _heartPosition;
-        private Player _player;
 
         public int HeartsLeft { get; set; }
+
         private int _MAXIMUM_AMOUNT_HEARTS;
 
         
-        public Heart(Texture2D heartSheet, int maximumHealth, Player player, List<Rectangle>frames)
+        public Heart(Texture2D heartSheet, int maximumHealth,List<Rectangle>frames)
         {
 
             _sprite = new Sprite(heartSheet, frames, _heartPosition);
 
             _MAXIMUM_AMOUNT_HEARTS = maximumHealth;
-            HeartsLeft = maximumHealth / 20;
+            HeartsLeft = maximumHealth /20;
 
-            _player = player;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, int health)
         {
-            HeartsLeft = _player.Health/20; 
+            HeartsLeft = health /20; 
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)

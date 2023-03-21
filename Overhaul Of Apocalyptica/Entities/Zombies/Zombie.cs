@@ -7,7 +7,7 @@ using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
 using System.Diagnostics;
-using System.Security.Principal;
+using Overhaul_Of_Apocalyptica.FireworkAnimationComponents;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -55,7 +55,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         #endregion
 
         #region Properties
-        public virtual Vector2 Position { get { return _position; } set { _position =new Vector2(MathHelper.Clamp(value.X,_minimumX,_maximumX),(MathHelper.Clamp(value.Y, _minimumY,_maximumY))); } }
+        public virtual Vector2 Position { get { return _position; } set { _position = new Vector2(MathHelper.Clamp(value.X, _minimumX, _maximumX), (MathHelper.Clamp(value.Y, _minimumY, _maximumY))); } }
 
         public Vector2 Acceleration { get { return _acceleration; } set { _acceleration = value; } }
 
@@ -88,14 +88,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
             _gameTime = gameTime;
 
             Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce
+
+          
             if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
             {
                 Speed = Vector2.Normalize(Speed) * MaxVelocity;
-
             }
             Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
             Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
-
 
             ZombieSprite.Update(gameTime, Position);
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width*2, _sprite.Source.Height * 2);
@@ -110,8 +110,8 @@ namespace Overhaul_Of_Apocalyptica.Entities
             desired.Normalize();
             desired = Vector2.Multiply(desired, MaxVelocity);
 
-
-            Vector2 steer = Vector2.Negate(desired);
+            Vector2 steer = Vector2.Subtract(desired, Position); 
+            steer = Vector2.Negate(steer);
             if (steer.Length() > MaxForce)
             {
                 steer = Vector2.Normalize(steer) * MaxForce; //limits the steering force to maxforce
@@ -135,14 +135,15 @@ namespace Overhaul_Of_Apocalyptica.Entities
             ApplyForce(steer);
 
 
-            Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce 
-            if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
-            {
-                Speed = Vector2.Normalize(Speed) * MaxVelocity;
 
-            }
-            Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-            Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
+            //Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce 
+            //if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
+            //{
+            //    Speed = Vector2.Normalize(Speed) * MaxVelocity;
+
+            //}
+            //Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
+            //Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
 
             Arrive(target);
         }
@@ -200,19 +201,13 @@ namespace Overhaul_Of_Apocalyptica.Entities
             mag = (int)Math.Sqrt(mag);
             return mag;
         }
-
-
-
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (Health >0)
             {
-                _sprite.Draw(spriteBatch, gameTime, 2f); //TODO ZOMBIES NEED TO DOUBLE IN SIZE WITH OUT SPRITE
+                _sprite.Draw(spriteBatch, gameTime, 2f);
             }
         }
-
-        
-       
         public virtual void Separate(Rectangle collisionBox)
         {
             /// AIM to avoid the other zombie
@@ -220,11 +215,68 @@ namespace Overhaul_Of_Apocalyptica.Entities
             /// Luckly Vectors can be added together to produce a resultant hence i can place many vectors into a single 
             /// IMPLEMENTATION Bool if on Separate runs and applies the force after movement.
 
-           Rectangle boxIntersect =  Rectangle.Intersect(CollisionBox, collisionBox);
+            //Rectangle boxIntersect =  Rectangle.Intersect(CollisionBox, collisionBox);
 
-           Position =  Vector2.Add(Position, new Vector2(boxIntersect.Width, boxIntersect.Height));
-            
-            
+            //Vector2 topLeft = new Vector2(boxIntersect.X, boxIntersect.Y);
+
+            //if (topLeft == Position)
+            //{
+            //    if (boxIntersect.Width > boxIntersect.Height)
+            //    {
+            //        Position = Vector2.Add(Position, new Vector2(0, boxIntersect.Height));
+            //    }
+            //    else if (boxIntersect.Height > boxIntersect.Width)
+            //    {
+            //        Position = Vector2.Add(Position, new Vector2(boxIntersect.Width, 0));
+            //    }
+            //}
+            //else
+            //{
+            //    if (boxIntersect.Width > boxIntersect.Height)
+            //    {
+            //        Position = Vector2.Subtract(Position, new Vector2(0, boxIntersect.Height));
+            //    }
+            //    else if (boxIntersect.Height > boxIntersect.Width)
+            //    {
+            //        Position = Vector2.Subtract(Position, new Vector2(boxIntersect.Width, 0));
+            //    }
+            //}
+
+            Rectangle intercept = Rectangle.Intersect(CollisionBox, collisionBox);
+
+            Vector2 pos = new Vector2((int)Position.X, (int)Position.Y);
+
+            if (pos == new Vector2(intercept.X, intercept.Y))
+            {
+                if (intercept.Width > intercept.Height)
+                {
+                    Position = Vector2.Add(Position, new Vector2(0, intercept.Height));
+                }
+                else
+                {
+                    Position = Vector2.Add(Position, new Vector2(intercept.Width, 0));
+                }
+
+            }
+            else if (intercept.Contains(pos.X + CollisionBox.Width, 0))
+            {
+                Position = Vector2.Add(Position, new Vector2(-intercept.Width, 0));
+            }
+
+
+
+
+
+
+            //else if (bottomRight == Vector2.Add(Position,new Vector2(CollisionBox.X,CollisionBox.Y)))
+            //{
+            //    float seperateX = 0f;
+            //    float seperateY = 0f;
+
+            //    bottomRight.Deconstruct(out seperateX, out seperateY);
+
+            //    Position = Vector2.Subtract(Position, new Vector2(seperateX, -seperateY));
+            //}
 
         }
         public virtual void Idle(Vector2 randomPos)
@@ -250,7 +302,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
             Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
             Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
         }
-
         public virtual void Collided(GameTime gameTime, ICollidable collidedWith)
         {
             switch (collidedWith.GetType().Name)

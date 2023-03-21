@@ -42,7 +42,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
         }
         public override void Collided(GameTime gameTime, ICollidable collidedWith)
         {
-            if (!((collidedWith.GetType().Name == "Soldier") || (collidedWith.GetType().Name == "Bullet")))
+            if (!((collidedWith.GetType().Name == "Soldier") || (collidedWith.GetType().Name == "Bullet") || (collidedWith.GetType().Name == "Heavy")))
             {
                 Debug.WriteLine(collidedWith.GetType().Name);
                 IsDestroyed = true;
@@ -74,7 +74,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
             if (!IsDestroyed)
             {
                 Flight(gameTime);
-                ProjectSprite.Update(gameTime, Position,_direction);
+                ProjectSprite.Update(gameTime, Position);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, ProjectSprite.Source.Width, ProjectSprite.Source.Height);
             }
 

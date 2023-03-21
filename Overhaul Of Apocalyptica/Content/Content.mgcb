@@ -13,6 +13,30 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin ../../../../../Desktop/Projects/Computer NEA/Assets/Game Over.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../../Desktop/Projects/Computer NEA/Assets/Game Over.png;Controls/GameOver.png
+
+#begin ../../../../../Desktop/Projects/Computer NEA/Assets/SoldierIcon.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:../../../../../Desktop/Projects/Computer NEA/Assets/SoldierIcon.png;SpriteSheets/SoldierIcon.png
+
 #begin ../../../../../Desktop/Projects/Project Room in Spirit and Time/Second_Form/Assets/Particle1.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -140,6 +164,18 @@
 /processorParam:TextureFormat=Color
 /build:SpriteSheets/HeavySpriteSheet1.png
 
+#begin SpriteSheets/HeavySpriteSheet2.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:SpriteSheets/HeavySpriteSheet2.png
+
 #begin SpriteSheets/Ninja/NinjaRightAnimation.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -247,30 +283,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:SpriteSheets/SoldierBulletSprite.png
-
-#begin SpriteSheets/SoldierIcon.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:SpriteSheets/SoldierIcon.png
-
-#begin SpriteSheets/SoldierSpriteSheet1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:SpriteSheets/SoldierSpriteSheet1.png
 
 #begin SpriteSheets/SoldierSpriteSheet2.png
 /importer:TextureImporter

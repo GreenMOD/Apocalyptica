@@ -12,23 +12,43 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 {
     public class Heavy : Player
     {
+        private Texture2D _texture2D;
+        private Sprite _sprite;
+        private Heart _hearts;
 
-        private List<Rectangle> _frames = new List<Rectangle>();
+        static Rectangle Frame2 = new Rectangle(0, 0, 63, 85);   // right
+        static Rectangle Alt2 = new Rectangle(64, 0, 63, 85);   // right
+        static Rectangle Frame1 = new Rectangle(130, 0, 63, 85);  // left  
+        static Rectangle Alt1 = new Rectangle(194, 0, 63, 85);  // left  
+        static Rectangle Frame3 = new Rectangle(260, 0, 47, 85); // up
+        static Rectangle Alt3 = new Rectangle(308, 0, 47, 85); // up
+        static Rectangle Frame4 = new Rectangle(358, 0, 47, 85); // down
+        static Rectangle Alt4 = new Rectangle(406, 0, 47, 85); // down
 
-        protected Rectangle Frame1 = new Rectangle(66,0, 63, 85);  // left  //TODO SORT THE HITBOX ON THE SOLDIER
-        protected Rectangle Frame2 = new Rectangle(0, 0, 63, 85);   // right
-        protected Rectangle Frame3 = new Rectangle(132, 0, 47, 85); // up
-        protected Rectangle Frame4 = new Rectangle(187, 0, 47, 85); // down
-        public override Vector2 Speed { get; set; }
-        public override int Health { get; set; }
-        public override bool IsActive { get; set; }
+
+
+
+
+
+
+        private List<Rectangle> _frames = new List<Rectangle>()
+        {
+            Frame1,Alt1,
+
+            Frame2,Alt2,
+
+            Frame3,Alt3,
+
+            Frame4,Alt4
+        };
+
         public override Gun Ranged { get; set; }
 
         private const float RUNNING_SPEED = 1.5f;
 
-        private Texture2D _texture2D;
-        private Sprite _sprite;
-        private Heart _heart;
+        public override Sprite Sprite { get { return _sprite; } set { _sprite = value; } }
+
+        public override Heart Hearts { get { return _hearts; } set { _hearts = value; } }
         public Heavy(Texture2D texture, Texture2D heartTexture, Texture2D bulletTexture, GameTime gameTime)
         {
             Facing = "";
@@ -37,29 +57,43 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             _frames.Add(Frame2);
             _frames.Add(Frame3);
             _frames.Add(Frame4);
-            _sprite = new Sprite(texture, _frames, Position);
+            Sprite = new Sprite(texture, _frames, Position);
+            Sprite.FrameTime = 0.75f;
             Speed = Vector2.Zero;
             Position = new Vector2(100, 200);
-            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
 
             Health = 120;
-            _heart = new Heart(heartTexture, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
+            Hearts = new Heart(heartTexture, Health, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
             Ranged = new HeavyWeapon(Position, bulletTexture, gameTime);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprite.Draw(spriteBatch, gameTime);
-            _heart.Draw(spriteBatch, gameTime);
-            Ranged.Draw(spriteBatch, gameTime);
+            Sprite.Draw(spriteBatch, gameTime);
+            Hearts.Draw(spriteBatch, gameTime);
         }
 
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
         {
-            if ((currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.D))) | ((currentStateKeys.IsKeyDown(Keys.S)) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.S) && (currentStateKeys.IsKeyDown(Keys.D))) | (currentStateKeys.IsKeyDown(Keys.W)) | (currentStateKeys.IsKeyDown(Keys.A)) | (currentStateKeys.IsKeyDown(Keys.S)) ^ (currentStateKeys.IsKeyDown(Keys.D))) 
+            if ((currentStateKeys.IsKeyDown(Up) && (currentStateKeys.IsKeyDown(Left))) | (currentStateKeys.IsKeyDown(Up) && (currentStateKeys.IsKeyDown(Right))) | ((currentStateKeys.IsKeyDown(Down)) && (currentStateKeys.IsKeyDown(Left))) | (currentStateKeys.IsKeyDown(Down) && (currentStateKeys.IsKeyDown(Right))) | (currentStateKeys.IsKeyDown(Up)) | (currentStateKeys.IsKeyDown(Left)) | (currentStateKeys.IsKeyDown(Down)) | (currentStateKeys.IsKeyDown(Right)))
             {
+                string previousFacing = Facing;
                 Movement(RUNNING_SPEED, currentStateKeys);
+                switch (Facing)
+                {
+                    case "left":
+                        Ranged.Position = new Vector2(Position.X-55, Position.Y + 27);
+                        break;
+                    case "right":
+                        Ranged.Position = new Vector2(Position.X + 55, Position.Y + 27);
+                        break;
+                    case "up":
+                        break;
+                    case "down":
+                        break;
+                }
             }
             if (currentStateKeys.IsKeyDown(Keys.G))
             {
@@ -73,9 +107,9 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             {
                 PlayerInput(gameTime, Keyboard.GetState());
                 Ranged.Update(gameTime);
-                _sprite.Update(gameTime, Position,Facing);
-                _heart.Update(gameTime);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+                Sprite.Update(gameTime);
+                _hearts.Update(gameTime,Health);
+                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
 
             }
         }

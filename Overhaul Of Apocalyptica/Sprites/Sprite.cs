@@ -1,15 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Overhaul_Of_Apocalyptica.Entities;
 
 namespace Overhaul_Of_Apocalyptica
 {
     public class Sprite
     {
+
+        private string _previousFacing = "";
+
+
+
         public Texture2D Texture;
 
         protected List<Rectangle> _frames = new List<Rectangle>();
@@ -33,7 +34,7 @@ namespace Overhaul_Of_Apocalyptica
         public Color TintColor { get { return _tintColor; } set { _tintColor = value; } }
         public float Rotation { get { return _rotation; } set { _rotation = value; } }
 
-        public string EntityFacing { get; set; }
+        public string EntityFacing = "";
 
         public Sprite(Texture2D texture, List<Rectangle> frames,Vector2 position)
         {
@@ -83,12 +84,12 @@ namespace Overhaul_Of_Apocalyptica
         }
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime, float scale)
         {
-            spriteBatch.Draw(Texture, Position, Source, _tintColor, _rotation, new Vector2(_frameWidth /4, _frameHeight/4),scale, SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(Texture, Position, Source, _tintColor, _rotation,new Vector2(0,0),scale, SpriteEffects.None, 0.0f);
         }
 
-        public virtual void Update(GameTime gameTime, Vector2 newPosition, string facing)
+        public virtual void Update(GameTime gameTime)
         {
-            if (EntityFacing != facing)
+            if (EntityFacing != _previousFacing)
             {
                 _timeForCurrentFrame = FrameTime;
             }
@@ -97,8 +98,7 @@ namespace Overhaul_Of_Apocalyptica
                 float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
                 _timeForCurrentFrame += elapsed;
             }
-            EntityFacing = facing;
-            Position = newPosition;
+            _previousFacing = EntityFacing;
             if (_frames.Count > 1)
             {
                 if (_timeForCurrentFrame >= FrameTime)
@@ -175,10 +175,6 @@ namespace Overhaul_Of_Apocalyptica
         public virtual void Update(GameTime gameTime, Vector2 newPosition)
         {
             Position = newPosition;
-            float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
-            _timeForCurrentFrame += elapsed;
-            //NO UPDATE YET
-
             _frameWidth = _frames[_currentFrame].Width;
             _frameHeight = _frames[_currentFrame].Height;
         }

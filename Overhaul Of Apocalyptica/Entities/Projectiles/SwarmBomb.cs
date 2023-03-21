@@ -21,8 +21,12 @@ namespace Overhaul_Of_Apocalyptica.Entities
             _timeFire = gameTime.TotalGameTime.TotalSeconds;
         }
         public override void Collided(GameTime gameTime, ICollidable collidedWith)
-        { 
+        {
+            if (collidedWith.GetType().FullName == _target.GetType().FullName)
+            {
                 IsDestroyed = true;
+
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -76,7 +80,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             {
                 FlightTime = gameTime.TotalGameTime.TotalSeconds;
                 Flight(gameTime);
-                ProjectSprite.Update(gameTime, Position,""); //TODO CHANGE DIRCTION OF SWARMBOMB
+                ProjectSprite.Update(gameTime,Position); //TODO CHANGE DIRCTION OF SWARMBOMB
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
             }
         }

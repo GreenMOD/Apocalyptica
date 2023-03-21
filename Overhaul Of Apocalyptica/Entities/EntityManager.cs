@@ -35,13 +35,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             _toRemove.Clear();
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
-        {
-            foreach (IEntity E in Entities)
-            {
-                E.Draw(spriteBatch, gameTime);
-            }
-        }
+   
 
         public void AddEntity(IEntity entity)
         {
@@ -67,6 +61,13 @@ namespace Overhaul_Of_Apocalyptica.Entities
             foreach(IEntity e in Entities) 
             {
                 _toRemove.Add(e);
+            }
+        }
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        {
+            foreach (IEntity E in Entities)
+            {
+                E.Draw(spriteBatch, gameTime);
             }
         }
     }

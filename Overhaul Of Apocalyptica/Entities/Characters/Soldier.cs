@@ -18,53 +18,57 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
     {
         #region Declarations
 
-        private List<Rectangle> _frames = new List<Rectangle>();
+        static Rectangle Frame2 = new Rectangle(4, 0, 71, 86);   // right
+        static Rectangle Alt2 = new Rectangle(76, 0, 71, 86);   // right
+        static Rectangle Frame1 = new Rectangle(148, 0, 71, 86);  // left  //TODO SORT THE HITBOX ON THE SOLDIER
+        static Rectangle Alt1 = new Rectangle(221, 0, 71, 86);  // left  
+        static Rectangle Frame3 = new Rectangle(292, 0, 37, 86); // up
+        static Rectangle Alt3 = new Rectangle(332, 0, 37, 86); // up
+        static Rectangle Frame4 = new Rectangle(372, 0, 37, 86); // down
+        static Rectangle Alt4 = new Rectangle(411, 0, 37, 86); // down
 
-        protected Rectangle Frame1 = new Rectangle(84, 0, 76, 86);  // left  //TODO SORT THE HITBOX ON THE SOLDIER
-        protected Rectangle Frame2 = new Rectangle(0, 0, 76, 86);   // right
-        protected Rectangle Frame3 = new Rectangle(167, 0, 40, 86); // up
-        protected Rectangle Frame4 = new Rectangle(207, 0, 40, 86); // down
-        public override Vector2 Speed { get; set; }
-        public override int Health { get; set; }
-        public override bool IsActive { get; set; }
+        private List<Rectangle> _frames = new List<Rectangle>() 
+        {
+            Frame1,Alt1,
+
+            Frame2,Alt2,
+
+            Frame3,Alt3,
+
+            Frame4,Alt4
+        };
+
+        private Sprite _sprite;
+
+        private Heart _hearts;
+        public override Heart Hearts { get{ return _hearts; } set { _hearts = value; } }
+
+        public override Sprite Sprite { get { return _sprite; } set { _sprite = value; } }
         public override Gun Ranged { get; set; }
 
         private const float RUNNING_SPEED = 3.5f;
 
-        private Texture2D _texture2D;
-        private Sprite _sprite;
-        private Heart _heart;
         #endregion
         public Soldier(Texture2D texture, Texture2D heartTexture, Texture2D bulletTexture, GameTime gameTime)
         {
+            
             Facing = "";
-            _texture2D = texture;
             _frames.Add(Frame1);
             _frames.Add(Frame2);
             _frames.Add(Frame3);
             _frames.Add(Frame4);
-            _sprite = new Sprite(texture, _frames, Position);
+            Sprite = new Sprite(texture, _frames, Position);
+            _sprite.FrameTime = 0.75f;
 
             Speed = Vector2.Zero;
             Position = new Vector2(100, 200);
-
-            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+                
+            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
 
             Health = 100;
-            _heart = new Heart(heartTexture, Health, this, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
+            _hearts = new Heart(heartTexture, Health, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
-            Ranged = new M4(new Vector2(Position.X + 75, Position.Y), bulletTexture, gameTime) ; //TODO FIRE FROM Gun
-            //foreach (Texture2D t in animationTextures)
-            //{
-            //    Animations.Add(new Animation(t, t.Width, t.Height, t.Name.Substring(31)));
-            //}
-            //foreach (Animation a in Animations)
-            //{
-            //    if (a.Name.Contains(Facing))
-            //    {
-            //        CurrentAnimation = a;
-            //    }
-            //}
+            Ranged = new M4(new Vector2(Position.X + 75, Position.Y), bulletTexture, gameTime) ;
         }
         #region Methods
         public override void Update(GameTime gameTime)
@@ -72,18 +76,17 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             if (IsActive == true)
             {
                 PlayerInput(gameTime, Keyboard.GetState());
+                Sprite.Update(gameTime);   
+                Hearts.Update(gameTime,Health);
                 Ranged.Update(gameTime);
-                _sprite.Update(gameTime,Position);   
-                _heart.Update(gameTime);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width, _sprite.Source.Height);
+                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
             }
 
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            _sprite.Draw(spriteBatch, gameTime);
-            _heart.Draw(spriteBatch, gameTime);
-            Ranged.Draw(spriteBatch, gameTime);
+            Sprite.Draw(spriteBatch, gameTime);
+            Hearts.Draw(spriteBatch, gameTime);
 
         }/// <summary>
         /// When a user inputs any key this subroutine decifers which key it is and then executes the according subroutine
@@ -92,14 +95,13 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         /// <param name="currentStateKeys"></param>
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
         {
-            if ((currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.W) && (currentStateKeys.IsKeyDown(Keys.D))) | (( currentStateKeys.IsKeyDown(Keys.S)) && (currentStateKeys.IsKeyDown(Keys.A))) | (currentStateKeys.IsKeyDown(Keys.S) && (currentStateKeys.IsKeyDown(Keys.D)))| (currentStateKeys.IsKeyDown(Keys.W)) | (currentStateKeys.IsKeyDown(Keys.A)) | (currentStateKeys.IsKeyDown(Keys.S)) ^ (currentStateKeys.IsKeyDown(Keys.D)))
+            if ((currentStateKeys.IsKeyDown(Up) && (currentStateKeys.IsKeyDown(Left))) | (currentStateKeys.IsKeyDown(Up) && (currentStateKeys.IsKeyDown(Right))) | (( currentStateKeys.IsKeyDown(Down)) && (currentStateKeys.IsKeyDown(Left))) | (currentStateKeys.IsKeyDown(Down) && (currentStateKeys.IsKeyDown(Right)))| (currentStateKeys.IsKeyDown(Up)) | (currentStateKeys.IsKeyDown(Left)) | (currentStateKeys.IsKeyDown(Down)) | (currentStateKeys.IsKeyDown(Right)))
             {
                 string previousFacing = Facing;
                 Movement(RUNNING_SPEED, currentStateKeys);
                 switch (Facing)
                 {
                     case "left":
-
                         Ranged.Position = new Vector2(Position.X, Position.Y - 22);
                         break;
                     case "right":

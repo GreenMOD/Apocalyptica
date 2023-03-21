@@ -13,7 +13,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
     class Rocket : Projectile
     {
         Vector2 posTarget;
-        const double FLIGHT_MAXIMUM = 2.5;
+        const double FLIGHT_MAXIMUM = 1.5;
         public Rocket(Texture2D texture, List<Rectangle> frames, Vector2 start, Player target, GameTime gameTime) //One direction
         {
             Position = start;
@@ -34,14 +34,13 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
             {
                 
                 Flight(gameTime);
-                ProjectSprite.Update(gameTime, Position,""); // TODO change direction of sprite of rocket
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
-                CollisionBox.Inflate(2.5f, 2.5f);
+                ProjectSprite.Update(gameTime,Position); 
+                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y,(int) Frames[0].Width * 2,(int)Frames[0].Height * 2);
             }
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            ProjectSprite.Draw(spriteBatch, gameTime, 2.5f);
+            ProjectSprite.Draw(spriteBatch, gameTime,2f);
         }
         public override void Collided(GameTime gameTime , ICollidable collidedWith)
         {
@@ -49,7 +48,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
             if(collidedWith.GetType().FullName == _target.GetType().FullName)
             {
                 IsDestroyed = true;
-                _target.Health = _target.Health - 10;
+                
             }
         }
         public override void Flight(GameTime gameTime)
