@@ -29,11 +29,21 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         }
 
+
+        /// <summary>
+        /// Updates the hearts by the amount of health the player has
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="health">The player's health</param>
         public void Update(GameTime gameTime, int health)
         {
             HeartsLeft = health /20; 
         }
-
+        /// <summary>
+        /// Displays the correct number of hearts
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="gameTime"></param>
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (HeartsLeft !=0)
@@ -43,11 +53,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
                 _heartPosition = new Vector2(XBeginPoint, YBeginPoint);
 
-                //_sprite.Update(gameTime, _heartPosition);
-                for (int i = 0; i <= HeartsLeft; i++)
+              
+                for (int i = 0; i < HeartsLeft; i++)
                 {
                         _sprite.Draw(spriteBatch, gameTime);
-                        XBeginPoint = 800 - (_sprite.Source.Width * (HeartsLeft - i)); //moves the position along to the next position for the heart to be drawn
+                        XBeginPoint = 800 - (_sprite.Source.Width *  (HeartsLeft - i)); //moves the position along to the next position for the heart to be drawn
                         _heartPosition = new Vector2(XBeginPoint, YBeginPoint);
                         _sprite.Update(gameTime, _heartPosition);
                 }

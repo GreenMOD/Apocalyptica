@@ -1,27 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Design;
-using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
-using System.Diagnostics;
 using System.Collections.Generic;
-using System.Text;
-using Overhaul_Of_Apocalyptica.Entities.Characters;
 namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 {
-   public class Bullet : Projectile, ICollidable
+   public class Bullet : Projectile
     {
         private float _bulletSpeed = 4f;
-        private string _direction;
         private Vector2 _movementVector2;
         
         
         public Bullet(Vector2 posFired, string directionFired , Texture2D texture)
         {
-            _direction = directionFired;
-            switch (_direction)
+            switch (directionFired)
             {
                 case "left":
                     _movementVector2 = new Vector2(-_bulletSpeed, 0);
@@ -40,15 +30,23 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
             ProjectSprite = new Sprite(texture, new List<Rectangle>() {new Rectangle(0,0,12,6) }, Position);
             CollisionBox = new Rectangle((int)Position.X,(int)Position.Y, ProjectSprite.Source.Width, ProjectSprite.Source.Height);
         }
+        /// <summary>
+        /// Using the name of the object collided with this subroutine decides whether this bullet is destoryed or not
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="collidedWith"></param>
         public override void Collided(GameTime gameTime, ICollidable collidedWith)
         {
-            if (!((collidedWith.GetType().Name == "Soldier") || (collidedWith.GetType().Name == "Bullet") || (collidedWith.GetType().Name == "Heavy")))
+            if (!((collidedWith.GetType().Name == "Soldier") || (collidedWith.GetType().FullName.Contains("Projectile") || (collidedWith.GetType().Name == "Heavy"))))
             {
-                Debug.WriteLine(collidedWith.GetType().Name);
                 IsDestroyed = true;
             }
         }
-
+        /// <summary>
+        /// If this is not destoryed then the sprite for this projectile is displayed
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="gameTime"></param>
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (!IsDestroyed)
@@ -56,7 +54,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
                 ProjectSprite.Draw(spriteBatch, gameTime);
             }
         }
-
+        /// <summary>
+        /// Movement in the direction fired is calculated and added to the positon of the bullet. Flight time is then incremented acorrdingly.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Flight(GameTime gameTime)
         {
             float elasped = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -68,7 +69,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
             }
           
         }
-
+        /// <summary>
+        /// If the bullet is not destroyed Flight is called and the Sprite and collision box is updated
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             if (!IsDestroyed)

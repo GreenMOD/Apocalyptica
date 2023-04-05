@@ -1,48 +1,51 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 
-namespace Overhaul_Of_Apocalyptica.Entities
+namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
 {
     class SwarmBomb : Projectile 
     {
         Vector2 posTarget;
-        const double FLIGHT_MAXIMUM = 2.5;
-        private double _timeFire;
         public SwarmBomb(Texture2D texture, List<Rectangle> frames, Vector2 start, Player target,GameTime gameTime)
         {
             Position = start;
             Frames = frames;
             ProjectSprite = new Sprite(texture, Frames, Position);
-            _target = target;
+            Target = target;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
-            _timeFire = gameTime.TotalGameTime.TotalSeconds;
         }
+        /// <summary>
+        /// Using the name of the object collided with this subroutine decides whether this swarmbomb is destoryed or not
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="collidedWith"></param>
         public override void Collided(GameTime gameTime, ICollidable collidedWith)
         {
-            if (collidedWith.GetType().FullName == _target.GetType().FullName)
+            if (collidedWith.GetType().FullName == Target.GetType().FullName)
             {
                 IsDestroyed = true;
 
             }
         }
-
+        /// <summary>
+        /// The Sprite is drawn at 2.5 times is default size due to its texture being too small
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="gameTime"></param>
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             ProjectSprite.Draw(spriteBatch, gameTime, 2.5f);
         }
-
+        /// <summary>
+        /// Uses the seek steering behavoiur to seek the player
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Flight(GameTime gameTime)
         {
-            posTarget = _target.Position;
-            if (gameTime.TotalGameTime.TotalSeconds - FlightTime >= FLIGHT_MAXIMUM)
-            {
-                IsDestroyed = true;
-            }
-            else
-            {
+            posTarget = Target.Position;
+
 
                 Vector2 desired = Vector2.Subtract(posTarget, Position); //creates the desired path towards the enemy
                 desired.Normalize();
@@ -63,16 +66,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
                 }
                 Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
                 Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
-
-                double toFindAngle = Position.Y / Position.X; //In order to work out the angle I have to take the arctan of the x value and the y value this then produces the angle that the rocketSource must turn
-                ProjectSprite.Rotation = (float)Math.Atan(toFindAngle) / 360;
-
-                //TODO Projectile either spins constantly or it doesn't change
-
-
-            }
         }
-
+        /// <summary>
+        /// If the swarmbomb is not destroyed Flight is called and the Sprite and collision box is updated
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
 
@@ -80,7 +78,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             {
                 FlightTime = gameTime.TotalGameTime.TotalSeconds;
                 Flight(gameTime);
-                ProjectSprite.Update(gameTime,Position); //TODO CHANGE DIRCTION OF SWARMBOMB
+                ProjectSprite.Update(gameTime,Position);
                 CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
             }
         }

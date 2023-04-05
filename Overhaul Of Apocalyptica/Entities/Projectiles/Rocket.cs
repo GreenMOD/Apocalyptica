@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
-using System.Diagnostics;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
-{/// <summary>
-/// This is a rocket that doesn't cause Zombies to swarm
-/// </summary>
+{
     class Rocket : Projectile
     {
         Vector2 posTarget;
@@ -19,41 +14,58 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
             Position = start;
             Frames = frames;
             ProjectSprite = new Sprite(texture, Frames, Position);
-            _target = target;
+            Target = target;
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Frames[0].Width, Frames[0].Height);
             FlightTime = gameTime.TotalGameTime.TotalSeconds;
             MaxVelocity = 4f;
             MaxForce = 4.15f;
             IsDestroyed= false;
         }
-
+        /// <summary>
+        /// If the rocket is not destroyed Flight is called and the Sprite and collision box is updated
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             
             if (IsDestroyed == false)
             {
-                
+
                 Flight(gameTime);
                 ProjectSprite.Update(gameTime,Position); 
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y,(int) Frames[0].Width * 2,(int)Frames[0].Height * 2);
+                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y,(int) Frames[0].Width * 2,(int)Frames[0].Height * 2); //due to the frame being smaller than desired the collsion box height and width are multipled by 2
             }
         }
+        /// <summary>
+        /// Rocket is drawn at 2 times its usual size due to its texture being too small
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="gameTime"></param>
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             ProjectSprite.Draw(spriteBatch, gameTime,2f);
         }
+        /// <summary>
+        /// Using the name of the object collided with this subroutine decides whether this rocket is destoryed or not
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="collidedWith"></param>
         public override void Collided(GameTime gameTime , ICollidable collidedWith)
         {
            
-            if(collidedWith.GetType().FullName == _target.GetType().FullName)
+            if(collidedWith.GetType().FullName == Target.GetType().FullName)
             {
                 IsDestroyed = true;
                 
             }
         }
+        /// <summary>
+        /// Uses the seek steering behavoiur to seek the player but will be destoryed if its FlightTime passes the FLIGHT_MAXIMUM constant
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Flight(GameTime gameTime)
         {
-            posTarget = _target.Position;
+            posTarget = Target.Position;
             if (gameTime.TotalGameTime.TotalSeconds - FlightTime >= FLIGHT_MAXIMUM)
             {
                 IsDestroyed = true;
@@ -80,11 +92,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Projectiles
                 }
                 Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
                 Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
-
-                double toFindAngle = Position.Y / Position.X; //In order to work out the angle I have to take the arctan of the x value and the y value this then produces the angle that the rocketSource must turn
-                ProjectSprite.Rotation = (float)Math.Atan(toFindAngle)/ 360;  
-                
-                //TODO Projectile either spins constantly or it doesn't change
 
 
             }

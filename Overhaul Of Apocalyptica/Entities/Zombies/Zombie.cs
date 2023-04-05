@@ -2,12 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
-using Overhaul_Of_Apocalyptica.Entities.Projectiles;
-using System.Diagnostics;
-using Overhaul_Of_Apocalyptica.FireworkAnimationComponents;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -55,7 +50,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
         #endregion
 
         #region Properties
-        public virtual Vector2 Position { get { return _position; } set { _position = new Vector2(MathHelper.Clamp(value.X, _minimumX, _maximumX), (MathHelper.Clamp(value.Y, _minimumY, _maximumY))); } }
+        public virtual Vector2 Position { get { return _position; } set { _position = new Vector2(MathHelper.Clamp(value.X, _minimumX + CollisionBox.Width/2, _maximumX - CollisionBox.Width/2), (MathHelper.Clamp(value.Y, _minimumY + CollisionBox.Height/2, _maximumY - CollisionBox.Height/2))); } }
 
         public Vector2 Acceleration { get { return _acceleration; } set { _acceleration = value; } }
 
@@ -69,7 +64,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public Sprite ZombieSprite { get { return _sprite; } set { _sprite = value; } }
 
-        public virtual bool CanAttack { get { return _attackCooldown < _gameTime.TotalGameTime.TotalSeconds - _timeLastAttack; } set { _timeLastAttack = (float)_gameTime.TotalGameTime.Seconds; } }
+        public virtual bool CanAttack { get { return _attackCooldown < _gameTime.TotalGameTime.TotalSeconds - _timeLastAttack; } set { _timeLastAttack = (float)_gameTime.TotalGameTime.TotalSeconds; } }
 
         public virtual List<Player> Players { get { return _players; } set { _players = value; } }
 
@@ -82,7 +77,10 @@ namespace Overhaul_Of_Apocalyptica.Entities
         #endregion
 
         #region Methods
-
+        /// <summary>
+        /// Updates the current speed by adding acceleeration and calculates movement for the Zombie. 
+        /// </summary>
+        /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
             _gameTime = gameTime;
@@ -101,25 +99,33 @@ namespace Overhaul_Of_Apocalyptica.Entities
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, _sprite.Source.Width*2, _sprite.Source.Height * 2);
         }
 
-
+        /// <summary>
+        /// Using reynolds formula, a force vector is created that steers the vehicle away from the target position
+        /// </summary>
+        /// <param name="target"></param>
         public virtual void Flee(Vector2 target)
         {
-            
 
-            Vector2 desired = Vector2.Subtract(target, Position); //creates the desired path towards the enemy
+            Vector2 desired = Vector2.Subtract(target, Position);
             desired.Normalize();
             desired = Vector2.Multiply(desired, MaxVelocity);
 
-            Vector2 steer = Vector2.Subtract(desired, Position); 
-            steer = Vector2.Negate(steer);
+
+            desired = Vector2.Negate(desired);
+
+            Vector2 steer = Vector2.Add(desired, Speed);
             if (steer.Length() > MaxForce)
             {
-                steer = Vector2.Normalize(steer) * MaxForce; //limits the steering force to maxforce
+                steer = Vector2.Multiply(steer, MaxForce);
             }
+
             ApplyForce(steer);
-              
 
         }
+        /// <summary>
+        /// Using Reynolds formula, a force vector is created which moves the vehicle towards the target position
+        /// </summary>
+        /// <param name="target"></param>
         public virtual void Seek(Vector2 target)
         {
             Vector2 desired = Vector2.Subtract(target, Position); //creates the desired path towards the enemy
@@ -134,25 +140,18 @@ namespace Overhaul_Of_Apocalyptica.Entities
             }
             ApplyForce(steer);
 
-
-
-            //Speed = Vector2.Add(Speed, Acceleration); //applyies a movement froce 
-            //if (Speed.Length() > MaxVelocity) // limits the velocity to under the maximum velocity
-            //{
-            //    Speed = Vector2.Normalize(Speed) * MaxVelocity;
-
-            //}
-            //Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
-            //Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
-
             Arrive(target);
         }
 
-
+        /// <summary>
+        /// Applies a force vector to the Acceleration varaible
+        /// </summary>
+        /// <param name="force"></param>
         public virtual void ApplyForce(Vector2 force)
         {
             Acceleration = Vector2.Add(Acceleration, force);
         }
+
         /// <summary>
         /// Calculates whether to decrease the velocity of the vehicle given by a set distance.
         /// </summary>
@@ -167,11 +166,12 @@ namespace Overhaul_Of_Apocalyptica.Entities
             ///If it is inside the circle, the deceleration rate scales with how far the vehicle is inside the circle
             if (d < 100)
             {
-                Speed = Vector2.Multiply(Speed, (d / 100)); // to balance how much force they are being subtracted .... (d/100)*2) this will decrease the distance at which they slow and arrive
+                Speed = Vector2.Multiply(Speed, (d / 100)); 
             }
 
             //by multiplying the velocity of the vehicle by the magnitude of the desired vector / 100 I can calculate the % at which to divide by resulting in a complete stop
         }
+
         /// <summary>
         /// Predicts using the current velocity of the player 
         /// </summary>
@@ -192,6 +192,12 @@ namespace Overhaul_Of_Apocalyptica.Entities
             }
 
         }
+        /// <summary>
+        /// Calculates the modulus of an x and Y value
+        /// </summary>
+        /// <param name="Vector2X"></param>
+        /// <param name="Vector2Y"></param>
+        /// <returns></returns>
         public virtual float MagnitudePos(float Vector2X, float Vector2Y)
         {
             float mag = 0;
@@ -201,6 +207,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
             mag = (int)Math.Sqrt(mag);
             return mag;
         }
+
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (Health >0)
@@ -208,40 +215,17 @@ namespace Overhaul_Of_Apocalyptica.Entities
                 _sprite.Draw(spriteBatch, gameTime, 2f);
             }
         }
+        /// <summary>
+        /// Prevents zombies colliding with each other by applying a force
+        /// </summary>
+        /// <param name="collisionBox"></param>
         public virtual void Separate(Rectangle collisionBox)
         {
             /// AIM to avoid the other zombie
             /// HOW by placing a small force on the zombie that will only be taken off when it is out of range of the zombie
             /// Luckly Vectors can be added together to produce a resultant hence i can place many vectors into a single 
-            /// IMPLEMENTATION Bool if on Separate runs and applies the force after movement.
 
-            //Rectangle boxIntersect =  Rectangle.Intersect(CollisionBox, collisionBox);
-
-            //Vector2 topLeft = new Vector2(boxIntersect.X, boxIntersect.Y);
-
-            //if (topLeft == Position)
-            //{
-            //    if (boxIntersect.Width > boxIntersect.Height)
-            //    {
-            //        Position = Vector2.Add(Position, new Vector2(0, boxIntersect.Height));
-            //    }
-            //    else if (boxIntersect.Height > boxIntersect.Width)
-            //    {
-            //        Position = Vector2.Add(Position, new Vector2(boxIntersect.Width, 0));
-            //    }
-            //}
-            //else
-            //{
-            //    if (boxIntersect.Width > boxIntersect.Height)
-            //    {
-            //        Position = Vector2.Subtract(Position, new Vector2(0, boxIntersect.Height));
-            //    }
-            //    else if (boxIntersect.Height > boxIntersect.Width)
-            //    {
-            //        Position = Vector2.Subtract(Position, new Vector2(boxIntersect.Width, 0));
-            //    }
-            //}
-
+          
             Rectangle intercept = Rectangle.Intersect(CollisionBox, collisionBox);
 
             Vector2 pos = new Vector2((int)Position.X, (int)Position.Y);
@@ -264,21 +248,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
             }
 
 
-
-
-
-
-            //else if (bottomRight == Vector2.Add(Position,new Vector2(CollisionBox.X,CollisionBox.Y)))
-            //{
-            //    float seperateX = 0f;
-            //    float seperateY = 0f;
-
-            //    bottomRight.Deconstruct(out seperateX, out seperateY);
-
-            //    Position = Vector2.Subtract(Position, new Vector2(seperateX, -seperateY));
-            //}
-
         }
+        /// <summary>
+        /// Seeks a random position
+        /// </summary>
+        /// <param name="randomPos"></param>
         public virtual void Idle(Vector2 randomPos)
         {
             Vector2 desired = Vector2.Subtract(randomPos,Position);
@@ -302,6 +276,11 @@ namespace Overhaul_Of_Apocalyptica.Entities
             Position = Vector2.Add(Position, Speed); // applies the velocity to the position allowing for movement
             Acceleration = Vector2.Multiply(Acceleration, 0); // resets acceleration in order to not have exponential growth
         }
+        /// <summary>
+        /// Extracts the name of the object collided with and uses this to decide how to react
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="collidedWith"></param>
         public virtual void Collided(GameTime gameTime, ICollidable collidedWith)
         {
             switch (collidedWith.GetType().Name)

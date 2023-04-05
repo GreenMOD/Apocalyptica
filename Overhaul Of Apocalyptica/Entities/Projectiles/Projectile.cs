@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 { 
     public abstract class Projectile: IEntity, ICollidable
     {
+        
+
         public Sprite ProjectSprite;
         public List<Rectangle> Frames;
 
@@ -20,14 +19,14 @@ namespace Overhaul_Of_Apocalyptica.Entities
         public Vector2 Position { get; set; }
 
 
-        public Vector2 Speed { get; set; } 
+        public Vector2 Speed;
         public Vector2 Acceleration;
         public float MaxVelocity = 2.5f;
         public float MaxForce = 1f;
 
         public bool IsDestroyed = false;
 
-        public Player _target;
+        public Player Target;
 
         
 

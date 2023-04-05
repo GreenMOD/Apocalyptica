@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Overhaul_Of_Apocalyptica.Entities.Zombies;
 using System.Linq;
 namespace Overhaul_Of_Apocalyptica.Entities
 {

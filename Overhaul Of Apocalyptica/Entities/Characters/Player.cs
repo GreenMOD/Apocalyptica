@@ -1,17 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Overhaul_Of_Apocalyptica.Entities;
-using Overhaul_Of_Apocalyptica.Sprites;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
-using System.Reflection;
-using System.Diagnostics;
-using System.Runtime.InteropServices.WindowsRuntime;
-using SharpDX.MediaFoundation;
-using SharpDX.DirectWrite;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Characters
 {
@@ -20,7 +11,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         #region Declarations
 
-        private Vector2 _position = new Vector2();
+        private Vector2 _position = new Vector2(100,200);
 
         private List<Keys> _movementKeys = new List<Keys>
         {
@@ -46,7 +37,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         public bool IsActive { get; set; }
 
-        public abstract Gun Ranged { get; set; }
+        public Gun Ranged { get; set; }
 
         public abstract Sprite Sprite { get; set; }
         public abstract Heart Hearts { get; set; }
@@ -60,19 +51,39 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
-        public abstract void Update(GameTime gameTime);
+        public void Update(GameTime gameTime)
+        {
+            if (IsActive == true)
+            {
+                PlayerInput(gameTime, Keyboard.GetState());
+                Ranged.Update(gameTime);
+                Sprite.Update(gameTime);
+                Hearts.Update(gameTime, Health);
+                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
+
+            }
+        }
 
         public abstract void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys);
-
+        /// <summary>
+        /// Activates and allows for updates
+        /// </summary>
         public void Activate()
         {
             IsActive = true;
         }
+        /// <summary>
+        /// Prevents updates occuring
+        /// </summary>
         public void Deactivate()
         {
             IsActive = false;
         }
-        
+        /// <summary>
+        /// Calculates movement and adds it to position
+        /// </summary>
+        /// <param name="runningSpeed">how many pixels the character should move per cycle</param>
+        /// <param name="keyboardState">Stores the keys that are being pressed</param>
         public void Movement(float runningSpeed, KeyboardState keyboardState)
         {
 
@@ -156,30 +167,38 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Ranged.Position = Position;
             Ranged.Direction = Facing;
         }
+        /// <summary>
+        /// Fires the gun
+        /// </summary>
+        /// <param name="gameTime"></param>
         public void FireR(GameTime gameTime)
         {
             Ranged.Fire(gameTime);
             
         }
 
-
+        /// <summary>
+        /// Uses the object collided with to determine how to react to a collison
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="collidedWith">Object collided with</param>
         public void Collided(GameTime gameTime, ICollidable collidedWith)
         {
             
             
-            ///sort extraction of collidewith   
+            ///extraction of collidewith   
             switch (collidedWith.GetType().Name)
             {
                 
                 case "Walker":
-                    if (collidedWith.GetType().GetProperty("CanAttack").GetValue(collidedWith).ToString() == "true")
+                    if (collidedWith.GetType().GetProperty("CanAttack").GetValue(collidedWith).ToString() == "True")
                     {
                         Health = Health - 10;
                         collidedWith.GetType().GetProperty("CanAttack").SetValue(collidedWith, false);
                     }
                     break;
                 case "Screamer":
-                    if (collidedWith.GetType().GetProperty("CanAttack").GetValue(collidedWith).ToString() == "true")
+                    if (collidedWith.GetType().GetProperty("CanAttack").GetValue(collidedWith).ToString() == "True")
                     {
                         Health = Health - 5;
                         collidedWith.GetType().GetProperty("CanAttack").SetValue(collidedWith, false);

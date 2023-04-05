@@ -2,17 +2,12 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
-using Overhaul_Of_Apocalyptica.Sprites;
-using SharpDX.Direct3D9;
-using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Characters
 {
     public class Heavy : Player
     {
-        private Texture2D _texture2D;
         private Sprite _sprite;
         private Heart _hearts;
 
@@ -42,7 +37,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Frame4,Alt4
         };
 
-        public override Gun Ranged { get; set; }
 
         private const float RUNNING_SPEED = 1.5f;
 
@@ -52,7 +46,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public Heavy(Texture2D texture, Texture2D heartTexture, Texture2D bulletTexture, GameTime gameTime)
         {
             Facing = "";
-            _texture2D = texture;
             _frames.Add(Frame1);
             _frames.Add(Frame2);
             _frames.Add(Frame3);
@@ -60,7 +53,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Sprite = new Sprite(texture, _frames, Position);
             Sprite.FrameTime = 0.75f;
             Speed = Vector2.Zero;
-            Position = new Vector2(100, 200);
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
 
             Health = 120;
@@ -74,7 +66,11 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Sprite.Draw(spriteBatch, gameTime);
             Hearts.Draw(spriteBatch, gameTime);
         }
-
+        /// <summary>
+        ///  When a user inputs any key this subroutine decifers which key it is and then executes the according subroutine. Also changes the position of the gun accordingly
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="currentStateKeys">The state of every key on the keyboard</param>
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
         {
             if ((currentStateKeys.IsKeyDown(Up) && (currentStateKeys.IsKeyDown(Left))) | (currentStateKeys.IsKeyDown(Up) && (currentStateKeys.IsKeyDown(Right))) | ((currentStateKeys.IsKeyDown(Down)) && (currentStateKeys.IsKeyDown(Left))) | (currentStateKeys.IsKeyDown(Down) && (currentStateKeys.IsKeyDown(Right))) | (currentStateKeys.IsKeyDown(Up)) | (currentStateKeys.IsKeyDown(Left)) | (currentStateKeys.IsKeyDown(Down)) | (currentStateKeys.IsKeyDown(Right)))
@@ -101,17 +97,5 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             }
         }
 
-        public override void Update(GameTime gameTime)
-        {
-            if (IsActive == true)
-            {
-                PlayerInput(gameTime, Keyboard.GetState());
-                Ranged.Update(gameTime);
-                Sprite.Update(gameTime);
-                _hearts.Update(gameTime,Health);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
-
-            }
-        }
     }
 }

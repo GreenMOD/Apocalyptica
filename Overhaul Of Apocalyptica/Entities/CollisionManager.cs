@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Content;
-using Overhaul_Of_Apocalyptica.Entities;
-using System.Configuration;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -25,7 +19,7 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         public void Update(GameTime gameTime)
         {
-            foreach (ICollidable c in Collidables) // ERROR DAMAGE OCCURS TWICE AS ELEMENT IS CHECKED TWCIE
+            foreach (ICollidable c in Collidables) 
             {
                 for (int i = 0; i < Collidables.Count-1; i++)
                 {
@@ -34,7 +28,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
                         if (c.CollisionBox.Intersects(Collidables[i].CollisionBox))
                         {
                             c.Collided(gameTime, Collidables[i]);
-                            Collidables[i].Collided(gameTime, c);
                         }
                     }
                 }

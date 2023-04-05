@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
 
@@ -13,12 +10,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
     class Captain : Zombie
     {
         
-
         protected Rectangle frame1 = new Rectangle(0, 62, 19, 33);  // left
         protected Rectangle frame2 = new Rectangle(21, 62, 19, 33);  // right
         protected Rectangle rocketSource = new Rectangle(0,0 , 5, 3);
         protected Rectangle swarmBombSource = new Rectangle(6,0 , 5, 3);
-        //List of all ISwarmable Zombies or a Swarm Manager
         private List<Projectile> Rockets;
 
         private Texture2D _rocketProjectile;
@@ -57,17 +52,20 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
                 }
             }
             Health = 50;
+
+            MaxForce = 1.5f;
+            MaxVelocity = 1.5f;
         }
 
         /// <summary>
-        /// Moves away from the current target
+        /// Moves away from the current target. Also maintians all rockets that are currently being fired
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
            
 
-           
+            
             Flee(CurrentTarget.Position);
             Fire(gameTime);
 

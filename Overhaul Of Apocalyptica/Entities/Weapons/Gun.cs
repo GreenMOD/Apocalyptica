@@ -1,26 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Overhaul_Of_Apocalyptica.Entities.Zombies;
-using System.Linq;
-using Overhaul_Of_Apocalyptica.Entities.Projectiles;
-using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
    public abstract class Gun
     {
-        /// Must have:
-        /// Limited ammo
-        /// Is not an entity as it is part of the players sprite and will be update through the player
-        /// Fire()
-        /// Reload()
-        /// FireRate
-        /// Should be compatable with both hitscan and projectile 
-        /// Is it being held right now <summary>
-
+     
         #region Declarations
         private Vector2 _position = Vector2.Zero;
 
@@ -69,7 +55,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
         #endregion
 
         /// <summary>
-        /// Fires a bullet
+        /// Fires a bullet if the time between the last time it was fired is greater than or equal to  the rate of fire
         /// </summary>
         /// <param name="gameTime">Used to compare against the last time this gun was shot</param>
         public virtual void Fire(GameTime gameTime)
@@ -83,6 +69,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
                 NextProjectile = null;
             }
         }
+        /// <summary>
+        /// Maitains the lists and removes projectiles that are expired or destroyed
+        /// </summary>
+        /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
             if (Fired.Count != 0)
@@ -106,7 +96,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             }
         }
         /// <summary>
-        /// Gun Checks if reload interval has passed
+        /// Checks if reload interval has passed then reloads the gun
         /// </summary>
         /// <param name="gameTime"></param>
         public virtual void Reload(GameTime gameTime)

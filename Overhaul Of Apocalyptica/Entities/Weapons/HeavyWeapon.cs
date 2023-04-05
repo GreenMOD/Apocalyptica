@@ -1,20 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
     class HeavyWeapon : Gun
     {
-        //private const float _FIRE_RATE = 0.15f;
-
-       // private const float _RELOAD_TIME = 5f;
-
-       // private const int _MAX_AMMO = 100;
 
         public HeavyWeapon(Vector2 start, Texture2D bulletTexture, GameTime gameTime)
         {
@@ -25,7 +16,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             ReloadTime = 5f;
             MaxAmmo = 100;
         }
-
+        /// <summary>
+        /// If the magazine is not empty the next projectile is set to a bullet and Gun.Fire is called. Otherwise the gun will reload
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Fire(GameTime gameTime)
         {
             if (AmmoLeft > 0)

@@ -3,10 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
 using System.Collections.Generic;
-using System.Text;
-using Overhaul_Of_Apocalyptica.Entities;
-using Overhaul_Of_Apocalyptica.Entities.Characters;
-using System.Diagnostics;
+using Overhaul_Of_Apocalyptica.Entities.Projectiles;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Zombies
 {
@@ -32,6 +29,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             Health = 5;
             
         }
+        /// <summary>
+        /// Determines if a swarmbomb has exploded and then decideds how to move
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             
@@ -65,29 +66,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Zombies
             base.Update(gameTime);
 
         }
-
-
-        ////if (CollisionBox.Intersects(CurrentTarget.CollisionBox))
-        ////{
-        ////    if (gameTime.TotalGameTime.Seconds - _timeOfLastAttack >= AttackCooldown)
-        ////    {
-        ////        CurrentTarget.Health -= 5;
-        ////        _timeOfLastAttack = gameTime.TotalGameTime.TotalSeconds;
-        ////    }
-
-        ////}
-
-        ////foreach (Zombie z in _zombiesInView)
-        ////{
-        ////    float distance = Vector2.Distance(Position, z.Position);
-
-        ////    if ((distance > 0) && (distance < 20))//20 pixels
-        ////    {
-        ////        Separate(z.Position);
-        ////    }
-        ////}
-
-
 
     }
 }

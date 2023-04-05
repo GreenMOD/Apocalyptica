@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Weapons
 {
@@ -18,15 +14,14 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             RateOfFire = 0.25f;
         }   
 
+        /// <summary>
+        /// Sets the next projectile to fire to be a shuriken and then calls Gun.Fire
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Fire(GameTime gameTime)
         {
             NextProjectile = new Shuriken(Position, Direction, BulletTexture);
             base.Fire(gameTime);
         }
-
-        //public override void Reload(GameTime gameTime)
-        //{
-        //    return false;
-        //}
     }
 }

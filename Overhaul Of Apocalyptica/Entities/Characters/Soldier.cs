@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq.Expressions;
-using System.Text;
-using System.Xml.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Overhaul_Of_Apocalyptica.Entities;
-using Overhaul_Of_Apocalyptica.Entities.Characters;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
-using Overhaul_Of_Apocalyptica.Sprites;
 
 namespace Overhaul_Of_Apocalyptica.Entities.Characters
 {
@@ -20,7 +12,7 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
 
         static Rectangle Frame2 = new Rectangle(4, 0, 71, 86);   // right
         static Rectangle Alt2 = new Rectangle(76, 0, 71, 86);   // right
-        static Rectangle Frame1 = new Rectangle(148, 0, 71, 86);  // left  //TODO SORT THE HITBOX ON THE SOLDIER
+        static Rectangle Frame1 = new Rectangle(148, 0, 71, 86);  // left
         static Rectangle Alt1 = new Rectangle(221, 0, 71, 86);  // left  
         static Rectangle Frame3 = new Rectangle(292, 0, 37, 86); // up
         static Rectangle Alt3 = new Rectangle(332, 0, 37, 86); // up
@@ -44,7 +36,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
         public override Heart Hearts { get{ return _hearts; } set { _hearts = value; } }
 
         public override Sprite Sprite { get { return _sprite; } set { _sprite = value; } }
-        public override Gun Ranged { get; set; }
 
         private const float RUNNING_SPEED = 3.5f;
 
@@ -61,7 +52,6 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             _sprite.FrameTime = 0.75f;
 
             Speed = Vector2.Zero;
-            Position = new Vector2(100, 200);
                 
             CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
 
@@ -71,25 +61,13 @@ namespace Overhaul_Of_Apocalyptica.Entities.Characters
             Ranged = new M4(new Vector2(Position.X + 75, Position.Y), bulletTexture, gameTime) ;
         }
         #region Methods
-        public override void Update(GameTime gameTime)
-        {
-            if (IsActive == true)
-            {
-                PlayerInput(gameTime, Keyboard.GetState());
-                Sprite.Update(gameTime);   
-                Hearts.Update(gameTime,Health);
-                Ranged.Update(gameTime);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
-            }
-
-        }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Sprite.Draw(spriteBatch, gameTime);
             Hearts.Draw(spriteBatch, gameTime);
 
         }/// <summary>
-        /// When a user inputs any key this subroutine decifers which key it is and then executes the according subroutine
+        /// When a user inputs any key this subroutine decifers which key it is and then executes the according subroutine. Also changes the position of the gun accordingly
         /// </summary>
         /// <param name="gameTime"></param>
         /// <param name="currentStateKeys"></param>

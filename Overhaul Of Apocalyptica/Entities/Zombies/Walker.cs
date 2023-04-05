@@ -1,11 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
-using System.Linq;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
@@ -26,7 +22,10 @@ namespace Overhaul_Of_Apocalyptica.Entities
             MaxForce = MaxForce * 1.25f;
             MaxVelocity = MaxVelocity * 1.25f;
         }
-
+        /// <summary>
+        /// Calls Pursuit then updates
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
             Pursuit(CurrentTarget);

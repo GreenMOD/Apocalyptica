@@ -7,13 +7,15 @@ using Overhaul_Of_Apocalyptica.Controls;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Overhaul_Of_Apocalyptica.FireworkAnimationComponents;
-
 namespace Overhaul_Of_Apocalyptica
 {
     public class Game1 : Game
     {
+        #region Declarations 
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
         private EntityManager _entityManager;
         private Texture2D _ninjaSpriteSheet;
         private Texture2D _zombieSheet;
@@ -49,8 +51,21 @@ namespace Overhaul_Of_Apocalyptica
 
         private Player _player1;
 
+        #endregion
+
+        #region Declarations for Evaluation Prototypes
+
+        private float _menuZombieLastSpawn = -1;
+
+        private float _menuZombieSpawn = 2.5f;
+
+        private Button PlayAgain;
+
+        #endregion
+
         public Game1()
         {
+            
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -58,12 +73,10 @@ namespace Overhaul_Of_Apocalyptica
             _collisionManager = new CollisionManager(new List<ICollidable>());
         }
 
-        /// <summary>
-        /// Outputs a menu of buttons to select from: New Game, Load Game, Options, Quit Game
-        /// </summary>
+       
         protected override void Initialize()
-        {
-
+        { 
+            
             IsMouseVisible = true;
 
             DisplayTitleScreen();
@@ -71,6 +84,9 @@ namespace Overhaul_Of_Apocalyptica
             base.Initialize();
         }
         #region Main Menu
+        /// <summary>
+        /// Creates and outputs a menu of buttons to select from: Title button New Game, Load Game, Options, Quit Game.
+        /// </summary>
         private void DisplayTitleScreen()
         {
             _gameState = _GameState.MENU;
@@ -125,8 +141,15 @@ namespace Overhaul_Of_Apocalyptica
                 optionsButton,
                 quitButton
             };
-
+            foreach (var b in _menuComponents)
+            {
+                _entityManager.AddEntity(b);
+            }
         }
+        /// <summary>
+        /// Invoked when the title button is clicked and produces a small animation
+        /// </summary>
+        /// <param name="sender"></param>
         private void TitleButton_Click(Button sender)
         {
 
@@ -135,10 +158,9 @@ namespace Overhaul_Of_Apocalyptica
             _entityManager.AddEntity(f);
         }
         /// <summary>
-        /// a save file menu showing 4 slots. Each slot can be overriden if they contain an itwm or they can open an empty file for character creation.
+        /// Invoked when the new button is clicked. Outputs a save file menu showing 4 slots is displayed. Each slot can be overriden if they contain an item or they can open an empty file for character creation.
         /// </summary>
         /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void NewGameButton_Click(Button sender)
         {
             _entityManager.Clear();
@@ -149,7 +171,7 @@ namespace Overhaul_Of_Apocalyptica
 
         }
         /// <summary>
-        /// Outputs a save file menu showing 4 slots. Each slot can be loaded
+        /// Invoked when the load button is clicked. Outputs a save file menu showing 4 slots. Each slot can be loaded including empty slots 
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -161,6 +183,10 @@ namespace Overhaul_Of_Apocalyptica
 
             SaveFileMenu();
         }
+        /// <summary>
+        /// Invoked when the options button is clicked. Creates an interactable menu of buttons which allows for key mapping
+        /// </summary>
+        /// <param name="sender"></param>
         private void OptionsButton_Click(Button sender)
         {
             _entityManager.Clear();
@@ -213,7 +239,10 @@ namespace Overhaul_Of_Apocalyptica
             _entityManager.AddEntity(leftButton);
             _entityManager.AddEntity(rightButton);
         }
-     
+     /// <summary>
+     /// Invoked when the Quit button is clicked. Closes the game
+     /// </summary>
+     /// <param name="sender"></param>
         private void QuitButton_Click(Button sender)
         {
             Exit();
@@ -271,10 +300,9 @@ namespace Overhaul_Of_Apocalyptica
         }
 
         /// <summary>
-        /// What happens once clicked. It will determine wehter to load a save from the file or to override another save. 
+        /// Invoked when a save slot is clicked. Will determine whether to load a save from the file or to override another save. 
         /// </summary>
         /// <param name="sender">Button that is being selected</param>
-        /// <param name="e"></param>
         private void SaveSlot_Clicked(Button sender)
         {
             GameTime gameTime = new GameTime();
@@ -293,14 +321,17 @@ namespace Overhaul_Of_Apocalyptica
                     case "Soldier":
                         Player soldier = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime) { MovementKeys = _movementKeys };
                         _player1 = soldier;
+                        _player1.Health = 100;
                         break;
                     case "Ninja":
                         Player ninja = new Ninja(_ninjaSpriteSheet, _heartSpriteSheet, _shurikenSprite, gameTime) { MovementKeys = _movementKeys };
                         _player1 = ninja;
+                        _player1.Health = 100;
                         break;
                     case "Heavy":
                         Player heavy = new Heavy(_heavySpriteSheet1, _heartSpriteSheet, _soldierBulletSprite, gameTime) { MovementKeys = _movementKeys };
                         _player1 = heavy;
+                        _player1.Health = 120;
                         break;
                     default:
                         _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime) { MovementKeys = _movementKeys };
@@ -333,9 +364,8 @@ namespace Overhaul_Of_Apocalyptica
         #region Character Creation
 
         /// <summary>
-        /// Opens the character creation menu then saves the character info into the save slot
+        /// Called when a new character is desired. Creates three buttons which represent the characters to choose from.
         /// </summary>
-        /// <param name="saveSlot">The save slot that will store this new game</param>
         private void CreateCharacter()
         {
             
@@ -368,6 +398,10 @@ namespace Overhaul_Of_Apocalyptica
             heavy.Click += CharacterButton_Clicked;
             _entityManager.AddEntity(heavy);
         }
+        /// <summary>
+        /// Invoked when a character item is clicked. Determines the class and then creates a new instance of the character.
+        /// </summary>
+        /// <param name="button"></param>
         private void CharacterButton_Clicked(Button button)
         {
             GameTime gameTime = new GameTime();
@@ -406,21 +440,29 @@ namespace Overhaul_Of_Apocalyptica
                     _player1 = new Soldier(_soldierSpriteSheet, _heartSpriteSheet, _soldierBulletSprite, gameTime) { MovementKeys = _movementKeys };
                     break;
             }
+            _entityManager.Clear();
             _entityManager.AddEntity(_player1);
             _collisionManager.AddCollidable(_player1);
             _player1.Activate();
-            _entityManager.Clear();
             _gameState = _GameState.INITIALISE;
             
         }
         #endregion
 
         #region Options
+        /// <summary>
+        /// Invoked when a button in the options menu is selected. Used to denote an event in which the key must be changed.
+        /// </summary>
+        /// <param name="sender"></param>
         private void KeyMap_Clicked(Button sender)
         {
             sender.Text = ("Press Key");
             _gameState = _GameState.KEYCHANGE;
         }
+        /// <summary>
+        /// Confirms the button that has flagged a key change and then changes that key to the key that has been inputted.
+        /// </summary>
+        /// <param name="now">The new movement key</param>
         private void ChangeKey(Keys now)
         {
             foreach (Button b in _menuComponents)
@@ -468,26 +510,35 @@ namespace Overhaul_Of_Apocalyptica
 
             _gameOverTexture = Content.Load<Texture2D>(@"Controls/GameOver");
 
-            foreach (var b in _menuComponents)
-            {
-                _entityManager.AddEntity(b);
-            }
+            
 
 
 
         }
-
+        /// <summary>
+        /// Updates all every object in the project
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
+            
             if (_gameState == _GameState.PLAYING)
             {
                 if (_waveManager.GameWon)
                 {
                     _gameState = _GameState.GAMEWON;
                     _entityManager.Clear();
+                    _entityManager.Update(gameTime);
                     _waveManager.IsRunning = false;
-
+                    PlayAgain = new Button(Content.Load<Texture2D>(@"Controls/ButtonTexture"), Content.Load<SpriteFont>(@"Fonts/ButtonFont"))
+                    {
+                        Text = "Play Again?",
+                        Position = new Vector2(300 , 240)
+                        
+                    };
                     
+                    _saveSlots[_currentSaveSlotIndex].Status = "Empty";
+                    _saveSlots[_currentSaveSlotIndex].OverrideSave();
                 }
                 else
                 {
@@ -560,37 +611,35 @@ namespace Overhaul_Of_Apocalyptica
                     ChangeKey(now.GetPressedKeys()[0]);
                 }
             }
-            else if (_gameState == _GameState.GAMEWON)
-            {
-                Button GameWon = new Button(Content.Load<Texture2D>(@"Controls/ButtonTexture"), Content.Load<SpriteFont>(@"Fonts/ButtonFont"))
+            else if (_gameState == _GameState.GAMEWON) //Part of evaluation prototype
+            { 
+                if (_entityManager.Entities.Count < 2)
                 {
-                    Text = "Congratulations",
-                    Position = (Window.ClientBounds.Center.ToVector2())
+                    TitleButton_Click(PlayAgain);
+                    PlayAgain.Click += PlayAgain_Clicked;
 
+                   
 
-                };
-                _entityManager.AddEntity(GameWon);
+                    _entityManager.AddEntity(PlayAgain);
+                }
+                else
+                {
+                    TitleButton_Click(PlayAgain);
 
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-                TitleButton_Click(GameWon);
-
+                }
                 _entityManager.Update(gameTime);
-                _entityManager.RemoveEntity(GameWon);
             }
+            //else if (_gameState == _GameState.MENU) /// Part of evaluation prototype
+            //{
+                //_entityManager.Update(gameTime);
+
+                //if (gameTime.TotalGameTime.TotalSeconds - _menuZombieLastSpawn > _menuZombieSpawn)
+                //{
+                //    Random rand = new Random();
+                //    _entityManager.AddEntity(new MainMenuZombie(new Vector2(rand.Next(0, 800), rand.Next(0, 480)), _fireworkTexture, _particleTexture));
+                //    _menuZombieLastSpawn = (float)gameTime.TotalGameTime.TotalSeconds;
+                //}
+            //}
             else
             {
                 _entityManager.Update(gameTime);
@@ -599,11 +648,6 @@ namespace Overhaul_Of_Apocalyptica
             {
                 _entityManager.Clear();
                 DisplayTitleScreen();
-                foreach (var m in _menuComponents)
-                {
-                    _entityManager.AddEntity(m);
-                }
-               
             }
              
             if (gameTime.IsRunningSlowly == true)
@@ -632,6 +676,12 @@ namespace Overhaul_Of_Apocalyptica
                 GraphicsDevice.Clear(Color.Black);
                 _entityManager.Draw(_spriteBatch, gameTime);
             }
+            else if(_gameState == _GameState.GAMEWON)
+            {
+                
+                _entityManager.Draw(_spriteBatch, gameTime);
+               /* PlayAgain.Draw(_spriteBatch, gameTime); *///Part of evaluation prototypes.
+            }
             else
             {
                 _entityManager.Draw(_spriteBatch, gameTime);
@@ -641,8 +691,24 @@ namespace Overhaul_Of_Apocalyptica
 
             base.Draw(gameTime);
         }
+
+        #region Methods from Evaluation Prototyping
+        /// <summary>
+        /// Part of evaluation prototypes. Invoked when the play again button is pressed. Restarts the game and outputs the menu.
+        /// </summary>
+        /// <param name="sender"></param>
+        public void PlayAgain_Clicked(Button sender)
+        {
+            _menuComponents.Clear();
+            _entityManager.Clear();
+            DisplayTitleScreen();
+            _gameState = _GameState.MENU;
+            _waveStartIndex = 0;
+            _waveManager.CurrentWave = 0;
+        }
+        #endregion
     }
-    
+
 }
 
 

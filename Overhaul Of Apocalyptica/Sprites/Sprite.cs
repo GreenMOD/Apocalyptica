@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Overhaul_Of_Apocalyptica
 {
+    //Inspired by XNA 4.0 Game Development by Example by Kurt Jaegers 
+
     public class Sprite
     {
 
@@ -23,7 +25,7 @@ namespace Overhaul_Of_Apocalyptica
         private float _timeForCurrentFrame = 0;
         public float TimeForCurrentFrame { get { return _timeForCurrentFrame; } }
         public int Frame { get { return _currentFrame; }set { _currentFrame = (int)MathHelper.Clamp(value, 0, _frames.Count - 1); } } //MathHelper prevents frame storing a value outside of frames length 
-        public float FrameTime { get { return _frameMaxTime; }set { _frameMaxTime = (float)value; } } //MathHelper. max makes the value stored greater then or equal to 0
+        public float FrameTime { get { return _frameMaxTime; }set { _frameMaxTime = (float)value; } } 
         public Rectangle Source { get { return _frames[_currentFrame]; } }
 
         public Vector2 Position { get; set; }
@@ -77,16 +79,29 @@ namespace Overhaul_Of_Apocalyptica
 
 
 
-
+        /// <summary>
+        /// Displays the sprite at its default size using the passed in SpriteBatch class
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="gameTime"></param>
         public virtual void Draw(SpriteBatch spriteBatch,GameTime gameTime)
         {
-            spriteBatch.Draw(Texture, Position, Source, _tintColor, _rotation, new Vector2(_frameWidth / 2, _frameHeight / 2),1.0f , SpriteEffects.None, 0.0f);
+            spriteBatch.Draw(Texture, Position, Source, _tintColor, _rotation, new Vector2(_frameWidth / 2, _frameHeight / 2),1f, SpriteEffects.None, 1.0f);
         }
+        /// <summary>
+        /// Multiplies the size of the sprite by a parameter scale and then displays the sprite
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="gameTime"></param>
+        /// <param name="scale"></param>
         public virtual void Draw(SpriteBatch spriteBatch, GameTime gameTime, float scale)
         {
             spriteBatch.Draw(Texture, Position, Source, _tintColor, _rotation,new Vector2(0,0),scale, SpriteEffects.None, 0.0f);
         }
-
+        /// <summary>
+        /// Using a larger list of frames directional idle animations are created. The current frame is changed when the next animation is needed
+        /// </summary>
+        /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
             if (EntityFacing != _previousFacing)
@@ -103,7 +118,7 @@ namespace Overhaul_Of_Apocalyptica
             {
                 if (_timeForCurrentFrame >= FrameTime)
                 {
-                    switch (EntityFacing.ToLower()) //todo here
+                    switch (EntityFacing.ToLower())
                     {
                         case "left":
                             if (_frames[_currentFrame] == _frames[0])
@@ -162,16 +177,14 @@ namespace Overhaul_Of_Apocalyptica
             }    
 
        
-           
-
-            //if (_timeForCurrentFrame >= FrameTime)
-            //{
-            //    _currentFrame = (_currentFrame + 1) % (_frames.Count);//Creates a loop so that once current frame reaches frame "5" which wont exist it will restart at the beginning
-            //}
-
             _frameWidth = _frames[_currentFrame].Width;
             _frameHeight = _frames[_currentFrame].Height;
         }
+        /// <summary>
+        /// Updates the position of the sprite using a parameter newPostion.
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="newPosition"></param>
         public virtual void Update(GameTime gameTime, Vector2 newPosition)
         {
             Position = newPosition;

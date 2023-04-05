@@ -46,7 +46,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
 
         //    List<float> primary = new List<float>();
 
-        //    //todo implement Perlinn Noise
         //    for (int i = 0; i < seed.Count - 1; i++)
         //    {
         //        int sample = i * noise 

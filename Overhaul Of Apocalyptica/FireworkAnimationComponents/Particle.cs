@@ -1,18 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Overhaul_Of_Apocalyptica.FireworkAnimationComponents
 {
     public class Particle
     {
+        //Inspired by the coding train
+        //https://www.youtube.com/watch?v=CKeyIbT3vXI&list=PLRqwX-V7Uu6ZiZxtDDRCi6uhfTH4FilpH&index=32
+
         #region Declarations
 
-       public Vector2 position = Vector2.Zero;
+        public Vector2 position = Vector2.Zero;
 
        Vector2 _acceleration = new Vector2();
        
@@ -50,7 +49,9 @@ namespace Overhaul_Of_Apocalyptica.FireworkAnimationComponents
 
 
         #region Methods
-
+        /// <summary>
+        /// Applys the accerlation to the positon
+        /// </summary>
         public void Update()
         {
             velocity = Vector2.Add(velocity, _acceleration);
@@ -60,9 +61,12 @@ namespace Overhaul_Of_Apocalyptica.FireworkAnimationComponents
 
         public void Draw(SpriteBatch spriteBatch , GameTime gameTime)
         {
-            spriteBatch.Draw(_texture, position, _color);
+            spriteBatch.Draw(_texture, new Rectangle((int)position.X,(int)position.Y,_texture.Width,_texture.Height), new Rectangle(0, 0, _texture.Width, _texture.Height), _color, 0F, Vector2.Zero, SpriteEffects.None, 1f);
         }
-
+        /// <summary>
+        /// Applies a force vector to the acceleration
+        /// </summary>
+        /// <param name="force"></param>
         public void ApplyForce(Vector2 force)
         {
             _acceleration = Vector2.Add(force, _acceleration);

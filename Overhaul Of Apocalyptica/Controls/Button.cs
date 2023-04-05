@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Overhaul_Of_Apocalyptica.Entities;
-using Overhaul_Of_Apocalyptica.Events;
 
 namespace Overhaul_Of_Apocalyptica.Controls
 {
@@ -16,8 +11,6 @@ namespace Overhaul_Of_Apocalyptica.Controls
         private MouseState _currentMouse;
 
         private SpriteFont _textFont;
-
-        private bool _isHovering;
 
         private MouseState _previousMouse;
 
@@ -50,16 +43,17 @@ namespace Overhaul_Of_Apocalyptica.Controls
 
             TextColor = Color.Black;
         }
+        /// <summary>
+        /// Draws the collison box but ensures that the text is centred inside it
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="gameTime"></param>
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             var colour = Color.White;
 
-            if (_isHovering)
-            {
-                colour = Color.White;
-            }
-
-            spriteBatch.Draw(_texture, CollisionBox, colour);
+            
+            spriteBatch.Draw(_texture, CollisionBox,new Rectangle(0,0, _texture.Width,_texture.Height), colour,0f,new Vector2(0,0),SpriteEffects.None,0f);
 
             if (!string.IsNullOrEmpty(Text))
             {
@@ -82,7 +76,6 @@ namespace Overhaul_Of_Apocalyptica.Controls
 
             if (CollisionBox.Intersects(mouseCollision))
             {
-                _isHovering = true;
 
                 if (_currentMouse.LeftButton == ButtonState.Released && _previousMouse.LeftButton == ButtonState.Pressed)
                 {

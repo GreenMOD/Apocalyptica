@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Overhaul_Of_Apocalyptica.Entities.Zombies;
 using Overhaul_Of_Apocalyptica.Entities.Projectiles;
-using System.Linq;
 
 
 namespace Overhaul_Of_Apocalyptica.Entities.Weapons
@@ -22,7 +16,10 @@ namespace Overhaul_Of_Apocalyptica.Entities.Weapons
             RateOfFire = 0.25f;
             ReloadTime = 2.5f;
         }
-
+        /// <summary>
+        /// If the magazine is not empty the next projectile is set to a bullet and Gun.Fire is called. Otherwise the gun will reload
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Fire(GameTime gameTime)
         {
             if (AmmoLeft > 0)

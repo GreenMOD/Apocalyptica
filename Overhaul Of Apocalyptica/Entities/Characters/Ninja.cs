@@ -1,20 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
-using System.Text;
-using Overhaul_Of_Apocalyptica.Entities;
 using Overhaul_Of_Apocalyptica.Entities.Characters;
 using Overhaul_Of_Apocalyptica.Entities.Weapons;
-using Overhaul_Of_Apocalyptica.Sprites;
 
 namespace Overhaul_Of_Apocalyptica.Entities
 {
     public class Ninja : Player
     {
         #region declarations
-        private Gun _ranged;
         private Sprite _sprite;
         private Heart _hearts;
 
@@ -32,7 +27,6 @@ namespace Overhaul_Of_Apocalyptica.Entities
         protected Rectangle AltDown = new Rectangle(398, 0, 38, 84); //alternate down
 
         public override Sprite Sprite { get { return _sprite; } set { _sprite = value; } }
-        public override Gun Ranged { get { return _ranged; } set { _ranged = value; } }
 
         private const float RUNNING_SPEED = 5f;
         public override Heart Hearts { get { return _hearts; } set { _hearts = value; } }
@@ -49,35 +43,26 @@ namespace Overhaul_Of_Apocalyptica.Entities
             _sprite.FrameTime = 0.75f;
 
             Speed = Vector2.Zero;
-            Position = new Vector2(100, 200);
-            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, 34, 42);
+            CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width,Sprite.Source.Height);
 
             Health = 100;
             Hearts = new Heart(heartSprite, Health, new List<Rectangle>() { new Rectangle(0, 0, 17, 14) });
 
 
-            _ranged = new ShurikenJustu(new Vector2(Position.X + 75, Position.Y), shuriken, gameTime);
+            Ranged = new ShurikenJustu(new Vector2(Position.X + 75, Position.Y), shuriken, gameTime);
         }
         #endregion
         #region Methods
-        public override void Update(GameTime gameTime)
-        {
-            if (IsActive == true)
-            {
-                PlayerInput(gameTime, Keyboard.GetState());
-                Ranged.Update(gameTime);
-                Sprite.Update(gameTime);
-                Hearts.Update(gameTime,Health);
-                CollisionBox = new Rectangle((int)Position.X, (int)Position.Y, Sprite.Source.Width, Sprite.Source.Height);
-            }
-
-        }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Sprite.Draw(spriteBatch, gameTime);
             Hearts.Draw(spriteBatch, gameTime);
         }
-
+        /// <summary>
+        /// Manages player input through a keyboard state
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="currentStateKeys">Stores the values of all keys being pressed</param>
         public override void PlayerInput(GameTime gameTime, KeyboardState currentStateKeys)
         {
             if ((currentStateKeys.IsKeyDown(Up) && (currentStateKeys.IsKeyDown(Left))) | (currentStateKeys.IsKeyDown(Up) && (currentStateKeys.IsKeyDown(Right))) | ((currentStateKeys.IsKeyDown(Down)) && (currentStateKeys.IsKeyDown(Left))) | (currentStateKeys.IsKeyDown(Down) && (currentStateKeys.IsKeyDown(Right))) | (currentStateKeys.IsKeyDown(Up)) | (currentStateKeys.IsKeyDown(Left)) | (currentStateKeys.IsKeyDown(Down)) | (currentStateKeys.IsKeyDown(Right)))
