@@ -2,12 +2,10 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Overhaul_Of_Apocalyptica.FireworkAnimationComponents;
-using System;
 using System.Collections.Generic;
-using System.Security.Policy;
-using System.Text;
+using Overhaul_Of_Apocalyptica.Entities;
 
-namespace Overhaul_Of_Apocalyptica.Entities.Zombies
+namespace ExtensionTasks
 {
     public class MainMenuZombie : IEntity
     {

@@ -1,57 +1,63 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Design;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
+using System.Numerics;
 
-namespace Overhaul_Of_Apocalyptica.Entities
+namespace ExtensionTasks
 {
-    class FlowField
+    public class FlowField
     {
-       Vector2[,] field = new Vector2[200, 120]; //Every 4 pixels there is a field. 
-       
-       public int Rows { get { return 200; } }
-       public int Cols { get { return 120; }  } 
 
-        /// <summary>
-        /// Generates random vectors for movement in each position of the 2D array
-        /// </summary>
-        public void GenerateFlowFeild()
+        private int _rows = 0;
+
+        private int _columns = 0;
+
+
+        public Vector2[,] Field;
+
+
+        public FlowField(int rows, int columns, Vector2 target)
         {
-            for (int i = 0; i < Rows; i++)
+            Field = new Vector2[rows, columns];
+            _rows = rows;
+            _columns = columns;
+
+            GenerateField(target);
+        }
+
+        public void GenerateField(Vector2 target)
+        {
+
+            Field[(int)target.X, (int)target.Y] = Vector2.Zero;
+
+            for (int y = 0; y < _columns; y++)
             {
-                for (int j = 0; j < Cols; j++)
+                for (int x = 0; x < _rows; x++)
                 {
+
+                    if (target != new Vector2(x, y))
+                    {
+                        Vector2 desired = Vector2.Subtract(target, new Vector2(x, y));
+                        desired = Vector2.Normalize(desired);
+                        Field[x, y] = desired;
+                    }
+
+                }
+            }
+
+
+            DisplayField();
+        }
+        public void DisplayField()
+        {
+            for (int y = 0; y < _columns; y++)
+            {
+                Console.WriteLine("");
+                Console.WriteLine("--------------------------------------------------------------------------------------------------------------");
+                for (int x = 0; x < _rows; x++)
+                {
+                    Console.Write(Field[x, y] + "   ");
 
                 }
             }
         }
-        /// <summary>
-        /// Generates random vectors for movement that point towards a position on the flow field
-        /// </summary>
-        /// <param name="positionX">Points to a X position in the array</param>
-        /// <param name="positionY">Points to a Y position in the array</param>
-        public void GenerateFlowField(Vector2 positionX, Vector2 positionY)
-        {
-            
-        }
-        //public float[] PerlinNoise(List<float> seed)
-        //{
-
-        //    float noise = 0.0f;
-        //    List<List<float>> octaves = new List<List<float>>();
-
-        //    List<float> primary = new List<float>();
-
-        //    for (int i = 0; i < seed.Count - 1; i++)
-        //    {
-        //        int sample = i * noise 
-        //    }
-
-        //}
     }
-   
 }
